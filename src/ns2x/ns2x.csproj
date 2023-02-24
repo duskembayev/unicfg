@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ns2x.Lexer\ns2x.Lexer.csproj" />
+    <ProjectReference Include="..\ns2x.Parser\ns2x.Parser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Examples\*.sample" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
