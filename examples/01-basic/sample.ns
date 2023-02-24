@@ -1,0 +1,9 @@
+me.birthYear=1986
+me.birthCity=Qaragandy
+me.grades[kind]=array
+me.grades.0.name='KSTU, Information Security'
+me.grades.0.year=2008
+me.grades.0.address=${me.birthCity}', 12 Ermekov str., 72012'
+me.grades.1.name='KSU, Economics'
+me.grades.1.year=2011
+me.grades.1.address=${me.birthCity}', 3 Bukeikhan str., 73101'
