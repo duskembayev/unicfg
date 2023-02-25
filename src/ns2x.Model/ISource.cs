@@ -6,6 +6,7 @@ public interface ISource
 {
     StringRef Text(in Token token);
     StringRef Raw(in Token token);
+    SourcePosition GetPosition(in Token token);
 
     SequenceReader<char> CreateReader();
 }

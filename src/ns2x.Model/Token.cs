@@ -3,7 +3,7 @@
 public readonly record struct Token(Range Range, TokenType Type)
 {
     public static readonly Token Eof = new(Range.All, TokenType.Eof);
-    public static readonly Token Invalid = new(new Range(Index.End, Index.Start), TokenType.Unknown);
+    public static readonly Token Null = new(new Range(Index.End, Index.Start), TokenType.Unknown);
 
     public bool IsExpression()
     {

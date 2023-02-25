@@ -1,9 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
 using ns2x.Lexer.Handlers;
+using ns2x.Model.Analysis;
 
 namespace ns2x.Lexer;
 
 public sealed class LexerImpl
 {
+    private readonly Diagnostics _diagnostics;
+
     private readonly ImmutableArray<ILexerHandler> _handlers = ImmutableArray.Create<ILexerHandler>(
         new WhitespacesLexerHandler(),
         new EolLexerHandler(),
@@ -20,6 +24,11 @@ public sealed class LexerImpl
         new SingleCharacterLexerHandler(']', TokenType.BracketR)
     );
 
+    public LexerImpl(Diagnostics diagnostics)
+    {
+        _diagnostics = diagnostics;
+    }
+
     public ImmutableArray<Token> Process(ISource source)
     {
         var sourceReader = source.CreateReader();
@@ -34,7 +43,12 @@ public sealed class LexerImpl
             }
 
             if (currentToken.HasValue)
+            {
                 result.Add(currentToken.Value);
+                
+                if (currentToken is { Type: TokenType.Unknown })
+                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value);
+            }
         }
 
         result.Add(Token.Eof);

@@ -1,24 +1,22 @@
-﻿using ns2x.Model.Diagnostics;
+﻿using ns2x.Model.Analysis;
 using ns2x.Parser.Builders;
-using static ns2x.Model.Diagnostics.DiagnosticMessage;
+using static ns2x.Model.Analysis.DiagnosticDescriptor;
 
 namespace ns2x.Parser;
 
 public sealed class ParserImpl
 {
-    private readonly List<(DiagnosticMessage, Token)> _diagnostics;
+    private readonly Diagnostics _diagnostics;
     private readonly SymbolBuilder _rootBuilder;
 
-    public ParserImpl()
+    public ParserImpl(Diagnostics diagnostics)
     {
-        _diagnostics = new List<(DiagnosticMessage, Token)>();
+        _diagnostics = diagnostics;
         _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.Namespace);
     }
 
     public Document Execute(ISource source, ImmutableArray<Token> tokens)
     {
-        _diagnostics.Clear();
-
         var indexer = new TokenIndexer(0, source, tokens);
 
         while (!indexer.OutOfRange)
@@ -35,7 +33,7 @@ public sealed class ParserImpl
             return HandlePropertyToken(ref indexer);
 
         if (!indexer.Token.IsHidden())
-            ReportDiagnostics(indexer.Token, UnexpectedToken);
+            Report(UnexpectedToken, indexer.Token);
 
         return false;
     }
@@ -62,7 +60,7 @@ public sealed class ParserImpl
         
         if (!processed || !indexer.Token.IsEquality())
         {
-            ReportDiagnostics(indexer.Token, UnexpectedToken);
+            Report(UnexpectedToken, indexer.Token);
             return false;
         }
 
@@ -113,7 +111,7 @@ public sealed class ParserImpl
 
         if (!indexer.Token.IsBraceL())
         {
-            ReportDiagnostics(indexer.Token, UnexpectedToken);
+            Report(UnexpectedToken, indexer.Token);
             return false;
         }
 
@@ -138,7 +136,7 @@ public sealed class ParserImpl
 
         if (!processed || !indexer.Token.IsBraceR())
         {
-            ReportDiagnostics(indexer.Token, UnexpectedToken);
+            Report(UnexpectedToken, indexer.Token);
             return false;
         }
 
@@ -146,8 +144,8 @@ public sealed class ParserImpl
         return true;
     }
 
-    private void ReportDiagnostics(in Token token, DiagnosticMessage message)
+    private void Report(DiagnosticDescriptor descriptor, in Token token)
     {
-        _diagnostics.Add((message, token));
+        _diagnostics.Report(descriptor, in token);
     }
 }
