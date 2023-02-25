@@ -39,4 +39,14 @@ public readonly record struct Token(Range Range, TokenType Type)
     {
         return Type is TokenType.BraceR;
     }
+
+    public bool IsBracketL()
+    {
+        return Type is TokenType.BracketL;
+    }
+
+    public bool IsBracketR()
+    {
+        return Type is TokenType.BracketR;
+    }
 }

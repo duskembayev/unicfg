@@ -57,14 +57,57 @@ public sealed class ParserImpl
 
             indexer = indexer.Next;
         }
-        
-        if (!processed || !indexer.Token.IsEquality())
+
+        if (!processed)
         {
             Report(UnexpectedToken, indexer.Token);
             return false;
         }
 
-        return HandleValues(ref indexer, symbolBuilder);
+        IValueOwner? valueOwner = symbolBuilder;
+
+        if (indexer.Token.IsBracketL())
+        {
+            valueOwner = HandleAttributeToken(ref indexer, symbolBuilder);
+
+            if (valueOwner is null)
+                return false;
+
+            indexer = indexer.Next;
+        }
+
+        if (!indexer.Token.IsEquality())
+        {
+            Report(UnexpectedToken, indexer.Token);
+            return false;
+        }
+
+        return HandleValues(ref indexer, valueOwner);
+    }
+
+    /// <param name="indexer">bracketL token</param>
+    /// <param name="symbolBuilder"></param>
+    private AttributeBuilder? HandleAttributeToken(ref TokenIndexer indexer, SymbolBuilder symbolBuilder)
+    {
+        indexer = indexer.Next;
+
+        if (!indexer.Token.IsExpression())
+        {
+            Report(UnexpectedToken, indexer.Token);
+            return null;
+        }
+
+        var attributeName = indexer.Text;
+        indexer = indexer.Next;
+
+        if (!indexer.Token.IsBracketR())
+        {
+            Report(UnexpectedToken, indexer.Token);
+            return null;
+        }
+
+
+        return symbolBuilder.AddAttribute(attributeName);
     }
 
     /// <param name="indexer">equality token</param>
@@ -116,7 +159,7 @@ public sealed class ParserImpl
         }
 
         indexer = indexer.Next;
-        
+
         var pathBuilder = ImmutableArray.CreateBuilder<StringRef>();
         var processed = false;
 
