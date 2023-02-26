@@ -11,24 +11,13 @@ internal sealed class AttributeBuilder : IValueOwner
         _values = ImmutableArray.CreateBuilder<IValue>(1);
     }
 
-    public void AddValue(IValue value)
+    public void SetValue(IValue value)
     {
         _values.Add(value);
     }
 
     public Attribute Build()
     {
-        var value = BuildValue();
-        return new Attribute(_name, value);
-    }
-
-    private IValue BuildValue()
-    {
-        return _values.Count switch
-        {
-            0 => EmptyValue.Instance,
-            1 => _values[0],
-            _ => new CollectionValue(_values.ToImmutable())
-        };
+        return new Attribute(_name, _values.ToImmutable());
     }
 }

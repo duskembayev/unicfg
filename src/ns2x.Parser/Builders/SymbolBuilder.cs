@@ -42,7 +42,7 @@ internal sealed class SymbolBuilder : IValueOwner
         return ns;
     }
 
-    public void AddValue(IValue value)
+    public void SetValue(IValue value)
     {
         if (_kind == SymbolKind.Auto)
             _kind = SymbolKind.Property;
@@ -65,12 +65,11 @@ internal sealed class SymbolBuilder : IValueOwner
         if (_kind != SymbolKind.Property)
             throw new InvalidOperationException();
 
-        var value = BuildValue();
         var attributes = _attributes.Count > 0
             ? _attributes.Select(pair => pair.Value.Build()).ToImmutableArray()
             : ImmutableArray<Attribute>.Empty;
 
-        return new Property(_name, value, attributes);
+        return new Property(_name, _values.ToImmutable(), attributes);
     }
 
     public Namespace BuildAsNamespace()
@@ -104,15 +103,5 @@ internal sealed class SymbolBuilder : IValueOwner
         }
 
         return new Namespace(_name, namespaces.ToImmutable(), properties.ToImmutable(), attributes);
-    }
-
-    private IValue BuildValue()
-    {
-        return _values.Count switch
-        {
-            0 => EmptyValue.Instance,
-            1 => _values[0],
-            _ => new CollectionValue(_values.ToImmutable())
-        };
     }
 }

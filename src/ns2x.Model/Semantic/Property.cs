@@ -1,17 +1,17 @@
 ﻿namespace ns2x.Model.Semantic;
 
-public sealed class Property : ISemanticNode
+public sealed class Property : ISemanticNodeWithValue
 {
-    public Property(StringRef name, IValue value, ImmutableArray<Attribute> attributes)
+    public Property(StringRef name, ImmutableArray<IValue> values, ImmutableArray<Attribute> attributes)
     {
         Name = name;
-        Value = value;
+        Values = values;
         Attributes = attributes;
     }
 
     public StringRef Name { get; }
 
-    public IValue Value { get; }
+    public ImmutableArray<IValue> Values { get; }
 
     public ImmutableArray<Attribute> Attributes { get; }
 

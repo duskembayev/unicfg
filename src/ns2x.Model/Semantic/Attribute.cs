@@ -1,16 +1,16 @@
 namespace ns2x.Model.Semantic;
 
-public sealed class Attribute : ISemanticNode
+public sealed class Attribute : ISemanticNodeWithValue
 {
-    public Attribute(StringRef name, IValue value)
+    public Attribute(StringRef name, ImmutableArray<IValue> values)
     {
         Name = name;
-        Value = value;
+        Values = values;
     }
 
     public StringRef Name { get; }
 
-    public IValue Value { get; }
+    public ImmutableArray<IValue> Values { get; }
 
     public void Accept(ISemanticNodeVisitor visitor)
     {

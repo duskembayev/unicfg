@@ -116,6 +116,8 @@ public sealed class ParserImpl
     {
         indexer = indexer.Next;
 
+        var valueBuilder = ImmutableArray.CreateBuilder<IValue>();
+
         while (!indexer.Token.IsHidden())
         {
             var value = indexer.Token.IsRef() ? CreateRefValue(ref indexer) : CreateTextValue(in indexer);
@@ -123,11 +125,22 @@ public sealed class ParserImpl
             if (value is null)
                 return false;
 
-            owner.AddValue(value);
+            valueBuilder.Add(value);
             indexer = indexer.Next;
         }
 
+        owner.SetValue(CreateValue(valueBuilder.ToImmutable()));
         return true;
+    }
+    
+    private static IValue CreateValue(ImmutableArray<IValue> valueParts)
+    {
+        return valueParts.Length switch
+        {
+            0 => EmptyValue.Instance,
+            1 => valueParts[0],
+            _ => new CollectionValue(valueParts)
+        };
     }
 
     /// <param name="indexer">any token</param>
