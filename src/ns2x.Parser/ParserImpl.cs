@@ -165,7 +165,7 @@ public sealed class ParserImpl
 
         while (indexer.Token.IsExpression())
         {
-            pathBuilder.Add(indexer.Raw);
+            pathBuilder.Add(indexer.Text);
             indexer = indexer.Next;
 
             if (!indexer.Token.IsDot())

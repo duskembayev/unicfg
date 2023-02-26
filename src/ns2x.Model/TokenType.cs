@@ -17,7 +17,7 @@ public enum TokenType : ushort
     Expression,
     QuotedExpression,
 
-    Hidden = 60000,
+    Hidden = 60000, // marker
     Comment = 60001,
     Eol = ushort.MaxValue - 1,
     Eof = ushort.MaxValue,

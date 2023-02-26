@@ -7,7 +7,7 @@ public class Document : ISemanticNode
         RootNamespace = rootNamespace;
     }
 
-    private Namespace RootNamespace { get; }
+    public Namespace RootNamespace { get; }
 
     public void Accept(ISemanticNodeVisitor visitor)
     {

@@ -11,7 +11,7 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
         Path = path;
     }
 
-    public ImmutableArray<StringRef> Path { get; }
+    internal ImmutableArray<StringRef> Path { get; }
 
     public bool Equals(PropertyRef other)
     {
