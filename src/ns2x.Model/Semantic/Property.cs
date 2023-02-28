@@ -1,21 +1,16 @@
 ﻿namespace ns2x.Model.Semantic;
 
-public sealed class Property : ISemanticNodeWithValue
+public sealed class Property : SemanticNodeWithValue
 {
-    public Property(StringRef name, ImmutableArray<IValue> values, ImmutableArray<Attribute> attributes)
+    public Property(StringRef name, ImmutableArray<Attribute> attributes, ImmutableArray<IValue> values)
+        : base(name, values)
     {
-        Name = name;
-        Values = values;
         Attributes = attributes;
     }
 
-    public StringRef Name { get; }
-
-    public ImmutableArray<IValue> Values { get; }
-
     public ImmutableArray<Attribute> Attributes { get; }
 
-    public void Accept(ISemanticNodeVisitor visitor)
+    public override void Accept(ISemanticNodeVisitor visitor)
     {
         visitor.Visit(this);
     }

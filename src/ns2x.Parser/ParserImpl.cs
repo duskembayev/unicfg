@@ -146,16 +146,18 @@ public sealed class ParserImpl
     /// <param name="indexer">any token</param>
     private static IValue CreateTextValue(in TokenIndexer indexer)
     {
-        return new TextValue(indexer.Text);
+        return new TextValue(indexer.Token.Range, indexer.Text);
     }
 
     /// <param name="indexer">ref token</param>
     private IValue? CreateRefValue(ref TokenIndexer indexer)
     {
+        var refTokenStart = indexer.Token.Range.Start;
+
         if (!TryParsePropertyRef(ref indexer, out var propertyRef))
             return null;
 
-        return new RefValue(propertyRef);
+        return new RefValue(refTokenStart..indexer.Token.Range.End, propertyRef);
     }
 
     /// <param name="indexer">ref token</param>
@@ -202,6 +204,6 @@ public sealed class ParserImpl
 
     private void Report(DiagnosticDescriptor descriptor, in Token token)
     {
-        _diagnostics.Report(descriptor, in token);
+        _diagnostics.Report(descriptor, token.Range);
     }
 }

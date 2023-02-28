@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ns2x.Evaluator\ns2x.Evaluator.csproj" />
     <ProjectReference Include="..\ns2x.Lexer\ns2x.Lexer.csproj" />
     <ProjectReference Include="..\ns2x.Parser\ns2x.Parser.csproj" />
   </ItemGroup>

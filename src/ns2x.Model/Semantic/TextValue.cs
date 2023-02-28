@@ -2,11 +2,13 @@
 
 public sealed class TextValue : IValue
 {
-    public TextValue(StringRef text)
+    public TextValue(Range sourceRange, StringRef text)
     {
+        SourceRange = sourceRange;
         Text = text;
     }
 
+    public Range SourceRange { get; }
     public StringRef Text { get; }
 
     public void Accept(ISemanticNodeVisitor visitor)

@@ -30,6 +30,16 @@ internal readonly ref struct TokenIndexer
     public TokenIndexer Next => this with { Index = Index + 1 };
     public TokenIndexer Prev => this with { Index = Index - 1 };
 
-    public StringRef Raw => _source.Raw(in Token);
-    public StringRef Text => _source.Text(in Token);
+    public StringRef Text
+    {
+        get
+        {
+            var text = _source.GetText(Token.Range);
+
+            if (Token.Type == TokenType.QuotedExpression)
+                return text[1..^1];
+
+            return text;
+        }
+    }
 }

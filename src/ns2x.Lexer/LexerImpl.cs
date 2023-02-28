@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using ns2x.Lexer.Handlers;
 using ns2x.Model.Analysis;
 
@@ -47,7 +46,7 @@ public sealed class LexerImpl
                 result.Add(currentToken.Value);
                 
                 if (currentToken is { Type: TokenType.Unknown })
-                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value);
+                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value.Range);
             }
         }
 

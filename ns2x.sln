@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ns2x.Lexer", "src\ns2x.Lexe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ns2x.Parser", "src\ns2x.Parser\ns2x.Parser.csproj", "{70CD46AA-D224-4731-95DC-191A91239900}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ns2x.Evaluator", "src\ns2x.Evaluator\ns2x.Evaluator.csproj", "{F85FA8AC-5332-4159-8062-0B8F6F958E34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{70CD46AA-D224-4731-95DC-191A91239900}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70CD46AA-D224-4731-95DC-191A91239900}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70CD46AA-D224-4731-95DC-191A91239900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F85FA8AC-5332-4159-8062-0B8F6F958E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F85FA8AC-5332-4159-8062-0B8F6F958E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F85FA8AC-5332-4159-8062-0B8F6F958E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F85FA8AC-5332-4159-8062-0B8F6F958E34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

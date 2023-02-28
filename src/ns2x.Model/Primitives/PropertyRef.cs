@@ -11,7 +11,7 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
         Path = path;
     }
 
-    internal ImmutableArray<StringRef> Path { get; }
+    public ImmutableArray<StringRef> Path { get; }
 
     public bool Equals(PropertyRef other)
     {
@@ -51,7 +51,7 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
             if (index > 0)
                 builder.Append('.');
 
-            builder.Append((string)Path[index]);
+            builder.Append((string) Path[index]);
         }
 
         return builder.ToString();

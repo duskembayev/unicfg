@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace ns2x.Model.Analysis;
 
 public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Arguments)
@@ -15,7 +13,6 @@ public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Argum
 
     public override string ToString()
     {
-        var text = Regex.Escape(Text.ToString());
-        return $"[{Descriptor.Level:G}] {Message}, ({StartLine}:{StartColumn}) = \"{text}\"";
+        return $"[{Descriptor.Level:G} {Descriptor.Code}] {Message}, ({StartLine}:{StartColumn}) = \"{Text}\"";
     }
 }

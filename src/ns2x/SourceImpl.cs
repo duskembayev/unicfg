@@ -14,15 +14,9 @@ public sealed class SourceImpl : ISource
         _lines = DetermineLines(_memory.Span);
     }
 
-    public StringRef Text(in Token token)
+    public StringRef GetText(in Range range)
     {
-        var raw = _memory[token.Range];
-        return token.Type == TokenType.QuotedExpression ? raw[1..^1] : raw;
-    }
-
-    public StringRef Raw(in Token token)
-    {
-        return _memory[token.Range];
+        return _memory[range];
     }
 
     public SourcePosition GetPosition(in Token token)
@@ -33,6 +27,13 @@ public sealed class SourceImpl : ISource
         return new SourcePosition(startLine, startColumn, endLine, endColumn);
     }
 
+    public SourcePosition GetPosition(in Range range)
+    {
+        var (startLine, startColumn) = GetPosition(range.Start);
+        var (endLine, endColumn) = GetPosition(range.End);
+
+        return new SourcePosition(startLine, startColumn, endLine, endColumn);
+    }
 
     public SequenceReader<char> CreateReader()
     {

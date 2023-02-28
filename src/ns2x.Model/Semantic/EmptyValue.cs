@@ -8,6 +8,8 @@ public sealed class EmptyValue : IValue
     {
     }
 
+    public Range SourceRange { get; } = Range.All;
+
     public void Accept(ISemanticNodeVisitor visitor)
     {
         visitor.Visit(this);

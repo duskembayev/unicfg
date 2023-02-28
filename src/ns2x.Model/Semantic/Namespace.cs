@@ -1,6 +1,6 @@
 ﻿namespace ns2x.Model.Semantic;
 
-public sealed class Namespace : ISemanticNode
+public sealed class Namespace : ISemanticNodeWithName
 {
     public Namespace(StringRef name, ImmutableArray<Namespace> namespaces, ImmutableArray<Property> properties, ImmutableArray<Attribute> attributes)
     {

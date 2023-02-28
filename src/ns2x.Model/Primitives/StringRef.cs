@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ns2x.Model.Primitives;
@@ -75,7 +76,8 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IE
 
     public int Length => _memory.Span.Length;
 
-    public char this[int index] => _memory.Span[index];
+    public char this[Index index] => _memory.Span[index];
+    public StringRef this[Range range] => _memory[range];
 
     public static implicit operator StringRef(string? value)
     {

@@ -69,7 +69,7 @@ internal sealed class SymbolBuilder : IValueOwner
             ? _attributes.Select(pair => pair.Value.Build()).ToImmutableArray()
             : ImmutableArray<Attribute>.Empty;
 
-        return new Property(_name, _values.ToImmutable(), attributes);
+        return new Property(_name, attributes, _values.ToImmutable());
     }
 
     public Namespace BuildAsNamespace()

@@ -2,4 +2,5 @@
 
 public interface IValue : ISemanticNode
 {
+    Range SourceRange { get; }
 }
