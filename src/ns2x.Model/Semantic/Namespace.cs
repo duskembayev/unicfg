@@ -1,22 +1,17 @@
 ﻿namespace ns2x.Model.Semantic;
 
-public sealed class Namespace : ISemanticNodeWithName
+public sealed class Namespace : SemanticNodeWithName
 {
-    public Namespace(StringRef name, ImmutableArray<Namespace> namespaces, ImmutableArray<Property> properties, ImmutableArray<Attribute> attributes)
+    public Namespace(StringRef name, Document document, SemanticNodeWithName? parent)
+        : base(name, document, parent)
     {
-        Name = name;
-        Namespaces = namespaces;
-        Properties = properties;
-        Attributes = attributes;
     }
 
-    public StringRef Name { get; }
+    public ImmutableArray<Namespace> Namespaces { get; internal set; }
+    public ImmutableArray<Property> Properties { get; internal set; }
+    public ImmutableArray<Attribute> Attributes { get; internal set; }
 
-    public ImmutableArray<Namespace> Namespaces { get; }
-    public ImmutableArray<Property> Properties { get; }
-    public ImmutableArray<Attribute> Attributes { get; }
-
-    public void Accept(ISemanticNodeVisitor visitor)
+    public override void Accept(ISemanticNodeVisitor visitor)
     {
         visitor.Visit(this);
     }

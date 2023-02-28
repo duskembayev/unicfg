@@ -16,8 +16,10 @@ internal sealed class AttributeBuilder : IValueOwner
         _values.Add(value);
     }
 
-    public Attribute Build()
+    public Attribute Build(Document document, SemanticNodeWithName parent)
     {
-        return new Attribute(_name, _values.ToImmutable());
+        var result = new Attribute(_name, document, parent);
+        result.Values = _values.ToImmutable();
+        return result;
     }
 }

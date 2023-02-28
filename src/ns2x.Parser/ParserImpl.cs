@@ -23,7 +23,9 @@ public sealed class ParserImpl
             if (!HandleRootToken(ref indexer))
                 indexer = indexer.Next;
 
-        return new Document(_rootBuilder.BuildAsNamespace());
+        var document = new Document();
+        document.RootNamespace = _rootBuilder.BuildAsNamespace(document, null);
+        return document;
     }
 
     /// <param name="indexer">any token</param>

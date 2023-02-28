@@ -9,7 +9,6 @@ public sealed class CollectionValue : IValue
     }
 
     public ImmutableArray<IValue> Values { get; }
-
     public Range SourceRange { get; }
 
     public void Accept(ISemanticNodeVisitor visitor)

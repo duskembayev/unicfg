@@ -2,13 +2,12 @@
 
 public sealed class Property : SemanticNodeWithValue
 {
-    public Property(StringRef name, ImmutableArray<Attribute> attributes, ImmutableArray<IValue> values)
-        : base(name, values)
+    public Property(StringRef name, Document document, SemanticNodeWithName parent)
+        : base(name, document, parent)
     {
-        Attributes = attributes;
     }
 
-    public ImmutableArray<Attribute> Attributes { get; }
+    public ImmutableArray<Attribute> Attributes { get; internal set; }
 
     public override void Accept(ISemanticNodeVisitor visitor)
     {

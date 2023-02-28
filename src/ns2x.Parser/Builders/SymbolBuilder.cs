@@ -50,43 +50,28 @@ internal sealed class SymbolBuilder : IValueOwner
         _values.Add(value);
     }
 
-    public ISemanticNode? Build()
+    public ISemanticNode? Build(Document document, SemanticNodeWithName parent)
     {
         return _kind switch
         {
-            SymbolKind.Namespace => BuildAsNamespace(),
-            SymbolKind.Property => BuildAsProperty(),
+            SymbolKind.Namespace => BuildAsNamespace(document, parent),
+            SymbolKind.Property => BuildAsProperty(document, parent),
             _ => null
         };
     }
 
-    public Property BuildAsProperty()
-    {
-        if (_kind != SymbolKind.Property)
-            throw new InvalidOperationException();
-
-        var attributes = _attributes.Count > 0
-            ? _attributes.Select(pair => pair.Value.Build()).ToImmutableArray()
-            : ImmutableArray<Attribute>.Empty;
-
-        return new Property(_name, attributes, _values.ToImmutable());
-    }
-
-    public Namespace BuildAsNamespace()
+    public Namespace BuildAsNamespace(Document document, SemanticNodeWithName? parent)
     {
         if (_kind != SymbolKind.Namespace)
             throw new InvalidOperationException();
 
-        var attributes = _attributes.Count > 0
-            ? _attributes.Select(pair => pair.Value.Build()).ToImmutableArray()
-            : ImmutableArray<Attribute>.Empty;
-
-        var namespaces = ImmutableArray.CreateBuilder<Namespace>();
-        var properties = ImmutableArray.CreateBuilder<Property>();
+        var result = new Namespace(_name, document, parent);
+        var namespaces = ImmutableArray.CreateBuilder<Namespace>(_children.Count);
+        var properties = ImmutableArray.CreateBuilder<Property>(_children.Count);
 
         foreach (var (_, child) in _children)
         {
-            var node = child.Build();
+            var node = child.Build(document, result);
 
             if (node is null)
                 continue;
@@ -102,6 +87,28 @@ internal sealed class SymbolBuilder : IValueOwner
             }
         }
 
-        return new Namespace(_name, namespaces.ToImmutable(), properties.ToImmutable(), attributes);
+        result.Attributes = BuildAttributes(document, result);
+        result.Namespaces = namespaces.ToImmutable();
+        result.Properties = properties.ToImmutable();
+        return result;
+    }
+
+    public Property BuildAsProperty(Document document, SemanticNodeWithName parent)
+    {
+        if (_kind != SymbolKind.Property)
+            throw new InvalidOperationException();
+
+        var result = new Property(_name, document, parent);
+
+        result.Attributes = BuildAttributes(document, result);
+        result.Values = _values.ToImmutable();
+        return result;
+    }
+
+    private ImmutableArray<Attribute> BuildAttributes(Document document, SemanticNodeWithName parent)
+    {
+        return _attributes.Count > 0
+            ? _attributes.Select(pair => pair.Value.Build(document, parent)).ToImmutableArray()
+            : ImmutableArray<Attribute>.Empty;
     }
 }

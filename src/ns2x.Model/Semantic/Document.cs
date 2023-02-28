@@ -2,12 +2,13 @@
 
 public class Document : ISemanticNode
 {
-    public Document(Namespace rootNamespace)
-    {
-        RootNamespace = rootNamespace;
-    }
+    private Namespace? _rootNamespace;
 
-    public Namespace RootNamespace { get; }
+    public Namespace RootNamespace
+    {
+        get => _rootNamespace ?? throw new InvalidOperationException();
+        internal set => _rootNamespace = value;
+    }
 
     public void Accept(ISemanticNodeVisitor visitor)
     {

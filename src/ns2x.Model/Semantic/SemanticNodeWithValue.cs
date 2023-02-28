@@ -1,19 +1,17 @@
 namespace ns2x.Model.Semantic;
 
-public abstract class SemanticNodeWithValue : ISemanticNodeWithName
+public abstract class SemanticNodeWithValue : SemanticNodeWithName
 {
     private const string ErrorValue = "<ERROR>";
     private string _evaluatedValue = string.Empty;
 
-    protected SemanticNodeWithValue(StringRef name, ImmutableArray<IValue> values)
+    protected SemanticNodeWithValue(StringRef name, Document document, SemanticNodeWithName parent)
+        : base(name, document, parent)
     {
-        Values = values;
-        Name = name;
     }
 
-    public StringRef Name { get; }
     public IValue Value => Values[^1];
-    public ImmutableArray<IValue> Values { get; }
+    public ImmutableArray<IValue> Values { get; internal set; }
 
     public string EvaluatedValue
     {
@@ -46,6 +44,4 @@ public abstract class SemanticNodeWithValue : ISemanticNodeWithName
 
         EvaluationState = PropertyEvaluationState.Error;
     }
-
-    public abstract void Accept(ISemanticNodeVisitor visitor);
 }
