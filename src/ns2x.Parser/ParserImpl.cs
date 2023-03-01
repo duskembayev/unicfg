@@ -48,7 +48,7 @@ public sealed class ParserImpl
 
         while (indexer.Token.IsExpression())
         {
-            symbolBuilder = symbolBuilder.AddSymbol(indexer.Text);
+            symbolBuilder = symbolBuilder.AddSymbol(indexer.RawText);
             indexer = indexer.Next;
 
             if (!indexer.Token.IsDot())
@@ -99,7 +99,7 @@ public sealed class ParserImpl
             return null;
         }
 
-        var attributeName = indexer.Text;
+        var attributeName = indexer.RawText;
         indexer = indexer.Next;
 
         if (!indexer.Token.IsBracketR())
@@ -182,7 +182,7 @@ public sealed class ParserImpl
 
         while (indexer.Token.IsExpression())
         {
-            pathBuilder.Add(indexer.Text);
+            pathBuilder.Add(indexer.RawText);
             indexer = indexer.Next;
 
             if (!indexer.Token.IsDot())

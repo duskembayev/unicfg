@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using ns2x.Model.Analysis;
+using ns2x.Model.Extensions;
 using ns2x.Model.Primitives;
 using ns2x.Model.Semantic;
 using static ns2x.Model.Analysis.DiagnosticDescriptor;
@@ -102,7 +103,7 @@ public sealed class EvaluatorImpl
 
     private void Report(IValue value, DiagnosticDescriptor descriptor, IEnumerable<SemanticNodeWithValue> evalNodes)
     {
-        var arg = string.Join(" -> ", evalNodes.Select(n => n.Name.ToString()));
+        var arg = string.Join(" -> ", evalNodes.Select(n => n.ToDisplayName()));
         _diagnostics.Report(descriptor, value.SourceRange, arg);
     }
 }

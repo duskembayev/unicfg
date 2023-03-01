@@ -27,19 +27,9 @@ internal readonly ref struct TokenIndexer
         }
     }
 
-    public TokenIndexer Next => this with { Index = Index + 1 };
-    public TokenIndexer Prev => this with { Index = Index - 1 };
+    public TokenIndexer Next => this with {Index = Index + 1};
+    public TokenIndexer Prev => this with {Index = Index - 1};
 
-    public StringRef Text
-    {
-        get
-        {
-            var text = _source.GetText(Token.Range);
-
-            if (Token.Type == TokenType.QuotedExpression)
-                return text[1..^1];
-
-            return text;
-        }
-    }
+    public StringRef RawText => _source.GetText(Token.Range);
+    public StringRef Text => Token.Type == TokenType.QuotedExpression ? RawText[1..^1] : RawText;
 }

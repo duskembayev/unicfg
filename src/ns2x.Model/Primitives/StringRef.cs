@@ -67,6 +67,8 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IE
         return new string(_memory.Span);
     }
 
+    public ReadOnlySpan<char> Span => _memory.Span;
+
     public ReadOnlySpan<char>.Enumerator GetEnumerator()
     {
         return _memory.Span.GetEnumerator();
