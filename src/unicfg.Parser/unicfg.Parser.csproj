@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\unicfg.Model\unicfg.Model.csproj" />
+  </ItemGroup>
+
+</Project>

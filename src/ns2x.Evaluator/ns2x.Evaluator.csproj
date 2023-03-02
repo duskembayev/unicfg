@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\ns2x.Model\ns2x.Model.csproj" />
-  </ItemGroup>
-
-</Project>

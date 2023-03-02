@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\unicfg.Evaluator\unicfg.Evaluator.csproj" />
+    <ProjectReference Include="..\unicfg.Lexer\unicfg.Lexer.csproj" />
+    <ProjectReference Include="..\unicfg.Parser\unicfg.Parser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Examples\*.sample" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <InternalsVisibleTo Include="ns2x.Parser" />
-  </ItemGroup>
-</Project>
