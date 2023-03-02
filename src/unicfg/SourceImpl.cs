@@ -21,14 +21,6 @@ public sealed class SourceImpl : ISource
         return _memory[range];
     }
 
-    public SourcePosition GetPosition(in Token token)
-    {
-        var (startLine, startColumn) = GetPosition(token.Range.Start);
-        var (endLine, endColumn) = GetPosition(token.Range.End);
-
-        return new SourcePosition(startLine, startColumn, endLine, endColumn);
-    }
-
     public SourcePosition GetPosition(in Range range)
     {
         var (startLine, startColumn) = GetPosition(range.Start);
