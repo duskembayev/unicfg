@@ -4,6 +4,7 @@ namespace unicfg.Model.Primitives;
 
 public readonly struct PropertyRef : IEquatable<PropertyRef>
 {
+    private const char PathSeparator = '.';
     public static readonly PropertyRef Null = default;
 
     public PropertyRef(ImmutableArray<StringRef> path)
@@ -49,11 +50,39 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
         for (var index = 0; index < Path.Length; index++)
         {
             if (index > 0)
-                builder.Append('.');
+                builder.Append(PathSeparator);
 
             builder.Append((string) Path[index]);
         }
 
         return builder.ToString();
+    }
+
+    public static PropertyRef FromPath(string path)
+    {
+        var pathBuilder = ImmutableArray.CreateBuilder<StringRef>();
+        var remaining = path.AsMemory();
+
+        while (!remaining.IsEmpty)
+        {
+            var index = remaining.Span.IndexOf(PathSeparator);
+
+            if (index < 0)
+            {
+                pathBuilder.Add(remaining);
+                break;
+            }
+
+            if (index == 0 || index + 1 >= remaining.Length)
+                throw new FormatException();
+
+            pathBuilder.Add(remaining[..index]);
+            remaining = remaining[++index..];
+        }
+
+        if (pathBuilder.Count == 0)
+            throw new FormatException();
+
+        return new PropertyRef(pathBuilder.ToImmutable());
     }
 }
