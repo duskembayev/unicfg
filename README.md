@@ -12,20 +12,22 @@ TODO
 2. cli
 3. dotnet tool
 4. nuget package
-5. import
+5. msbuild task
+6. import
    1. unicfg
    2. unicfg with arguments
    3. environment variables
    4. cli arguments
-   5. json
-   6. yaml
-   7. xml
-6. export
+   5. msbuild task props
+   6. json
+   7. yaml
+   8. xml
+7. export
    1. unicfg
    2. json
    3. yaml
    4. xml
-7. references
+8. references
    1. ~~property references in value~~
    2. property references in key
    3. namespace references in value (TBD)
