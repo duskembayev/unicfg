@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using unicfg.Evaluator;
+using unicfg.IO;
 using unicfg.Lexer;
 using unicfg.Model.Analysis;
 using unicfg.Model.Primitives;
@@ -24,7 +25,7 @@ message.result=${message.part.1} ${message.part.2}${message.dot}";
     [OneTimeSetUp]
     public void Setup()
     {
-        var source = new SourceImpl(Input.AsMemory());
+        var source = Source.Create(Input);
         var diagnostics = new Diagnostics(source);
         var lexer = new LexerImpl(diagnostics);
         var tokens = lexer.Process(source);
