@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\unicfg.Evaluator\unicfg.Evaluator.csproj" />
+    <ProjectReference Include="..\unicfg.IO\unicfg.IO.csproj" />
     <ProjectReference Include="..\unicfg.Lexer\unicfg.Lexer.csproj" />
     <ProjectReference Include="..\unicfg.Parser\unicfg.Parser.csproj" />
   </ItemGroup>

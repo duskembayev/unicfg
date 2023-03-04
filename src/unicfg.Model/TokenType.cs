@@ -8,6 +8,7 @@ public enum TokenType : ushort
 
     Dot,
     Ref,
+    Keyword,
     Equality,
 
     BraceL,

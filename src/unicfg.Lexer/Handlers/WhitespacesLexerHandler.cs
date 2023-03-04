@@ -1,5 +1,6 @@
 using unicfg.Lexer.Extensions;
 using unicfg.Model;
+using unicfg.Model.Extensions;
 
 namespace unicfg.Lexer.Handlers;
 

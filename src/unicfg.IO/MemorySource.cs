@@ -1,16 +1,17 @@
-﻿using System.Collections.Immutable;
-using unicfg.Lexer.Extensions;
+﻿using System.Buffers;
+using System.Collections.Immutable;
 using unicfg.Model;
+using unicfg.Model.Extensions;
 using unicfg.Model.Primitives;
 
-namespace unicfg;
+namespace unicfg.IO;
 
-public sealed class SourceImpl : ISource
+internal sealed class MemorySource : ISource
 {
     private readonly ImmutableArray<int> _lines;
     private readonly ReadOnlyMemory<char> _memory;
 
-    public SourceImpl(ReadOnlyMemory<char> memory)
+    public MemorySource(ReadOnlyMemory<char> memory)
     {
         _memory = memory;
         _lines = DetermineLines(_memory.Span);

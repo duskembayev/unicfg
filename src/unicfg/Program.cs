@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using unicfg;
 using unicfg.Evaluator;
+using unicfg.IO;
 using unicfg.Lexer;
 using unicfg.Model;
 using unicfg.Model.Analysis;
@@ -9,8 +10,7 @@ using unicfg.Model.Semantic;
 using unicfg.Parser;
 using Attribute = unicfg.Model.Semantic.Attribute;
 
-var input = File.ReadAllText(args[0]);
-var source = new SourceImpl(input.AsMemory());
+var source = Source.FromFile(args[0]);
 var diagnostics = new Diagnostics(source);
 
 var lexer = new LexerImpl(diagnostics);

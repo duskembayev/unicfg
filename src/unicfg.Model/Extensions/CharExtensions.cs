@@ -1,4 +1,4 @@
-namespace unicfg.Lexer.Extensions;
+﻿namespace unicfg.Model.Extensions;
 
 public static class CharExtensions
 {
