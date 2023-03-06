@@ -3,6 +3,8 @@
 public enum TokenType : ushort
 {
     Unknown,
+    Reserved = Unknown,
+    Whitespace,
 
     Dot,
     Ref,
@@ -15,10 +17,9 @@ public enum TokenType : ushort
     BracketR,
 
     Expression,
-    QuotedExpression,
 
-    Hidden = 60000, // marker
-    Comment = 60001,
-    Eol = ushort.MaxValue - 1,
-    Eof = ushort.MaxValue,
+    EndOfLine = 500, // marker
+    Comment,
+    Eol,
+    Eof,
 }

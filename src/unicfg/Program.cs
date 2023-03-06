@@ -35,10 +35,10 @@ void PrintTokens(ImmutableArray<Token> iTokens, ISource iSource)
     {
         Console.Write($"[{token.Type:F}");
 
-        if (!token.IsHidden())
+        if (!token.IsEndOfLine())
         {
             Console.Write(" :: ");
-            Console.Write(iSource.GetText(token.Range).ToString());
+            Console.Write(iSource.GetText(token.RawRange).ToString());
         }
 
         Console.Write("]");

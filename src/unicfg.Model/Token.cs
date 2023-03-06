@@ -1,13 +1,29 @@
 ﻿namespace unicfg.Model;
 
-public readonly record struct Token(Range Range, TokenType Type)
+public readonly record struct Token
 {
-    public static readonly Token Eof = new(Range.All, TokenType.Eof);
-    public static readonly Token Null = new(new Range(Index.End, Index.Start), TokenType.Unknown);
+    public static readonly Token Eof = new(TokenType.Eof, Range.All);
+    public static readonly Token Null = new(TokenType.Unknown, new Range(Index.End, Index.Start));
+
+    public Token(TokenType type, Range rawRange)
+        : this(type, rawRange, rawRange)
+    {
+    }
+
+    public Token(TokenType type, Range rawRange, Range contentRange)
+    {
+        Type = type;
+        RawRange = rawRange;
+        ContentRange = contentRange;
+    }
+
+    public TokenType Type { get; }
+    public Range ContentRange { get; }
+    public Range RawRange { get; }
 
     public bool IsExpression()
     {
-        return Type is TokenType.Expression or TokenType.QuotedExpression;
+        return Type is TokenType.Expression;
     }
 
     public bool IsDot()
@@ -25,9 +41,14 @@ public readonly record struct Token(Range Range, TokenType Type)
         return Type is TokenType.Equality;
     }
 
-    public bool IsHidden()
+    public bool IsWhitespace()
     {
-        return Type >= TokenType.Hidden;
+        return Type is TokenType.Whitespace;
+    }
+
+    public bool IsEndOfLine()
+    {
+        return Type >= TokenType.EndOfLine;
     }
 
     public bool IsBraceL()

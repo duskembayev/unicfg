@@ -14,15 +14,19 @@ public sealed class LexerImpl
         new EolLexerHandler(),
         new CommentLexerHandler(),
         new SimpleExpressionLexerHandler(),
-        new QuotedExpressionLexerHandler('\''),
-        new QuotedExpressionLexerHandler('\"'),
-        new SingleCharacterLexerHandler('.', TokenType.Dot),
-        new SingleCharacterLexerHandler('=', TokenType.Equality),
-        new SingleCharacterLexerHandler('$', TokenType.Ref),
-        new SingleCharacterLexerHandler('{', TokenType.BraceL),
-        new SingleCharacterLexerHandler('}', TokenType.BraceR),
-        new SingleCharacterLexerHandler('[', TokenType.BracketL),
-        new SingleCharacterLexerHandler(']', TokenType.BracketR)
+        new EscapableCharacterLexerHandler('.', TokenType.Dot),
+        new EscapableCharacterLexerHandler('=', TokenType.Equality),
+        new EscapableCharacterLexerHandler('$', TokenType.Ref),
+        new EscapableCharacterLexerHandler('{', TokenType.BraceL),
+        new EscapableCharacterLexerHandler('}', TokenType.BraceR),
+        new EscapableCharacterLexerHandler('[', TokenType.BracketL),
+        new EscapableCharacterLexerHandler(']', TokenType.BracketR),
+        new EscapableCharacterLexerHandler('@', TokenType.Reserved),
+        new EscapableCharacterLexerHandler('!', TokenType.Reserved),
+        new EscapableCharacterLexerHandler('(', TokenType.Reserved),
+        new EscapableCharacterLexerHandler(')', TokenType.Reserved),
+        new EscapableCharacterLexerHandler('\"', TokenType.Reserved),
+        new EscapableCharacterLexerHandler('\'', TokenType.Reserved)
     );
 
     public LexerImpl(Diagnostics diagnostics)
@@ -39,7 +43,7 @@ public sealed class LexerImpl
         {
             if (!TryHandle(ref sourceReader, c, out var currentToken))
             {
-                currentToken = new Token(sourceReader.Position.AsRange(1), TokenType.Unknown);
+                currentToken = new Token(TokenType.Unknown, sourceReader.Position.AsRange(1));
                 sourceReader.Advance(1);
             }
 
@@ -48,7 +52,7 @@ public sealed class LexerImpl
                 result.Add(currentToken.Value);
                 
                 if (currentToken is { Type: TokenType.Unknown })
-                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value.Range);
+                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value.RawRange);
             }
         }
 

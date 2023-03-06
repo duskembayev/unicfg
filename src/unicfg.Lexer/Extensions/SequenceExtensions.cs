@@ -20,4 +20,9 @@ public static class SequenceExtensions
     {
         return new Range(@this.AsIndex(), end.AsIndex());
     }
+
+    public static SequencePosition Next(this in SequencePosition @this)
+    {
+        return new SequencePosition(@this.GetObject(), @this.GetInteger() + 1);
+    }
 }

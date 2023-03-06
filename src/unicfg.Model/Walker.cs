@@ -23,12 +23,12 @@ public abstract class Walker : ISemanticNodeVisitor
     {
         foreach (var attribute in property.Attributes) attribute.Accept(this);
 
-        foreach (var value in property.Values) value.Accept(this);
+        property.Value.Accept(this);
     }
 
     public virtual void Visit(Attribute attribute)
     {
-        foreach (var value in attribute.Values) value.Accept(this);
+        attribute.Value.Accept(this);
     }
 
     public virtual void Visit(TextValue textValue)
@@ -40,6 +40,10 @@ public abstract class Walker : ISemanticNodeVisitor
     }
 
     public virtual void Visit(EmptyValue emptyValue)
+    {
+    }
+
+    public virtual void Visit(ErrorValue errorValue)
     {
     }
 

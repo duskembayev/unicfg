@@ -16,10 +16,10 @@ public class Basics
     private EvaluatorImpl _evaluator;
 
     private const string Input = @"
-message.dot='!'
+message.dot=!!
 message.part.1=Hello
 message.part.2=World
-message.result=${message.part.1}' '${message.part.2}${message.dot}";
+message.result=${message.part.1} ${message.part.2}${message.dot}";
 
     [OneTimeSetUp]
     public void Setup()

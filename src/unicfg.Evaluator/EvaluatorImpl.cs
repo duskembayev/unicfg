@@ -78,19 +78,37 @@ public sealed class EvaluatorImpl
             if (state == 1)
                 continue;
 
-            if (state > 1)
-                evalNode.SetEvaluationError();
-            else
-                evalNode.SetEvaluatedValue(EvaluateValue(evalNode.Value, dependencyBuffer));
+            do
+            {
+                if (state > 1)
+                {
+                    evalNode.SetEvaluationError();
+                    break;
+                }
+
+                var evaluatedValue = EvaluateValue(evalNode.Value, dependencyBuffer);
+
+                if (evaluatedValue is null)
+                {
+                    evalNode.SetEvaluationError();
+                    break;
+                }
+
+                evalNode.SetEvaluatedValue(evaluatedValue);
+            } while (false);
 
             evalNodes.Pop();
         }
     }
 
-    private static string EvaluateValue(IValue value, IReadOnlyDictionary<PropertyRef, string> dependencyValues)
+    private static string? EvaluateValue(IValue value, IReadOnlyDictionary<PropertyRef, string> dependencyValues)
     {
         var propertyValueEvaluator = new PropertyValueEvaluator(dependencyValues);
         value.Accept(propertyValueEvaluator);
+
+        if (propertyValueEvaluator.HasErrors)
+            return null;
+
         return propertyValueEvaluator.GetResult();
     }
 

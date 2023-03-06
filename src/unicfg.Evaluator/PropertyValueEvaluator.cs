@@ -16,6 +16,8 @@ internal sealed class PropertyValueEvaluator : Walker
         _valueBuilder = new StringBuilder();
     }
 
+    public bool HasErrors { get; private set; }
+
     public string GetResult() => _valueBuilder.ToString();
 
     public override void Visit(TextValue textValue)
@@ -26,5 +28,10 @@ internal sealed class PropertyValueEvaluator : Walker
     public override void Visit(RefValue refValue)
     {
         _valueBuilder.Append(_dependencyValues[refValue.Property]);
+    }
+
+    public override void Visit(ErrorValue errorValue)
+    {
+        HasErrors = true;
     }
 }

@@ -9,5 +9,6 @@ public interface ISemanticNodeVisitor
     void Visit(TextValue textValue);
     void Visit(RefValue refValue);
     void Visit(EmptyValue emptyValue);
+    void Visit(ErrorValue errorValue);
     void Visit(CollectionValue collectionValue);
 }

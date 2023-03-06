@@ -8,18 +8,33 @@ public static class SemanticModelExtensions
 {
     public static string ToDisplayName(this SemanticNodeWithName @this)
     {
-        var builder = @this is Attribute
-            ? new StringBuilder('[' + @this.Name.ToString() + ']')
-            : new StringBuilder(@this.Name.ToString());
+        if (@this.Name.IsEmpty)
+            throw new InvalidOperationException();
 
+        var path = new Stack<SemanticNodeWithName>();
         var parent = @this.Parent;
+        var capacity = @this.Name.Length + 2;
 
-        while (parent is {Name.Length: > 0})
+        while (parent is { Name.IsEmpty: false })
         {
-            builder.Insert(0, '.');
-            builder.Insert(0, parent.Name.Span);
+            path.Push(parent);
+            capacity += parent.Name.Length + 1;
             parent = parent.Parent;
         }
+
+        var builder = new StringBuilder(capacity);
+
+        while (path.TryPop(out parent))
+        {
+            if (builder.Length > 0)
+                builder.Append('.');
+
+            builder.Append(parent.Name.ToString());
+        }
+
+        if (@this is Attribute) builder.Append('[');
+        builder.Append(@this.Name.ToString());
+        if (@this is Attribute) builder.Append(']');
 
         return builder.ToString();
     }

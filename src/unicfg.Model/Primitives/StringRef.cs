@@ -1,93 +1,85 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace unicfg.Model.Primitives;
 
-public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IEquatable<ReadOnlyMemory<char>>
+public readonly struct StringRef : IEquatable<StringRef>, IEquatable<ReadOnlyMemory<char>>, IEquatable<string>
 {
     public static readonly StringRef Empty = default;
 
-    private readonly ReadOnlyMemory<char> _memory = ReadOnlyMemory<char>.Empty;
+    private readonly SegmentMemory<char> _memory = SegmentMemory<char>.Empty;
 
-    private StringRef(ReadOnlyMemory<char> memory)
+    private StringRef(SegmentMemory<char> memory)
     {
         _memory = memory;
     }
 
     public bool Equals(StringRef other)
     {
-        return Equals(other._memory);
-    }
-
-    public bool Equals([NotNullWhen(true)] string? other)
-    {
-        return other is not null && Equals(new StringRef(other.AsMemory()));
+        return _memory.Equals(other._memory);
     }
 
     public bool Equals(ReadOnlyMemory<char> other)
     {
-        if (other.Length != _memory.Length)
-            return false;
+        return _memory.Equals(other);
+    }
 
-        var index = -1;
-        var result = true;
-
-        while (result && ++index < other.Length)
-            result &= other.Span[index].Equals(this[index]);
-
-        return result;
+    public bool Equals([NotNullWhen(true)] string? other)
+    {
+        return other is not null && _memory.Equals(other.AsMemory());
     }
 
     public override bool Equals(object? obj)
     {
         return obj switch
         {
-            string @string => Equals(@string),
-            StringRef @ref => Equals(@ref),
-            ReadOnlyMemory<char> memory => Equals(memory),
+            string typed => Equals(typed),
+            StringRef typed => Equals(typed),
+            ReadOnlyMemory<char> typed => Equals(typed),
             _ => false
         };
     }
 
     public override int GetHashCode()
     {
-        var hashCode = new HashCode();
-
-        for (var index = 0; index < _memory.Span.Length; index++)
-            hashCode.Add(_memory.Span[index]);
-
-        return hashCode.ToHashCode();
+        return _memory.GetHashCode();
     }
 
     public override string ToString()
     {
-        if (IsEmpty)
-            return string.Empty;
+        var builder = new StringBuilder(Length);
 
-        return new string(_memory.Span);
-    }
+        foreach (var memory in _memory.Segments)
+            builder.Append(memory);
 
-    public ReadOnlySpan<char> Span => _memory.Span;
-
-    public ReadOnlySpan<char>.Enumerator GetEnumerator()
-    {
-        return _memory.Span.GetEnumerator();
+        return builder.ToString();
     }
 
     public bool IsEmpty => _memory.IsEmpty;
 
-    public int Length => _memory.Span.Length;
+    public int Length => _memory.Length;
 
-    public char this[Index index] => _memory.Span[index];
-    public StringRef this[Range range] => _memory[range];
+    public char this[Index index] => _memory[index];
+
+    public StringRef this[Range range] => new(_memory[range]);
+
+    public StringRef Concat(StringRef other)
+    {
+        return new StringRef(_memory.Concat(other._memory));
+    }
 
     public static implicit operator StringRef(string? value)
     {
-        return string.IsNullOrEmpty(value) ? Empty : new StringRef(value.AsMemory());
+        return string.IsNullOrEmpty(value)
+            ? Empty
+            : new StringRef(SegmentMemory<char>.From(value.AsMemory()));
     }
 
     public static implicit operator StringRef(ReadOnlyMemory<char> value)
     {
-        return value.IsEmpty ? Empty : new StringRef(value);
+        return value.IsEmpty
+            ? Empty
+            : new StringRef(SegmentMemory<char>.From(value));
     }
 
     public static explicit operator string(StringRef value)
