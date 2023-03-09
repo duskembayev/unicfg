@@ -7,10 +7,10 @@ internal sealed class SymbolBuilder : IValueOwner
 {
     private readonly Dictionary<StringRef, AttributeBuilder> _attributes;
     private readonly Dictionary<StringRef, SymbolBuilder> _children;
-    private readonly ImmutableArray<IValue>.Builder _values;
-    private readonly StringRef _name;
-    private SymbolKind _kind;
     private readonly Diagnostics _diagnostics;
+    private readonly StringRef _name;
+    private readonly ImmutableArray<IValue>.Builder _values;
+    private SymbolKind _kind;
 
     public SymbolBuilder(StringRef name, SymbolKind kind, Diagnostics diagnostics)
     {
@@ -22,50 +22,50 @@ internal sealed class SymbolBuilder : IValueOwner
         _values = ImmutableArray.CreateBuilder<IValue>(1);
     }
 
-    public AttributeBuilder AddAttribute(in StringRef name)
-    {
-        if (!_attributes.TryGetValue(name, out var a))
-        {
-            a = new AttributeBuilder(name);
-            _attributes[name] = a;
-        }
-
-        return a;
-    }
-
-    public SymbolBuilder AddSymbol(in StringRef name, in Range sourceRange)
-    {
-        if (_kind == SymbolKind.Auto)
-            _kind = SymbolKind.Namespace;
-
-        if (_kind == SymbolKind.Property)
-            _diagnostics.Report(DiagnosticDescriptor.UnexpectedSymbolDeclaration, sourceRange, _name);
-
-        if (!_children.TryGetValue(name, out var ns))
-        {
-            ns = new SymbolBuilder(name, SymbolKind.Auto, _diagnostics);
-            _children[name] = ns;
-        }
-
-        return ns;
-    }
-
     public void SetValue(IValue value)
     {
         if (_kind == SymbolKind.Auto)
             _kind = SymbolKind.Property;
 
-        if (_kind == SymbolKind.Namespace)
+        if (_kind == SymbolKind.PropertyGroup)
             _diagnostics.Report(DiagnosticDescriptor.UnexpectedValueDeclaration, value.SourceRange, _name);
 
         _values.Add(value);
+    }
+
+    public AttributeBuilder AddAttribute(in StringRef name)
+    {
+        if (!_attributes.TryGetValue(name, out var attribute))
+        {
+            attribute = new AttributeBuilder(name);
+            _attributes[name] = attribute;
+        }
+
+        return attribute;
+    }
+
+    public SymbolBuilder AddSymbol(in StringRef name, in Range sourceRange)
+    {
+        if (_kind == SymbolKind.Auto)
+            _kind = SymbolKind.PropertyGroup;
+
+        if (_kind == SymbolKind.Property)
+            _diagnostics.Report(DiagnosticDescriptor.UnexpectedSymbolDeclaration, sourceRange, _name);
+
+        if (!_children.TryGetValue(name, out var child))
+        {
+            child = new SymbolBuilder(name, SymbolKind.Auto, _diagnostics);
+            _children[name] = child;
+        }
+
+        return child;
     }
 
     public IElement? Build(Document document, ElementWithName parent)
     {
         return _kind switch
         {
-            SymbolKind.Namespace => BuildAsNamespace(document, parent),
+            SymbolKind.PropertyGroup => BuildAsNamespace(document, parent),
             SymbolKind.Property => BuildAsProperty(document, parent),
             _ => null
         };
@@ -73,7 +73,7 @@ internal sealed class SymbolBuilder : IValueOwner
 
     public UniPropertyGroup BuildAsNamespace(Document document, ElementWithName? parent)
     {
-        if (_kind != SymbolKind.Namespace)
+        if (_kind != SymbolKind.PropertyGroup)
             throw new InvalidOperationException();
 
         var result = new UniPropertyGroup(_name, document, parent);
@@ -89,8 +89,8 @@ internal sealed class SymbolBuilder : IValueOwner
 
             switch (node)
             {
-                case UniPropertyGroup ns:
-                    namespaces.Add(ns);
+                case UniPropertyGroup group:
+                    namespaces.Add(group);
                     break;
                 case UniProperty property:
                     properties.Add(property);
@@ -99,7 +99,7 @@ internal sealed class SymbolBuilder : IValueOwner
         }
 
         result.Attributes = BuildAttributes(document, result);
-        result.Subgroups = namespaces.ToImmutable();
+        result.PropertyGroups = namespaces.ToImmutable();
         result.Properties = properties.ToImmutable();
         return result;
     }

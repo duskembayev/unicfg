@@ -21,7 +21,7 @@ internal static class TokenIndexerExtensions
 
         while (!indexer.OutOfRange && !predicate.Invoke(indexer.Token.Type))
         {
-            result = result.Concat(indexer.Content);
+            result += indexer.Content;
             indexer = indexer.Next;
         }
 

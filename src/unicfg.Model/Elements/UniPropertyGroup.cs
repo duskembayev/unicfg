@@ -7,7 +7,7 @@ public sealed class UniPropertyGroup : UniSymbol
     {
     }
 
-    public ImmutableArray<UniPropertyGroup> Subgroups { get; internal set; }
+    public ImmutableArray<UniPropertyGroup> PropertyGroups { get; internal set; }
     public ImmutableArray<UniProperty> Properties { get; internal set; }
 
     public override void Accept(IElementVisitor visitor)

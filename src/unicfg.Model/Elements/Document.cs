@@ -40,7 +40,7 @@ public sealed class Document : IElement
             if (names.Count == 0)
                 return group.Properties.SingleOrDefault(p => p.Name.Equals(name));
 
-            group = group.Subgroups.SingleOrDefault(n => n.Name.Equals(name));
+            group = group.PropertyGroups.SingleOrDefault(n => n.Name.Equals(name));
         }
 
         return null;

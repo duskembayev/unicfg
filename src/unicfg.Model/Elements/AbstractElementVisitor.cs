@@ -15,7 +15,7 @@ public abstract class AbstractElementVisitor : IElementVisitor
 
         foreach (var property in group.Properties) property.Accept(this);
 
-        foreach (var sns in group.Subgroups) sns.Accept(this);
+        foreach (var propertyGroup in group.PropertyGroups) propertyGroup.Accept(this);
     }
 
     public virtual void Visit(UniProperty property)
