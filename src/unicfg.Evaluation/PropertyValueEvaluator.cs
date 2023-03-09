@@ -2,9 +2,9 @@ namespace unicfg.Evaluation;
 
 internal sealed class PropertyValueEvaluator : AbstractElementVisitor
 {
-    private readonly IReadOnlyDictionary<PropertyRef, StringRef> _dependencyValues;
+    private readonly IReadOnlyDictionary<SymbolRef, StringRef> _dependencyValues;
 
-    public PropertyValueEvaluator(IReadOnlyDictionary<PropertyRef, StringRef> dependencyValues)
+    public PropertyValueEvaluator(IReadOnlyDictionary<SymbolRef, StringRef> dependencyValues)
     {
         _dependencyValues = dependencyValues;
         Result = StringRef.Empty;

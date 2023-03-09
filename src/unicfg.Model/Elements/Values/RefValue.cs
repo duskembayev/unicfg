@@ -2,14 +2,14 @@ namespace unicfg.Model.Elements.Values;
 
 public sealed class RefValue : IValue
 {
-    public RefValue(Range sourceRange, PropertyRef property)
+    public RefValue(Range sourceRange, SymbolRef property)
     {
         SourceRange = sourceRange;
         Property = property;
     }
 
     public Range SourceRange { get; }
-    public PropertyRef Property { get; }
+    public SymbolRef Property { get; }
 
     public void Accept(IElementVisitor visitor)
     {

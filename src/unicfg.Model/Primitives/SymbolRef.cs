@@ -2,19 +2,19 @@ using System.Text;
 
 namespace unicfg.Model.Primitives;
 
-public readonly struct PropertyRef : IEquatable<PropertyRef>
+public readonly struct SymbolRef : IEquatable<SymbolRef>
 {
     private const char PathSeparator = '.';
-    public static readonly PropertyRef Null = default;
+    public static readonly SymbolRef Null = default;
 
-    public PropertyRef(ImmutableArray<StringRef> path)
+    public SymbolRef(ImmutableArray<StringRef> path)
     {
         Path = path;
     }
 
     public ImmutableArray<StringRef> Path { get; }
 
-    public bool Equals(PropertyRef other)
+    public bool Equals(SymbolRef other)
     {
         if (other.Path.Length != Path.Length)
             return false;
@@ -30,7 +30,7 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
 
     public override bool Equals(object? obj)
     {
-        return obj is PropertyRef other && Equals(other);
+        return obj is SymbolRef other && Equals(other);
     }
 
     public override int GetHashCode()
@@ -58,7 +58,7 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
         return builder.ToString();
     }
 
-    public static PropertyRef FromPath(string path)
+    public static SymbolRef FromPath(string path)
     {
         var pathBuilder = ImmutableArray.CreateBuilder<StringRef>();
         var remaining = path.AsMemory();
@@ -83,6 +83,6 @@ public readonly struct PropertyRef : IEquatable<PropertyRef>
         if (pathBuilder.Count == 0)
             throw new FormatException();
 
-        return new PropertyRef(pathBuilder.ToImmutable());
+        return new SymbolRef(pathBuilder.ToImmutable());
     }
 }

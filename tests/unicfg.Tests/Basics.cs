@@ -39,7 +39,7 @@ message.result=${message.part.1} ${message.part.2}${message.dot}";
     [Test]
     public void EvaluateSimpleProperty()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("message.dot"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("message.dot"));
         Assert.NotNull(property);
 
         var value = _evaluator.Evaluate(property);
@@ -49,7 +49,7 @@ message.result=${message.part.1} ${message.part.2}${message.dot}";
     [Test]
     public void EvaluateRefProperty()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("message.result"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("message.result"));
         Assert.NotNull(property);
 
         var value = _evaluator.Evaluate(property);

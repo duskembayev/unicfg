@@ -51,7 +51,7 @@ picture.subject=moon";
     [Test]
     public void ResolvePropertyAttribute()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("picture.background"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("picture.background"));
         Assert.NotNull(property);
 
         var attribute = property.Attributes.Single(a => a.Name.Equals("color"));
@@ -63,7 +63,7 @@ picture.subject=moon";
     [Test]
     public void ResolvePropertyAttributeWithRef()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("picture.subject"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("picture.subject"));
         Assert.NotNull(property);
 
         var attribute = property.Attributes.Single(a => a.Name.Equals("color"));

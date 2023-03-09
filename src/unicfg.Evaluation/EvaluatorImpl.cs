@@ -23,7 +23,7 @@ public sealed class EvaluatorImpl
 
     private void EvaluateValue(ElementWithValue node)
     {
-        var dependencyBuffer = new Dictionary<PropertyRef, StringRef>();
+        var dependencyBuffer = new Dictionary<SymbolRef, StringRef>();
         var evalNodes = new Stack<ElementWithValue>();
 
         evalNodes.Push(node);
@@ -96,7 +96,7 @@ public sealed class EvaluatorImpl
         }
     }
 
-    private static StringRef? EvaluateValue(IValue value, IReadOnlyDictionary<PropertyRef, StringRef> dependencyValues)
+    private static StringRef? EvaluateValue(IValue value, IReadOnlyDictionary<SymbolRef, StringRef> dependencyValues)
     {
         var propertyValueEvaluator = new PropertyValueEvaluator(dependencyValues);
         value.Accept(propertyValueEvaluator);

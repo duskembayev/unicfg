@@ -2,13 +2,15 @@
 
 public sealed class Document : IElement
 {
-    private readonly Dictionary<PropertyRef,UniProperty?> _properties;
+    private readonly Dictionary<SymbolRef,UniProperty?> _properties;
     private UniPropertyGroup? _rootGroup;
 
     internal Document()
     {
-        _properties = new Dictionary<PropertyRef, UniProperty?>();
+        _properties = new Dictionary<SymbolRef, UniProperty?>();
     }
+
+    public string WorkingDirectory { get; internal set; }
 
     public UniPropertyGroup RootGroup
     {
@@ -21,7 +23,7 @@ public sealed class Document : IElement
         visitor.Visit(this);
     }
     
-    public UniProperty? FindProperty(PropertyRef propertyRef)
+    public UniProperty? FindProperty(SymbolRef propertyRef)
     {
         if (_properties.TryGetValue(propertyRef, out var property))
             return property;
@@ -30,7 +32,7 @@ public sealed class Document : IElement
         return property;
     }
 
-    private UniProperty? FindPropertyCore(PropertyRef propertyRef)
+    private UniProperty? FindPropertyCore(SymbolRef propertyRef)
     {
         var group = RootGroup;
         var names = new Queue<StringRef>(propertyRef.Path);

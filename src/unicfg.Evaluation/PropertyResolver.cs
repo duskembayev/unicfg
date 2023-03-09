@@ -9,7 +9,7 @@ public sealed class PropertyResolver : IPropertyResolver
         _document = document;
     }
 
-    public UniProperty? ResolveProperty(PropertyRef propertyRef)
+    public UniProperty? ResolveProperty(SymbolRef propertyRef)
     {
         return _document.FindProperty(propertyRef);
     }

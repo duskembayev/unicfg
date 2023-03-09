@@ -2,5 +2,5 @@
 
 public interface IPropertyResolver
 {
-    UniProperty? ResolveProperty(PropertyRef propertyRef);
+    UniProperty? ResolveProperty(SymbolRef propertyRef);
 }
