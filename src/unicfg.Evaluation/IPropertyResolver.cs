@@ -1,7 +1,4 @@
-﻿using unicfg.Model.Elements;
-using unicfg.Model.Primitives;
-
-namespace unicfg.Evaluation;
+﻿namespace unicfg.Evaluation;
 
 public interface IPropertyResolver
 {

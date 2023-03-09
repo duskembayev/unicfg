@@ -1,9 +1,3 @@
-using System.Collections.Immutable;
-using unicfg.Model.Analysis;
-using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
-using unicfg.Model.Extensions;
-using unicfg.Model.Primitives;
 using static unicfg.Model.Analysis.DiagnosticDescriptor;
 
 namespace unicfg.Evaluation;
@@ -19,7 +13,7 @@ public sealed class EvaluatorImpl
         _propertyResolver = propertyResolver;
     }
 
-    public string Evaluate(ElementWithValue node)
+    public StringRef Evaluate(ElementWithValue node)
     {
         if (node.EvaluationState == EvaluationState.Unevaluated)
             EvaluateValue(node);
@@ -29,7 +23,7 @@ public sealed class EvaluatorImpl
 
     private void EvaluateValue(ElementWithValue node)
     {
-        var dependencyBuffer = new Dictionary<PropertyRef, string>();
+        var dependencyBuffer = new Dictionary<PropertyRef, StringRef>();
         var evalNodes = new Stack<ElementWithValue>();
 
         evalNodes.Push(node);
@@ -95,14 +89,14 @@ public sealed class EvaluatorImpl
                     break;
                 }
 
-                evalNode.SetEvaluatedValue(evaluatedValue);
+                evalNode.SetEvaluatedValue(evaluatedValue.Value);
             } while (false);
 
             evalNodes.Pop();
         }
     }
 
-    private static string? EvaluateValue(IValue value, IReadOnlyDictionary<PropertyRef, string> dependencyValues)
+    private static StringRef? EvaluateValue(IValue value, IReadOnlyDictionary<PropertyRef, StringRef> dependencyValues)
     {
         var propertyValueEvaluator = new PropertyValueEvaluator(dependencyValues);
         value.Accept(propertyValueEvaluator);
@@ -110,7 +104,7 @@ public sealed class EvaluatorImpl
         if (propertyValueEvaluator.HasErrors)
             return null;
 
-        return propertyValueEvaluator.GetResult();
+        return propertyValueEvaluator.Result;
     }
 
     private static ImmutableArray<RefValue> CollectRefs(IValue value)

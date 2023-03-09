@@ -4,8 +4,8 @@ namespace unicfg.Model.Elements;
 
 public abstract class ElementWithValue : ElementWithName
 {
-    private const string ErrorValue = "<ERROR>";
-    private string _evaluatedValue = string.Empty;
+    private static readonly StringRef ErrorValue = "<ERROR>";
+    private StringRef _evaluatedValue = StringRef.Empty;
 
     protected ElementWithValue(StringRef name, Document document, ElementWithName parent)
         : base(name, document, parent)
@@ -15,7 +15,7 @@ public abstract class ElementWithValue : ElementWithName
     public IValue Value => Values[^1];
     public ImmutableArray<IValue> Values { get; internal set; }
 
-    public string EvaluatedValue
+    public StringRef EvaluatedValue
     {
         get
         {
@@ -30,7 +30,7 @@ public abstract class ElementWithValue : ElementWithName
 
     public EvaluationState EvaluationState { get; private set; }
 
-    public void SetEvaluatedValue(string evaluatedValue)
+    public void SetEvaluatedValue(StringRef evaluatedValue)
     {
         if (EvaluationState != EvaluationState.Unevaluated)
             throw new InvalidOperationException();

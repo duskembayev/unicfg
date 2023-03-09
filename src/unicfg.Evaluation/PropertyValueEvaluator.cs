@@ -1,33 +1,27 @@
-using System.Text;
-using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
-using unicfg.Model.Primitives;
-
 namespace unicfg.Evaluation;
 
 internal sealed class PropertyValueEvaluator : AbstractElementVisitor
 {
-    private readonly IReadOnlyDictionary<PropertyRef, string> _dependencyValues;
-    private readonly StringBuilder _valueBuilder;
+    private readonly IReadOnlyDictionary<PropertyRef, StringRef> _dependencyValues;
 
-    public PropertyValueEvaluator(IReadOnlyDictionary<PropertyRef, string> dependencyValues)
+    public PropertyValueEvaluator(IReadOnlyDictionary<PropertyRef, StringRef> dependencyValues)
     {
         _dependencyValues = dependencyValues;
-        _valueBuilder = new StringBuilder();
+        Result = StringRef.Empty;
     }
 
     public bool HasErrors { get; private set; }
 
-    public string GetResult() => _valueBuilder.ToString();
+    public StringRef Result { get; private set; }
 
     public override void Visit(TextValue textValue)
     {
-        _valueBuilder.Append(textValue.Text);
+        Result += textValue.Text;
     }
 
     public override void Visit(RefValue refValue)
     {
-        _valueBuilder.Append(_dependencyValues[refValue.Property]);
+        Result += _dependencyValues[refValue.Property];
     }
 
     public override void Visit(ErrorValue errorValue)

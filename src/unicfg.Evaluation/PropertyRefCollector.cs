@@ -1,7 +1,3 @@
-using System.Collections.Immutable;
-using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
-
 namespace unicfg.Evaluation;
 
 internal sealed class PropertyRefCollector : AbstractElementVisitor

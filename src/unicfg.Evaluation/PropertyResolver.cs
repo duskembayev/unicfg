@@ -1,6 +1,3 @@
-using unicfg.Model.Elements;
-using unicfg.Model.Primitives;
-
 namespace unicfg.Evaluation;
 
 public sealed class PropertyResolver : IPropertyResolver

@@ -86,4 +86,19 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<ReadOnlyMem
     {
         return value.ToString();
     }
+
+    public static bool operator ==(StringRef left, StringRef right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(StringRef left, StringRef right)
+    {
+        return !(left == right);
+    }
+
+    public static StringRef operator +(StringRef left, StringRef right)
+    {
+        return left.Concat(right);
+    }
 }
