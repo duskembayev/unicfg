@@ -17,7 +17,7 @@ public sealed class ParserImpl
     public ParserImpl(Diagnostics diagnostics)
     {
         _diagnostics = diagnostics;
-        _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.Namespace);
+        _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.Namespace, _diagnostics);
 
         _handlers = ImmutableArray.Create<ISyntaxHandler>(
             new SymbolHandler(_rootBuilder),

@@ -65,15 +65,17 @@ internal sealed class SymbolHandler : ISyntaxHandler
 
     private SymbolBuilder? ResolveSymbol(ref TokenIndexer indexer)
     {
+        var symbolStart = indexer.Token.RawRange.Start;
         var path = ResolvePath(ref indexer);
 
         if (path.IsEmpty)
             return null;
 
+        var symbolEnd = indexer.Prev.Token.RawRange.End;
         var symbolBuilder = _rootSymbolBuilder;
 
         foreach (var name in path)
-            symbolBuilder = symbolBuilder.AddSymbol(name);
+            symbolBuilder = symbolBuilder.AddSymbol(name, symbolStart..symbolEnd);
 
         return symbolBuilder;
     }

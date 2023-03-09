@@ -1,4 +1,5 @@
-﻿using unicfg.Model.Primitives;
+﻿using unicfg.Model.Analysis;
+using unicfg.Model.Primitives;
 using unicfg.Model.Semantic;
 
 namespace unicfg.Parser.Builders;
@@ -10,11 +11,13 @@ internal sealed class SymbolBuilder : IValueOwner
     private readonly ImmutableArray<IValue>.Builder _values;
     private readonly StringRef _name;
     private SymbolKind _kind;
+    private readonly Diagnostics _diagnostics;
 
-    public SymbolBuilder(StringRef name, SymbolKind kind)
+    public SymbolBuilder(StringRef name, SymbolKind kind, Diagnostics diagnostics)
     {
         _name = name;
         _kind = kind;
+        _diagnostics = diagnostics;
         _children = new Dictionary<StringRef, SymbolBuilder>();
         _attributes = new Dictionary<StringRef, AttributeBuilder>();
         _values = ImmutableArray.CreateBuilder<IValue>(1);
@@ -31,14 +34,17 @@ internal sealed class SymbolBuilder : IValueOwner
         return a;
     }
 
-    public SymbolBuilder AddSymbol(in StringRef name)
+    public SymbolBuilder AddSymbol(in StringRef name, in Range sourceRange)
     {
         if (_kind == SymbolKind.Auto)
             _kind = SymbolKind.Namespace;
 
+        if (_kind == SymbolKind.Property)
+            _diagnostics.Report(DiagnosticDescriptor.UnexpectedSymbolDeclaration, sourceRange, _name);
+
         if (!_children.TryGetValue(name, out var ns))
         {
-            ns = new SymbolBuilder(name, SymbolKind.Auto);
+            ns = new SymbolBuilder(name, SymbolKind.Auto, _diagnostics);
             _children[name] = ns;
         }
 
@@ -49,6 +55,9 @@ internal sealed class SymbolBuilder : IValueOwner
     {
         if (_kind == SymbolKind.Auto)
             _kind = SymbolKind.Property;
+
+        if (_kind == SymbolKind.Namespace)
+            _diagnostics.Report(DiagnosticDescriptor.UnexpectedValueDeclaration, value.SourceRange, _name);
 
         _values.Add(value);
     }
