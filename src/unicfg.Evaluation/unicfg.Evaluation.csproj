@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <InternalsVisibleTo Include="unicfg.Uni" />
+    <ProjectReference Include="..\unicfg.Model\unicfg.Model.csproj" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,3 @@
-using unicfg.Model.Primitives;
-
 namespace unicfg.Model.Analysis;
 
 public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Arguments)

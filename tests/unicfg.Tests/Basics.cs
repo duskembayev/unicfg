@@ -1,11 +1,11 @@
 using NUnit.Framework;
-using unicfg.Evaluator;
-using unicfg.IO;
-using unicfg.Lexer;
+using unicfg.Evaluation;
 using unicfg.Model.Analysis;
+using unicfg.Model.Elements;
 using unicfg.Model.Primitives;
-using unicfg.Model.Semantic;
-using unicfg.Parser;
+using unicfg.Model.Sources;
+using unicfg.Uni.Lex;
+using unicfg.Uni.Tree;
 
 namespace unicfg.Tests;
 

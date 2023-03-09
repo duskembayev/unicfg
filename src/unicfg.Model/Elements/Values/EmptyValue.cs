@@ -1,0 +1,17 @@
+namespace unicfg.Model.Elements.Values;
+
+public sealed class EmptyValue : IValue
+{
+    public static readonly EmptyValue Instance = new();
+
+    private EmptyValue()
+    {
+    }
+
+    public Range SourceRange { get; } = Range.All;
+
+    public void Accept(IElementVisitor visitor)
+    {
+        visitor.Visit(this);
+    }
+}

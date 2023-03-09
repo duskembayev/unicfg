@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using unicfg.Evaluator;
-using unicfg.IO;
-using unicfg.Lexer;
+using unicfg.Evaluation;
 using unicfg.Model.Analysis;
+using unicfg.Model.Elements;
 using unicfg.Model.Primitives;
-using unicfg.Model.Semantic;
-using unicfg.Parser;
+using unicfg.Model.Sources;
+using unicfg.Uni.Lex;
+using unicfg.Uni.Tree;
 
 namespace unicfg.Tests;
 
@@ -41,7 +41,7 @@ picture.subject=moon";
     [Test]
     public void ResolveNamespaceAttribute()
     {
-        var ns = _document.RootNamespace.Namespaces.Single(n => n.Name.Equals("picture"));
+        var ns = _document.RootGroup.Subgroups.Single(n => n.Name.Equals("picture"));
         var attribute = ns.Attributes.Single(a => a.Name.Equals("border"));
         var value = _evaluator.Evaluate(attribute);
 

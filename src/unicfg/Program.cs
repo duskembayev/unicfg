@@ -1,14 +1,13 @@
 ﻿using System.Collections.Immutable;
 using unicfg;
-using unicfg.Evaluator;
-using unicfg.IO;
-using unicfg.Lexer;
-using unicfg.Model;
+using unicfg.Evaluation;
 using unicfg.Model.Analysis;
+using unicfg.Model.Elements;
 using unicfg.Model.Extensions;
-using unicfg.Model.Semantic;
-using unicfg.Parser;
-using Attribute = unicfg.Model.Semantic.Attribute;
+using unicfg.Model.Primitives;
+using unicfg.Model.Sources;
+using unicfg.Uni.Lex;
+using unicfg.Uni.Tree;
 
 var source = Source.FromFile(args[0]);
 var diagnostics = new Diagnostics(source);
@@ -50,7 +49,7 @@ void PrintTokens(ImmutableArray<Token> iTokens, ISource iSource)
 
 namespace unicfg
 {
-    public sealed class ValueEvaluator : Walker
+    public sealed class ValueEvaluator : AbstractElementVisitor
     {
         private readonly EvaluatorImpl _evaluator;
         private readonly TextWriter _writer;
@@ -61,12 +60,12 @@ namespace unicfg
             _writer = writer;
         }
 
-        public override void Visit(Property property)
+        public override void Visit(UniProperty property)
         {
             _writer.WriteLine("{0}={1}", property.ToDisplayName(), _evaluator.Evaluate(property));
         }
 
-        public override void Visit(Attribute attribute)
+        public override void Visit(UniAttribute attribute)
         {
             _writer.WriteLine("{0}={1}", attribute.ToDisplayName(), _evaluator.Evaluate(attribute));
         }
