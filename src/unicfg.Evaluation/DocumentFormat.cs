@@ -1,4 +1,4 @@
-﻿namespace unicfg;
+﻿namespace unicfg.Evaluation;
 
 public readonly record struct DocumentFormat(string DefaultExtension)
 {

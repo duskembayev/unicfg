@@ -1,27 +1,26 @@
-﻿using System.Collections.Immutable;
-using unicfg.Base.Analysis;
+﻿using unicfg.Base.Analysis;
 using unicfg.Base.Elements;
 
-namespace unicfg;
+namespace unicfg.Evaluation;
 
 public sealed class Workspace
 {
     private readonly Dictionary<DocumentKey, Document> _registry;
     private readonly IDocumentResolver _documentResolver;
     private readonly Diagnostics _diagnostics;
-    private readonly List<Document> _entryDocuments;
+    private readonly List<Document> _entries;
     private readonly List<DocumentOutput> _outputs;
 
     public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
     {
         _documentResolver = documentResolver;
         _diagnostics = diagnostics;
-        _entryDocuments = new List<Document>();
+        _entries = new List<Document>();
         _registry = new Dictionary<DocumentKey, Document>();
         _outputs = new List<DocumentOutput>();
     }
 
-    public IReadOnlyList<Document> EntryDocuments => _entryDocuments;
+    public IReadOnlyList<Document> EntryDocuments => _entries;
     public IReadOnlyList<DocumentOutput> Outputs => _outputs;
 
     public void OpenFrom(string filePath)
@@ -34,11 +33,26 @@ public sealed class Workspace
         if (document.Location is null)
             throw new InvalidOperationException();
 
-        _entryDocuments.Add(document);
+        _entries.Add(document);
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
     }
 
-    public async Task<ImmutableArray<EmitResult>> EmitAsync(string outputDirectory, CancellationToken cancellationToken)
+    public async Task<EmitResult> EmitAsync(
+        string outputDirectory,
+        DocumentOutput documentOutput,
+        CancellationToken cancellationToken)
+    {
+        var evaluationContext = new EvaluationContext(
+            outputDirectory,
+            _entries.ToImmutableArray(),
+            _registry.ToImmutableDictionary());
+
+        return await EmitDocumentAsync(documentOutput, evaluationContext, cancellationToken);
+    }
+
+    public async Task<ImmutableArray<EmitResult>> EmitAllAsync(
+        string outputDirectory,
+        CancellationToken cancellationToken)
     {
         if (_outputs.Count == 0)
         {
@@ -46,18 +60,22 @@ public sealed class Workspace
             return ImmutableArray<EmitResult>.Empty;
         }
 
-        var emitting = _outputs.Select(output => EmitDocumentAsync(outputDirectory, output, cancellationToken));
+        var evaluationContext = new EvaluationContext(
+            outputDirectory,
+            _entries.ToImmutableArray(),
+            _registry.ToImmutableDictionary());
+
+        var emitting = _outputs.Select(output => EmitDocumentAsync(output, evaluationContext, cancellationToken));
         var results = await Task.WhenAll(emitting);
 
         return results.ToImmutableArray();
     }
 
     private async Task<EmitResult> EmitDocumentAsync(
-        string outputDirectory,
         DocumentOutput documentOutput,
+        EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        
     }
 }
 

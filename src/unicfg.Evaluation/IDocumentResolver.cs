@@ -1,6 +1,6 @@
 using unicfg.Base.Elements;
 
-namespace unicfg;
+namespace unicfg.Evaluation;
 
 public interface IDocumentResolver
 {
