@@ -1,25 +1,26 @@
 ﻿using System.Collections.Immutable;
 using unicfg;
+using unicfg.Base.Analysis;
+using unicfg.Base.Elements;
+using unicfg.Base.Environment;
+using unicfg.Base.Extensions;
+using unicfg.Base.Primitives;
+using unicfg.Base.Sources;
 using unicfg.Evaluation;
-using unicfg.Model.Analysis;
-using unicfg.Model.Elements;
-using unicfg.Model.Extensions;
-using unicfg.Model.Primitives;
-using unicfg.Model.Sources;
 using unicfg.Uni.Lex;
 using unicfg.Uni.Tree;
 
 var source = Source.FromFile(args[0]);
-var diagnostics = new Diagnostics(source);
+var diagnostics = new Diagnostics().WithSource(source);
 
 var lexer = new LexerImpl(diagnostics);
 var tokens = lexer.Process(source);
 
-var parser = new ParserImpl(diagnostics);
+var parser = new ParserImpl(diagnostics, new CurrentProcess());
 var document = parser.Execute(source, tokens);
 
 var propertyResolver = new PropertyResolver(document);
-var evaluator = new EvaluatorImpl(propertyResolver, diagnostics);
+var evaluator = new EvaluatorImpl(propertyResolver, diagnostics.WithSource(source));
 document.Accept(new ValueEvaluator(evaluator, Console.Out));
 
 

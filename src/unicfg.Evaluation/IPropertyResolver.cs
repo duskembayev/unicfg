@@ -1,4 +1,7 @@
-﻿namespace unicfg.Evaluation;
+﻿using unicfg.Base.Elements;
+using unicfg.Base.Primitives;
+
+namespace unicfg.Evaluation;
 
 public interface IPropertyResolver
 {

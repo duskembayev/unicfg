@@ -1,4 +1,9 @@
-using static unicfg.Model.Analysis.DiagnosticDescriptor;
+using unicfg.Base.Analysis;
+using unicfg.Base.Elements;
+using unicfg.Base.Elements.Values;
+using unicfg.Base.Extensions;
+using unicfg.Base.Primitives;
+using static unicfg.Base.Analysis.DiagnosticDescriptor;
 
 namespace unicfg.Evaluation;
 
@@ -117,6 +122,6 @@ public sealed class EvaluatorImpl
     private void Report(IValue value, DiagnosticDescriptor descriptor, IEnumerable<ElementWithValue> evalNodes)
     {
         var arg = string.Join(" -> ", evalNodes.Select(n => n.ToDisplayName()));
-        _diagnostics.Report(descriptor, value.SourceRange, arg);
+        _diagnostics.Report(descriptor, value.SourceRange, new object?[]{ arg });
     }
 }

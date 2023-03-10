@@ -1,3 +1,5 @@
+using unicfg.Base.Primitives;
+
 namespace unicfg.Uni.Lex.Handlers;
 
 internal sealed class SimpleExpressionLexerHandler : MultiCharLexerHandler

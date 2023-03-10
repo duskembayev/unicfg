@@ -1,20 +1,25 @@
-﻿using unicfg.Model.Elements;
-using unicfg.Model.Sources;
+﻿using unicfg.Base.Analysis;
+using unicfg.Base.Elements;
+using unicfg.Base.Environment;
+using unicfg.Base.Primitives;
+using unicfg.Base.Sources;
 using unicfg.Uni.Tree.Builders;
 using unicfg.Uni.Tree.Handlers;
-using static unicfg.Model.Analysis.DiagnosticDescriptor;
+using static unicfg.Base.Analysis.DiagnosticDescriptor;
 
 namespace unicfg.Uni.Tree;
 
 public sealed class ParserImpl
 {
     private readonly Diagnostics _diagnostics;
+    private readonly ICurrentProcess _process;
     private readonly SymbolBuilder _rootBuilder;
     private readonly ImmutableArray<ISyntaxHandler> _handlers;
 
-    public ParserImpl(Diagnostics diagnostics)
+    public ParserImpl(Diagnostics diagnostics, ICurrentProcess process)
     {
         _diagnostics = diagnostics;
+        _process = process;
         _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.PropertyGroup, _diagnostics);
 
         _handlers = ImmutableArray.Create<ISyntaxHandler>(
@@ -31,7 +36,9 @@ public sealed class ParserImpl
             if (!HandleRootToken(ref indexer))
                 indexer = indexer.Next;
 
-        var document = new Document();
+        var baseDirectory = GetDocumentBaseDirectory(source.Location);
+        var document = new Document(baseDirectory, source.Location);
+
         document.RootGroup = _rootBuilder.BuildAsNamespace(document, null);
         return document;
     }
@@ -44,12 +51,20 @@ public sealed class ParserImpl
                 var result = handler.Handle(ref indexer);
 
                 if (!result.Success)
-                    _diagnostics.Report(UnexpectedToken, result.ErrorToken.Value.RawRange);
+                    _diagnostics.Report(UnexpectedToken, indexer.Source, result.ErrorToken.Value.RawRange);
 
                 return true;
             }
 
-        _diagnostics.Report(UnexpectedToken, indexer.Token.RawRange);
+        _diagnostics.Report(UnexpectedToken, indexer.Source, indexer.Token.RawRange);
         return false;
+    }
+
+    private string GetDocumentBaseDirectory(string? documentLocation)
+    {
+        if (documentLocation is null)
+            return _process.WorkingDirectory;
+
+        return Path.GetDirectoryName(documentLocation) ?? _process.WorkingDirectory;
     }
 }

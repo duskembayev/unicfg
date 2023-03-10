@@ -1,3 +1,6 @@
+using unicfg.Base.Elements;
+using unicfg.Base.Elements.Values;
+
 namespace unicfg.Evaluation;
 
 internal sealed class PropertyRefCollector : AbstractElementVisitor

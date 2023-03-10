@@ -1,5 +1,7 @@
-﻿using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
+﻿using unicfg.Base.Analysis;
+using unicfg.Base.Elements;
+using unicfg.Base.Elements.Values;
+using unicfg.Base.Primitives;
 
 namespace unicfg.Uni.Tree.Builders;
 
@@ -28,7 +30,10 @@ internal sealed class SymbolBuilder : IValueOwner
             _kind = SymbolKind.Property;
 
         if (_kind == SymbolKind.PropertyGroup)
-            _diagnostics.Report(DiagnosticDescriptor.UnexpectedValueDeclaration, value.SourceRange, _name);
+            _diagnostics.Report(
+                DiagnosticDescriptor.UnexpectedValueDeclaration,
+                value.SourceRange,
+                new object?[] { _name });
 
         _values.Add(value);
     }
@@ -50,7 +55,10 @@ internal sealed class SymbolBuilder : IValueOwner
             _kind = SymbolKind.PropertyGroup;
 
         if (_kind == SymbolKind.Property)
-            _diagnostics.Report(DiagnosticDescriptor.UnexpectedSymbolDeclaration, sourceRange, _name);
+            _diagnostics.Report(
+                DiagnosticDescriptor.UnexpectedSymbolDeclaration,
+                sourceRange,
+                new object?[] { _name });
 
         if (!_children.TryGetValue(name, out var child))
         {

@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using unicfg.Model.Elements.Values;
+using unicfg.Base.Elements.Values;
+using unicfg.Base.Primitives;
 using unicfg.Uni.Tree.Builders;
 using unicfg.Uni.Tree.Extensions;
 

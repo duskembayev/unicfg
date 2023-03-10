@@ -1,18 +1,20 @@
-using unicfg.Model.Sources;
+using unicfg.Base.Primitives;
+using unicfg.Base.Sources;
 
 namespace unicfg.Uni.Tree;
 
 internal readonly ref struct TokenIndexer
 {
-    private readonly ISource _source;
     private readonly ImmutableArray<Token> _tokens;
 
     public TokenIndexer(int index, ISource source, ImmutableArray<Token> tokens)
     {
         Index = index;
-        _source = source;
+        Source = source;
         _tokens = tokens;
     }
+
+    public ISource Source { get; }
 
     private int Index { get; init; }
 
@@ -32,6 +34,6 @@ internal readonly ref struct TokenIndexer
     public TokenIndexer Next => this with { Index = Index + 1 };
     public TokenIndexer Prev => this with { Index = Index - 1 };
 
-    public StringRef Content => _source.GetText(Token.ContentRange);
+    public StringRef Content => Source.GetText(Token.ContentRange);
 
 }

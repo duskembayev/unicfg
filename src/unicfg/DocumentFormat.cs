@@ -1,7 +1,4 @@
-﻿using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
-
-namespace unicfg;
+﻿namespace unicfg;
 
 public readonly record struct DocumentFormat(string DefaultExtension)
 {

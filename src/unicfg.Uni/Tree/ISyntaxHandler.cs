@@ -1,3 +1,5 @@
+using unicfg.Base.Primitives;
+
 namespace unicfg.Uni.Tree;
 
 internal interface ISyntaxHandler

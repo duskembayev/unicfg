@@ -1,4 +1,7 @@
-﻿namespace unicfg.Uni.Lex.Handlers;
+﻿using unicfg.Base.Extensions;
+using unicfg.Base.Primitives;
+
+namespace unicfg.Uni.Lex.Handlers;
 
 internal sealed class CommentLexerHandler : MultiCharLexerHandler
 {
