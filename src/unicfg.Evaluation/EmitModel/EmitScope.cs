@@ -29,14 +29,15 @@ public sealed record EmitScope
 
     public EmitScope Scope(StringRef name)
     {
-        if (_properties.TryGetValue(name, out var property))
-            _diagnostics.Report(DiagnosticDescriptor.SymbolConflict, new object?[] { _parent. });
+        // if (_properties.TryGetValue(name, out var property))
+        //     _diagnostics.Report(DiagnosticDescriptor.SymbolConflict, new object?[] { _parent. });
+        throw new NotImplementedException();
     }
 
     public void Argument(StringRef name, StringRef value)
     {
         _arguments[name] = value;
-        S
+        
     }
 }
 

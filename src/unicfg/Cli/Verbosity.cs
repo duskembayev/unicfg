@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.Diagnostics.CodeAnalysis;
 
 namespace unicfg.Cli;
@@ -9,7 +10,7 @@ internal static class Verbosity
 
     private static Option<Level> CreateVerbosityOption()
     {
-        var verbosityOption = new Option<Level>(new[] { "-v", "--verbosity" }, () => Level.Normal)
+        var verbosityOption = new Option<Level>(new[] {"-v", "--verbosity"}, ParseLevel, isDefault: true)
         {
             Arity = ArgumentArity.ZeroOrOne,
             Description =
@@ -19,17 +20,32 @@ internal static class Verbosity
 
         verbosityOption.AddValidator(result =>
         {
-            var value = result.GetValueOrDefault<string>();
-
-            if (value is null)
+            if (result.Tokens.Count == 0)
                 return;
 
+            var value = result.Tokens.Single().Value;
             var levels = Enum.GetNames<Level>();
 
             if (!levels.Contains(value, StringComparer.OrdinalIgnoreCase))
                 result.ErrorMessage = "Invalid verbosity level";
         });
         return verbosityOption;
+    }
+
+    private static Level ParseLevel(ArgumentResult result)
+    {
+        if (result.Parent is OptionResult { IsImplicit: true })
+            return Level.Normal;
+
+        if (result.Tokens.Count == 0)
+            return Level.Diag;
+
+        var value = result.Tokens.Single().Value;
+
+        if (string.IsNullOrEmpty(value))
+            return Level.Detailed;
+
+        return Enum.Parse<Level>(value, true);
     }
 
     [SuppressMessage("ReSharper", "UnusedMember.Global")]

@@ -5,11 +5,11 @@ namespace unicfg.Cli;
 
 internal static class CliSymbols
 {
-    internal static readonly Argument<FileInfo> InputsArgument = CreateInputsArgument();
+    internal static readonly Argument<List<FileInfo>> InputsArgument = CreateInputsArgument();
     internal static readonly Option<bool> NonameOption = CreateNonameOption();
     internal static readonly Option<DirectoryInfo> OutputDirOption = CreateOutputDirOption();
-    internal static readonly Option<IReadOnlyList<PropertyInfo>> PropertiesOption = CreatePropertiesOption();
-    internal static readonly Option<IReadOnlyList<SymbolInfo>> SymbolsOption = CreateSymbolsOption();
+    internal static readonly Option<List<PropertyInfo>> PropertiesOption = CreatePropertiesOption();
+    internal static readonly Option<List<SymbolInfo>> SymbolsOption = CreateSymbolsOption();
 
     private static Option<bool> CreateNonameOption()
     {
@@ -22,7 +22,7 @@ internal static class CliSymbols
 
     private static Option<DirectoryInfo> CreateOutputDirOption()
     {
-        return new Option<DirectoryInfo>(new[] { "-o", "--output" })
+        return new Option<DirectoryInfo>(new[] { "-o", "--output" }, GetDefaultOutputDir)
         {
             Arity = ArgumentArity.ExactlyOne,
             Description = "The output directory to place built artifacts in.",
@@ -30,9 +30,14 @@ internal static class CliSymbols
         }.LegalFilePathsOnly();
     }
 
-    private static Argument<FileInfo> CreateInputsArgument()
+    private static DirectoryInfo GetDefaultOutputDir()
     {
-        return new Argument<FileInfo>("FILE")
+        return new DirectoryInfo(Environment.CurrentDirectory);
+    }
+
+    private static Argument<List<FileInfo>> CreateInputsArgument()
+    {
+        return new Argument<List<FileInfo>>("FILE")
         {
             Arity = ArgumentArity.OneOrMore,
             Description = "One or more files in uni-format to operate on.",
@@ -40,9 +45,9 @@ internal static class CliSymbols
         }.ExistingOnly();
     }
 
-    private static Option<IReadOnlyList<SymbolInfo>> CreateSymbolsOption()
+    private static Option<List<SymbolInfo>> CreateSymbolsOption()
     {
-        return new Option<IReadOnlyList<SymbolInfo>>(new[] { "-s", "--symbol" }, ParseSymbolsInfo)
+        return new Option<List<SymbolInfo>>(new[] { "-s", "--symbol" }, ParseSymbolsInfo)
         {
             Arity = ArgumentArity.OneOrMore,
             Description =
@@ -51,9 +56,9 @@ internal static class CliSymbols
         };
     }
 
-    private static Option<IReadOnlyList<PropertyInfo>> CreatePropertiesOption()
+    private static Option<List<PropertyInfo>> CreatePropertiesOption()
     {
-        return new Option<IReadOnlyList<PropertyInfo>>(new[] { "-p", "--property" }, ParsePropertyInfo)
+        return new Option<List<PropertyInfo>>(new[] { "-p", "--property" }, ParsePropertyInfo)
         {
             Arity = ArgumentArity.OneOrMore,
             Description =
@@ -62,7 +67,7 @@ internal static class CliSymbols
         };
     }
 
-    private static IReadOnlyList<SymbolInfo> ParseSymbolsInfo(ArgumentResult result)
+    private static List<SymbolInfo> ParseSymbolsInfo(ArgumentResult result)
     {
         var symbols = new List<SymbolInfo>();
 
@@ -77,7 +82,7 @@ internal static class CliSymbols
         return symbols;
     }
 
-    private static IReadOnlyList<PropertyInfo> ParsePropertyInfo(ArgumentResult result)
+    private static List<PropertyInfo> ParsePropertyInfo(ArgumentResult result)
     {
         var properties = new List<PropertyInfo>();
 

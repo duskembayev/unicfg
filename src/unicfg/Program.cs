@@ -29,12 +29,17 @@ return await new CommandLineBuilder(rootCommand)
 
 static void ConfigureHost(IHostBuilder builder)
 {
+    var invocationContext = builder.GetInvocationContext();
+
+    if (invocationContext.ParseResult.Errors.Count > 0)
+        return;
+
     builder.ConfigureLoggingByVerbosity();
     builder.ConfigureServices(collection =>
     {
-        //collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
+        collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
         collection.AddEnhancedModules();
     });
-    
+
     builder.UseCommandHandler<BuildCommand, BuildHandler>();
 }

@@ -1,11 +1,10 @@
-using System.CommandLine;
 using System.CommandLine.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace unicfg.Cli;
 
-public static class CliExtensions
+internal static class CliExtensions
 {
     internal static IHostBuilder ConfigureLoggingByVerbosity(this IHostBuilder builder)
     {
@@ -23,8 +22,7 @@ public static class CliExtensions
 
         builder.ConfigureLogging(loggingBuilder => loggingBuilder
             .SetMinimumLevel(logLevel)
-            .AddConsoleFormatter<CliLoggerFormatter, CliLoggerFormatterOptions>(options => options.IncludeScopes = true)
-            .AddConsole(options => options.FormatterName = "CLI"));
+            .AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace));
 
         return builder;
     }

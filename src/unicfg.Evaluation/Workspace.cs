@@ -79,7 +79,8 @@ public sealed class Workspace
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        new Document(evaluationContext.OutputDirectory, )
+        // new Document(evaluationContext.OutputDirectory, )
+        throw new NotImplementedException();
     }
 
 }
