@@ -5,7 +5,7 @@ namespace unicfg.Base.Elements;
 public interface IElementVisitor
 {
     void Visit(Document document);
-    void Visit(UniPropertyGroup group);
+    void Visit(UniScope scope);
     void Visit(UniProperty property);
     void Visit(UniAttribute attribute);
     void Visit(TextValue textValue);

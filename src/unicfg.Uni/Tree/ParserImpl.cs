@@ -39,7 +39,7 @@ public sealed class ParserImpl
         var baseDirectory = GetDocumentBaseDirectory(source.Location);
         var document = new Document(baseDirectory, source.Location);
 
-        document.RootGroup = _rootBuilder.BuildAsNamespace(document, null);
+        document.RootScope = _rootBuilder.BuildAsNamespace(document, null);
         return document;
     }
 

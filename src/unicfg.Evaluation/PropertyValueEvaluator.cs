@@ -1,10 +1,11 @@
 using unicfg.Base.Elements;
 using unicfg.Base.Elements.Values;
 using unicfg.Base.Primitives;
+using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
-internal sealed class PropertyValueEvaluator : AbstractElementVisitor
+internal sealed class PropertyValueEvaluator : AbstractWalker
 {
     private readonly IReadOnlyDictionary<SymbolRef, StringRef> _dependencyValues;
 

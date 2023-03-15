@@ -1,9 +1,10 @@
 using unicfg.Base.Elements;
 using unicfg.Base.Elements.Values;
+using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
-internal sealed class PropertyRefCollector : AbstractElementVisitor
+internal sealed class PropertyRefCollector : AbstractWalker
 {
     private readonly ImmutableArray<RefValue>.Builder _result;
 

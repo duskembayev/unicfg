@@ -1,21 +1,22 @@
-﻿using unicfg.Base.Elements.Values;
+﻿using unicfg.Base.Elements;
+using unicfg.Base.Elements.Values;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Evaluation.Walkers;
 
-public abstract class AbstractElementVisitor : IElementVisitor
+internal abstract class AbstractWalker : IElementVisitor
 {
     public virtual void Visit(Document document)
     {
-        document.RootGroup.Accept(this);
+        document.RootScope.Accept(this);
     }
 
-    public virtual void Visit(UniPropertyGroup group)
+    public virtual void Visit(UniScope scope)
     {
-        foreach (var attribute in group.Attributes) attribute.Accept(this);
+        foreach (var attribute in scope.Attributes) attribute.Accept(this);
 
-        foreach (var property in group.Properties) property.Accept(this);
+        foreach (var property in scope.Properties) property.Accept(this);
 
-        foreach (var propertyGroup in group.PropertyGroups) propertyGroup.Accept(this);
+        foreach (var propertyGroup in scope.Scopes) propertyGroup.Accept(this);
     }
 
     public virtual void Visit(UniProperty property)

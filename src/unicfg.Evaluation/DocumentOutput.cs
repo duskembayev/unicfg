@@ -4,12 +4,11 @@ namespace unicfg.Evaluation;
 
 public sealed class DocumentOutput
 {
-    public DocumentOutput(string baseDirectory)
+    public DocumentOutput(SymbolRef scopeRef)
     {
-        BaseDirectory = baseDirectory;
+        ScopeRef = scopeRef;
     }
 
-    public string BaseDirectory { get; }
-
-    public SymbolRef LinkedPropertyGroup { get; init; }
+    public SymbolRef ScopeRef { get; }
+    
 }

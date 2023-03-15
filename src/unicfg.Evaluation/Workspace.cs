@@ -1,5 +1,7 @@
 ﻿using unicfg.Base.Analysis;
 using unicfg.Base.Elements;
+using unicfg.Evaluation.Extensions;
+using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
@@ -9,7 +11,7 @@ public sealed class Workspace
     private readonly IDocumentResolver _documentResolver;
     private readonly Diagnostics _diagnostics;
     private readonly List<Document> _entries;
-    private readonly List<DocumentOutput> _outputs;
+    private readonly HashSet<DocumentOutput> _outputs;
 
     public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
     {
@@ -17,11 +19,11 @@ public sealed class Workspace
         _diagnostics = diagnostics;
         _entries = new List<Document>();
         _registry = new Dictionary<DocumentKey, Document>();
-        _outputs = new List<DocumentOutput>();
+        _outputs = new HashSet<DocumentOutput>();
     }
 
     public IReadOnlyList<Document> EntryDocuments => _entries;
-    public IReadOnlyList<DocumentOutput> Outputs => _outputs;
+    public IReadOnlySet<DocumentOutput> Outputs => _outputs;
 
     public void OpenFrom(string filePath)
     {
@@ -33,8 +35,9 @@ public sealed class Workspace
         if (document.Location is null)
             throw new InvalidOperationException();
 
-        _entries.Add(document);
+        _outputs.UnionWith(document.GetOutputs());
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
+        _entries.Add(document);
     }
 
     public async Task<EmitResult> EmitAsync(
@@ -76,8 +79,9 @@ public sealed class Workspace
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        throw new InvalidOperationException();
+        new Document(evaluationContext.OutputDirectory, )
     }
+
 }
 
 public record EmitResult();

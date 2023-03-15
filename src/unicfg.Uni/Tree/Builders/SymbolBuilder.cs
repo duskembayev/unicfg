@@ -79,13 +79,13 @@ internal sealed class SymbolBuilder : IValueOwner
         };
     }
 
-    public UniPropertyGroup BuildAsNamespace(Document document, ElementWithName? parent)
+    public UniScope BuildAsNamespace(Document document, ElementWithName? parent)
     {
         if (_kind != SymbolKind.PropertyGroup)
             throw new InvalidOperationException();
 
-        var result = new UniPropertyGroup(_name, document, parent);
-        var namespaces = ImmutableArray.CreateBuilder<UniPropertyGroup>(_children.Count);
+        var result = new UniScope(_name, document, parent);
+        var namespaces = ImmutableArray.CreateBuilder<UniScope>(_children.Count);
         var properties = ImmutableArray.CreateBuilder<UniProperty>(_children.Count);
 
         foreach (var (_, child) in _children)
@@ -97,7 +97,7 @@ internal sealed class SymbolBuilder : IValueOwner
 
             switch (node)
             {
-                case UniPropertyGroup group:
+                case UniScope group:
                     namespaces.Add(group);
                     break;
                 case UniProperty property:
@@ -107,7 +107,7 @@ internal sealed class SymbolBuilder : IValueOwner
         }
 
         result.Attributes = BuildAttributes(document, result);
-        result.PropertyGroups = namespaces.ToImmutable();
+        result.Scopes = namespaces.ToImmutable();
         result.Properties = properties.ToImmutable();
         return result;
     }

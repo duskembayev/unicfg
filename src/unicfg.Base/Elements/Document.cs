@@ -5,7 +5,7 @@ namespace unicfg.Base.Elements;
 public sealed class Document : IElement
 {
     private readonly Dictionary<SymbolRef,UniProperty?> _properties;
-    private UniPropertyGroup? _rootGroup;
+    private UniScope? _rootGroup;
 
     internal Document(string baseDirectory, string? location)
     {
@@ -16,10 +16,9 @@ public sealed class Document : IElement
     }
 
     public string? Location { get; }
-
     public string BaseDirectory { get; }
 
-    public UniPropertyGroup RootGroup
+    public UniScope RootScope
     {
         get => _rootGroup ?? throw new InvalidOperationException();
         internal set => _rootGroup = value;
@@ -41,7 +40,7 @@ public sealed class Document : IElement
 
     private UniProperty? FindPropertyCore(SymbolRef propertyRef)
     {
-        var group = RootGroup;
+        var group = RootScope;
         var names = new Queue<StringRef>(propertyRef.Path);
 
         while (group != null && names.TryDequeue(out var name))
@@ -49,7 +48,7 @@ public sealed class Document : IElement
             if (names.Count == 0)
                 return group.Properties.SingleOrDefault(p => p.Name.Equals(name));
 
-            group = group.PropertyGroups.SingleOrDefault(n => n.Name.Equals(name));
+            group = group.Scopes.SingleOrDefault(n => n.Name.Equals(name));
         }
 
         return null;

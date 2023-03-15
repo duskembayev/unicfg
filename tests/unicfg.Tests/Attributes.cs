@@ -42,7 +42,7 @@ picture.subject=moon";
     [Test]
     public void ResolveNamespaceAttribute()
     {
-        var group = _document.RootGroup.PropertyGroups.Single(n => n.Name.Equals("picture"));
+        var group = _document.RootScope.Scopes.Single(n => n.Name.Equals("picture"));
         var attribute = group.Attributes.Single(a => a.Name.Equals("border"));
         var value = _evaluator.Evaluate(attribute);
 
