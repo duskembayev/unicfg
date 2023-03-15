@@ -76,6 +76,7 @@ public sealed class Workspace
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
+        throw new InvalidOperationException();
     }
 }
 

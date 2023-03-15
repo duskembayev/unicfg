@@ -1,11 +1,20 @@
-﻿using System.CommandLine.Builder;
+﻿using System.CommandLine;
+using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using unicfg.Cli;
 using unicfg.Enhanced.DependencyInjection;
+using unicfg.Handlers;
 
-var rootCommand = Commands.RootCommand();
+var rootCommand = new RootCommand("unicfg CLI")
+{
+    new BuildCommand(),
+    new EvalCommand()
+};
+
+rootCommand.AddGlobalOption(Verbosity.Option);
 
 return await new CommandLineBuilder(rootCommand)
     .UseHelp()
@@ -20,5 +29,12 @@ return await new CommandLineBuilder(rootCommand)
 
 static void ConfigureHost(IHostBuilder builder)
 {
-    builder.ConfigureServices(collection => collection.AddEnhancedModules());
+    builder.ConfigureLoggingByVerbosity();
+    builder.ConfigureServices(collection =>
+    {
+        //collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
+        collection.AddEnhancedModules();
+    });
+    
+    builder.UseCommandHandler<BuildCommand, BuildHandler>();
 }
