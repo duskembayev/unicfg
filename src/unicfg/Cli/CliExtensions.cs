@@ -1,6 +1,8 @@
 using System.CommandLine.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace unicfg.Cli;
 
@@ -12,17 +14,18 @@ internal static class CliExtensions
         var verbosityLevel = context.ParseResult.GetValueForOption(Verbosity.Option);
         var logLevel = verbosityLevel switch
         {
-            Verbosity.Level.Quiet => LogLevel.Error,
-            Verbosity.Level.Minimal => LogLevel.Warning,
-            Verbosity.Level.Normal => LogLevel.Information,
-            Verbosity.Level.Detailed => LogLevel.Debug,
-            Verbosity.Level.Diagnostic => LogLevel.Trace,
+            Verbosity.Level.Quiet => LogEventLevel.Error,
+            Verbosity.Level.Minimal => LogEventLevel.Warning,
+            Verbosity.Level.Normal => LogEventLevel.Information,
+            Verbosity.Level.Detailed => LogEventLevel.Debug,
+            Verbosity.Level.Diagnostic => LogEventLevel.Verbose,
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        builder.ConfigureLogging(loggingBuilder => loggingBuilder
-            .SetMinimumLevel(logLevel)
-            .AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace));
+        builder.UseSerilog((_, configuration) => configuration
+            .MinimumLevel.Is(logLevel)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(theme: AnsiConsoleTheme.Code, standardErrorFromLevel: LogEventLevel.Verbose));
 
         return builder;
     }

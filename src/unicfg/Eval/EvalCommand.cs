@@ -1,6 +1,7 @@
 using System.CommandLine;
+using unicfg.Cli;
 
-namespace unicfg.Cli;
+namespace unicfg.Eval;
 
 internal class EvalCommand : Command
 {

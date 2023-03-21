@@ -4,9 +4,10 @@ using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using unicfg.Build;
 using unicfg.Cli;
 using unicfg.Enhanced.DependencyInjection;
-using unicfg.Handlers;
+using unicfg.Eval;
 
 var rootCommand = new RootCommand("unicfg CLI")
 {
@@ -42,4 +43,5 @@ static void ConfigureHost(IHostBuilder builder)
     });
 
     builder.UseCommandHandler<BuildCommand, BuildHandler>();
+    builder.UseCommandHandler<EvalCommand, EvalHandler>();
 }

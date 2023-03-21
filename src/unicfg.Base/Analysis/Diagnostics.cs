@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Concurrent;
+using Enhanced.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using unicfg.Base.Sources;
 
 namespace unicfg.Base.Analysis;
 
+[ContainerEntry(ServiceLifetime.Scoped, typeof(Diagnostics))]
 public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 {
     private readonly ISource? _source;

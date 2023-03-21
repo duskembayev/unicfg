@@ -1,28 +1,31 @@
-﻿using unicfg.Base.Analysis;
+﻿using Enhanced.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using unicfg.Base.Analysis;
 using unicfg.Base.Elements;
 using unicfg.Evaluation.Extensions;
-using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
-public sealed class Workspace
+[ContainerEntry(ServiceLifetime.Transient, typeof(IWorkspace))]
+public sealed partial class Workspace : IWorkspace
 {
     private readonly Dictionary<DocumentKey, Document> _registry;
     private readonly IDocumentResolver _documentResolver;
     private readonly Diagnostics _diagnostics;
-    private readonly List<Document> _entries;
+    private readonly SortedList<int, Document> _entries;
     private readonly HashSet<DocumentOutput> _outputs;
+
+    private int _priorityIndex;
 
     public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
     {
         _documentResolver = documentResolver;
         _diagnostics = diagnostics;
-        _entries = new List<Document>();
+        _entries = new SortedList<int, Document>();
         _registry = new Dictionary<DocumentKey, Document>();
         _outputs = new HashSet<DocumentOutput>();
     }
 
-    public IReadOnlyList<Document> EntryDocuments => _entries;
     public IReadOnlySet<DocumentOutput> Outputs => _outputs;
 
     public void OpenFrom(string filePath)
@@ -37,52 +40,6 @@ public sealed class Workspace
 
         _outputs.UnionWith(document.GetOutputs());
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
-        _entries.Add(document);
+        _entries.Add(_priorityIndex++, document);
     }
-
-    public async Task<EmitResult> EmitAsync(
-        string outputDirectory,
-        DocumentOutput documentOutput,
-        CancellationToken cancellationToken)
-    {
-        var evaluationContext = new EvaluationContext(
-            outputDirectory,
-            _entries.ToImmutableArray(),
-            _registry.ToImmutableDictionary());
-
-        return await EmitDocumentAsync(documentOutput, evaluationContext, cancellationToken);
-    }
-
-    public async Task<ImmutableArray<EmitResult>> EmitAllAsync(
-        string outputDirectory,
-        CancellationToken cancellationToken)
-    {
-        if (_outputs.Count == 0)
-        {
-            _diagnostics.Report(DiagnosticDescriptor.NothingToEmit);
-            return ImmutableArray<EmitResult>.Empty;
-        }
-
-        var evaluationContext = new EvaluationContext(
-            outputDirectory,
-            _entries.ToImmutableArray(),
-            _registry.ToImmutableDictionary());
-
-        var emitting = _outputs.Select(output => EmitDocumentAsync(output, evaluationContext, cancellationToken));
-        var results = await Task.WhenAll(emitting);
-
-        return results.ToImmutableArray();
-    }
-
-    private async Task<EmitResult> EmitDocumentAsync(
-        DocumentOutput documentOutput,
-        EvaluationContext evaluationContext,
-        CancellationToken cancellationToken)
-    {
-        // new Document(evaluationContext.OutputDirectory, )
-        throw new NotImplementedException();
-    }
-
 }
-
-public record EmitResult();
