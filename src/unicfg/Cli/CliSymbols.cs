@@ -75,8 +75,8 @@ internal static class CliSymbols
         {
             var tokenValues = token.Value.Split(',', ';');
 
-            foreach (var tokenValue in tokenValues)
-                symbols.Add(new SymbolInfo(tokenValue));
+            foreach (var symbolPath in tokenValues)
+                symbols.Add(new SymbolInfo(symbolPath));
         }
 
         return symbols;
@@ -93,16 +93,16 @@ internal static class CliSymbols
             foreach (var tokenValue in tokenValues)
             {
                 var equalityIndex = tokenValue.IndexOf('=');
-                var propertyName = tokenValue;
+                var propertyPath = tokenValue;
                 var propertyValue = string.Empty;
 
                 if (equalityIndex >= 0)
-                    propertyName = tokenValue[..equalityIndex];
+                    propertyPath = tokenValue[..equalityIndex];
 
                 if (equalityIndex > 0 && equalityIndex < tokenValue.Length - 1)
                     propertyValue = tokenValue[(equalityIndex + 1)..];
 
-                properties.Add(new PropertyInfo(propertyName, propertyValue));
+                properties.Add(new PropertyInfo(propertyPath, propertyValue));
             }
         }
 

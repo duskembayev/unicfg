@@ -1,4 +1,5 @@
 using System.CommandLine.Parsing;
+using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
 
@@ -26,10 +27,11 @@ internal class BuildHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(outputDir);
 
         foreach (var file in inputs)
-        {
-            _workspace.OpenFrom(file);
-        }
+            _workspace.OpenFrom(file.FullName);
         
+        foreach (var (name, value) in properties)
+            _workspace.OverrideProperty(SymbolRef.FromPath(name), value);
+
         return ExitCode.Success;
     }
 }

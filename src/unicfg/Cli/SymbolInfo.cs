@@ -1,3 +1,3 @@
 namespace unicfg.Cli;
 
-internal record SymbolInfo(string Name);
+internal record SymbolInfo(string Path);
