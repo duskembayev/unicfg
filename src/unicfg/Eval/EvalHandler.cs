@@ -1,14 +1,18 @@
 using System.CommandLine.Parsing;
+using unicfg.Base.Primitives;
 using unicfg.Cli;
+using unicfg.Evaluation;
 
 namespace unicfg.Eval;
 
 internal class EvalHandler : CliCommandHandler
 {
+    private readonly IWorkspace _workspace;
     private readonly ILogger<EvalHandler> _logger;
 
-    public EvalHandler(ILogger<EvalHandler> logger) : base(logger)
+    public EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
     {
+        _workspace = workspace;
         _logger = logger;
     }
 
@@ -23,7 +27,16 @@ internal class EvalHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(symbols);
         ArgumentNullException.ThrowIfNull(properties);
 
-        
+        foreach (var file in inputs)
+            _workspace.OpenFrom(file.FullName);
+
+        foreach (var (path, value) in properties)
+            _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
+
+        if (symbols.Count == 0)
+        {
+            
+        }
         
         return ExitCode.Success;
     }

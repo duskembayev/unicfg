@@ -8,7 +8,7 @@ using unicfg.Evaluation.Extensions;
 
 namespace unicfg.Evaluation;
 
-[ContainerEntry(ServiceLifetime.Transient, typeof(IWorkspace))]
+[ContainerEntry(ServiceLifetime.Scoped, typeof(IWorkspace))]
 public sealed partial class Workspace : IWorkspace
 {
     private readonly Dictionary<DocumentKey, Document> _registry;
