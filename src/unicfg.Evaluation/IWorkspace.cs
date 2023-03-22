@@ -11,7 +11,7 @@ public interface IWorkspace
     void OpenFrom(string filePath);
     void Open(Document document);
 
-    void OverrideProperty(SymbolRef name, StringRef value);
+    void OverrideProperty(SymbolRef property, StringRef value);
 
     Task<EmitResult> EmitAsync(
         string outputDirectory,

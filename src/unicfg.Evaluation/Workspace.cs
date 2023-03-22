@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using unicfg.Base.Analysis;
 using unicfg.Base.Elements;
+using unicfg.Base.Primitives;
+using unicfg.Evaluation.EmitModel;
 using unicfg.Evaluation.Extensions;
 
 namespace unicfg.Evaluation;
@@ -41,5 +43,20 @@ public sealed partial class Workspace : IWorkspace
         _outputs.UnionWith(document.GetOutputs());
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
         _entries.Add(_priorityIndex++, document);
+    }
+
+    public void OverrideProperty(SymbolRef property, StringRef value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EvaluateResult> EvaluateAllAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EvaluateResult> EvaluateAsync(SymbolRef symbol, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }
