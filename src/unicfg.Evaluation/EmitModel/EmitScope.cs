@@ -9,7 +9,7 @@ public sealed record EmitScope
     private readonly Diagnostics _diagnostics;
     private readonly Dictionary<StringRef, EmitScope> _scopes;
     private readonly Dictionary<StringRef, EmitProperty> _properties;
-    private readonly Dictionary<StringRef, StringRef> _arguments;
+    private readonly Dictionary<StringRef, StringRef> _attributes;
 
     public EmitScope(EmitScope parent, Diagnostics diagnostics)
     {
@@ -18,14 +18,14 @@ public sealed record EmitScope
 
         _scopes = new Dictionary<StringRef, EmitScope>();
         _properties = new Dictionary<StringRef, EmitProperty>();
-        _arguments = new Dictionary<StringRef, StringRef>();
+        _attributes = new Dictionary<StringRef, StringRef>();
     }
 
     public StringRef? Type { get; set; }
 
     public IReadOnlyDictionary<StringRef, EmitScope> Scopes => _scopes;
     public IReadOnlyDictionary<StringRef, EmitProperty> Properties => _properties;
-    public IReadOnlyDictionary<StringRef, StringRef> Arguments => _arguments;
+    public IReadOnlyDictionary<StringRef, StringRef> Attributes => _attributes;
 
     public EmitScope Scope(StringRef name)
     {
@@ -36,13 +36,7 @@ public sealed record EmitScope
 
     public void Argument(StringRef name, StringRef value)
     {
-        _arguments[name] = value;
+        _attributes[name] = value;
         
     }
-}
-
-public sealed record EmitProperty
-{
-    public IReadOnlyDictionary<StringRef, StringRef> Arguments { get; set; }
-    public StringRef Value { get; set; }
 }
