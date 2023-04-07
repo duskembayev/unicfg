@@ -1,10 +1,10 @@
 using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Base.SyntaxTree;
 
-public abstract class ElementWithName : IElement
+public abstract class AbstractSymbol : IElement
 {
-    protected ElementWithName(StringRef name, Document document, ElementWithName? parent)
+    protected AbstractSymbol(StringRef name, Document document, AbstractSymbol? parent)
     {
         Name = name;
         Document = document;
@@ -13,7 +13,7 @@ public abstract class ElementWithName : IElement
 
     public StringRef Name { get; }
     public Document Document { get; }
-    public ElementWithName? Parent { get; }
+    public AbstractSymbol? Parent { get; }
 
     public abstract void Accept(IElementVisitor visitor);
 }

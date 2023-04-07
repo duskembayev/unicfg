@@ -47,7 +47,7 @@ internal static class CliSymbols
 
     private static Option<List<SymbolInfo>> CreateSymbolsOption()
     {
-        return new Option<List<SymbolInfo>>(new[] { "-s", "--symbol" }, ParseSymbolsInfo)
+        return new Option<List<SymbolInfo>>(new[] {"-s", "--symbol"}, ParseSymbolsInfo, isDefault: true)
         {
             Arity = ArgumentArity.OneOrMore,
             Description =
@@ -78,6 +78,9 @@ internal static class CliSymbols
             foreach (var symbolPath in tokenValues)
                 symbols.Add(new SymbolInfo(symbolPath));
         }
+
+        if (symbols.Count == 0)
+            symbols.Add(SymbolInfo.Root);
 
         return symbols;
     }

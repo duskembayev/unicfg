@@ -1,6 +1,6 @@
 using unicfg.Base.Primitives;
 
-namespace unicfg.Evaluation.EmitModel;
+namespace unicfg.Base.SemanticTree;
 
 public record EmitResult(
     SymbolRef Scope,

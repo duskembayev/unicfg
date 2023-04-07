@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using Enhanced.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using unicfg.Base.Sources;
+using unicfg.Base.Inputs;
 
 namespace unicfg.Base.Analysis;
 

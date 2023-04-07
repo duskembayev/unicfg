@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace unicfg.Base.Sources;
+namespace unicfg.Base.Inputs;
 
 public static class Source
 {

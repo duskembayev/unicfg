@@ -1,13 +1,13 @@
-﻿using unicfg.Base.Elements.Values;
+﻿using unicfg.Base.SyntaxTree.Values;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Base.SyntaxTree;
 
 public interface IElementVisitor
 {
     void Visit(Document document);
-    void Visit(UniScope scope);
-    void Visit(UniProperty property);
-    void Visit(UniAttribute attribute);
+    void Visit(ScopeSymbol scope);
+    void Visit(PropertySymbol property);
+    void Visit(AttributeSymbol attribute);
     void Visit(TextValue textValue);
     void Visit(RefValue refValue);
     void Visit(EmptyValue emptyValue);

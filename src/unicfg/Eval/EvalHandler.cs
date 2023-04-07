@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
 using unicfg.Cli;
@@ -16,7 +17,10 @@ internal class EvalHandler : CliCommandHandler
         _logger = logger;
     }
 
-    protected override async Task<ExitCode> InvokeAsync(CommandResult commandResult, CancellationToken cancellationToken)
+    protected override async Task<ExitCode> InvokeAsync(
+        CommandResult commandResult,
+        TextWriter textWriter,
+        CancellationToken cancellationToken)
     {
         var inputs = commandResult.GetValueForArgument(CliSymbols.InputsArgument);
         var symbols = commandResult.GetValueForOption(CliSymbols.SymbolsOption);
@@ -33,11 +37,23 @@ internal class EvalHandler : CliCommandHandler
         foreach (var (path, value) in properties)
             _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
 
+        var outputs = symbols
+            .Select(info => new DocumentOutput(SymbolRef.FromPath(info.Path)))
+            .ToImmutableArray();
+
+        _workspace.Outputs.Clear();
+        _workspace.Outputs.UnionWith(outputs);
+
+        _workspace.Formatters.Clear();
+        _workspace.Formatters.Add(new EvaluationFormatter(textWriter, ));
+
+        var results = await _workspace.EmitAsync(cancellationToken);
+
         if (symbols.Count == 0)
         {
-            
+            _
         }
-        
+
         return ExitCode.Success;
     }
 }

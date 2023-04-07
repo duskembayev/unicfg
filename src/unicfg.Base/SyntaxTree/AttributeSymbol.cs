@@ -1,10 +1,10 @@
 using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Base.SyntaxTree;
 
-public sealed class UniAttribute : ElementWithValue
+public sealed class AttributeSymbol : AbstractSymbolWithValue
 {
-    public UniAttribute(StringRef name, Document document, ElementWithName parent)
+    public AttributeSymbol(StringRef name, Document document, AbstractSymbol parent)
         : base(name, document, parent)
     {
     }

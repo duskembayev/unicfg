@@ -1,24 +1,24 @@
 ﻿using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Base.SyntaxTree;
 
 public sealed class Document : IElement
 {
-    private readonly Dictionary<SymbolRef,UniProperty?> _properties;
-    private UniScope? _rootGroup;
+    private readonly Dictionary<SymbolRef,PropertySymbol?> _properties;
+    private ScopeSymbol? _rootGroup;
 
     internal Document(string baseDirectory, string? location)
     {
         BaseDirectory = baseDirectory;
         Location = location;
 
-        _properties = new Dictionary<SymbolRef, UniProperty?>();
+        _properties = new Dictionary<SymbolRef, PropertySymbol?>();
     }
 
     public string? Location { get; }
     public string BaseDirectory { get; }
 
-    public UniScope RootScope
+    public ScopeSymbol RootScope
     {
         get => _rootGroup ?? throw new InvalidOperationException();
         internal set => _rootGroup = value;
@@ -29,7 +29,7 @@ public sealed class Document : IElement
         visitor.Visit(this);
     }
     
-    public UniProperty? FindProperty(SymbolRef propertyRef)
+    public PropertySymbol? FindProperty(SymbolRef propertyRef)
     {
         if (_properties.TryGetValue(propertyRef, out var property))
             return property;
@@ -38,7 +38,7 @@ public sealed class Document : IElement
         return property;
     }
 
-    private UniProperty? FindPropertyCore(SymbolRef propertyRef)
+    private PropertySymbol? FindPropertyCore(SymbolRef propertyRef)
     {
         var group = RootScope;
         var names = new Queue<StringRef>(propertyRef.Path);

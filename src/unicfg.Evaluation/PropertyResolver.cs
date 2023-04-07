@@ -1,5 +1,5 @@
-using unicfg.Base.Elements;
 using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Evaluation;
 
@@ -12,7 +12,7 @@ public sealed class PropertyResolver : IPropertyResolver
         _document = document;
     }
 
-    public UniProperty? ResolveProperty(SymbolRef propertyRef)
+    public PropertySymbol? ResolveProperty(SymbolRef propertyRef)
     {
         return _document.FindProperty(propertyRef);
     }

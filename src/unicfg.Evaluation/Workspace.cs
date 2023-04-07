@@ -1,21 +1,23 @@
-﻿using Enhanced.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using unicfg.Base.Analysis;
-using unicfg.Base.Elements;
+﻿using unicfg.Base.Analysis;
+using unicfg.Base.Extensions;
+using unicfg.Base.Formatters;
 using unicfg.Base.Primitives;
-using unicfg.Evaluation.EmitModel;
+using unicfg.Base.SemanticTree;
+using unicfg.Base.SyntaxTree;
 using unicfg.Evaluation.Extensions;
+using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
 [ContainerEntry(ServiceLifetime.Scoped, typeof(IWorkspace))]
-public sealed partial class Workspace : IWorkspace
+public sealed class Workspace : IWorkspace
 {
     private readonly Dictionary<DocumentKey, Document> _registry;
     private readonly IDocumentResolver _documentResolver;
     private readonly Diagnostics _diagnostics;
     private readonly SortedList<int, Document> _entries;
     private readonly HashSet<DocumentOutput> _outputs;
+    private readonly HashSet<IFormatter> _formatters;
 
     private int _priorityIndex;
 
@@ -26,10 +28,12 @@ public sealed partial class Workspace : IWorkspace
         _entries = new SortedList<int, Document>();
         _registry = new Dictionary<DocumentKey, Document>();
         _outputs = new HashSet<DocumentOutput>();
+        _formatters = new HashSet<IFormatter>();
     }
 
-    public IReadOnlySet<DocumentOutput> Outputs => _outputs;
-
+    public ISet<DocumentOutput> Outputs => _outputs;
+    public ISet<IFormatter> Formatters => _formatters;
+    
     public void OpenFrom(string filePath)
     {
         Open(_documentResolver.LoadFromFile(filePath, DocumentFormat.Uni));
@@ -50,13 +54,41 @@ public sealed partial class Workspace : IWorkspace
         throw new NotImplementedException();
     }
 
-    public Task<EvaluateResult> EvaluateAllAsync(CancellationToken cancellationToken)
+    public async Task<ImmutableArray<EmitResult>> EmitAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
+        if (_outputs.Count == 0)
+        {
+            _diagnostics.Report(DiagnosticDescriptor.NothingToEmit);
+            return ImmutableArray<EmitResult>.Empty;
+        }
 
-    public Task<EvaluateResult> EvaluateAsync(SymbolRef symbol, CancellationToken cancellationToken)
+        var evaluationContext = new EvaluationContext(
+            _entries.ToImmutableArrayOfValues(),
+            _registry.ToImmutableDictionary(),
+            _formatters.ToImmutableArray());
+
+        var emitting = _outputs.Select(output => EmitDocumentAsync(output, evaluationContext, cancellationToken));
+        var results = await Task.WhenAll(emitting);
+
+        return results.ToImmutableArray();
+    }
+    
+    private async Task<EmitResult> EmitDocumentAsync(
+        DocumentOutput documentOutput,
+        EvaluationContext evaluationContext,
+        CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var targetScope = new EmitScope();
+        var outputBuilder = new OutputBuilder(documentOutput.ScopeRef, targetScope, cancellationToken);
+        
+        foreach (var entry in evaluationContext.Entries)
+            entry.Accept(outputBuilder);
+
+        var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(targetScope.Attributes));
+
+        if (formatter is null)
+            throw new NotImplementedException();
+
+        return await formatter.FormatAsync(targetScope, cancellationToken);
     }
 }

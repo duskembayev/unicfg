@@ -1,28 +1,18 @@
-using unicfg.Base.Elements;
+using unicfg.Base.Formatters;
 using unicfg.Base.Primitives;
-using unicfg.Evaluation.EmitModel;
+using unicfg.Base.SemanticTree;
 
 namespace unicfg.Evaluation;
 
 public interface IWorkspace
 {
-    IReadOnlySet<DocumentOutput> Outputs { get; }
+    ISet<DocumentOutput> Outputs { get; }
+
+    ISet<IFormatter> Formatters { get; }
 
     void OpenFrom(string filePath);
-    void Open(Document document);
 
     void OverrideProperty(SymbolRef property, StringRef value);
 
-    Task<EmitResult> EmitAsync(
-        string outputDirectory,
-        DocumentOutput documentOutput,
-        CancellationToken cancellationToken);
-
-    Task<ImmutableArray<EmitResult>> EmitAllAsync(
-        string outputDirectory,
-        CancellationToken cancellationToken);
-
-    Task<EvaluateResult> EvaluateAllAsync(CancellationToken cancellationToken);
-
-    Task<EvaluateResult> EvaluateAsync(SymbolRef symbol, CancellationToken cancellationToken);
+    Task<ImmutableArray<EmitResult>> EmitAsync(CancellationToken cancellationToken);
 }

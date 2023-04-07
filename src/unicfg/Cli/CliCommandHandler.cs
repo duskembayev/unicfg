@@ -1,4 +1,5 @@
 using System.CommandLine.Invocation;
+using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 
 namespace unicfg.Cli;
@@ -25,11 +26,13 @@ internal abstract class CliCommandHandler : ICommandHandler
     {
         var cancellationToken = context.GetCancellationToken();
         var commandResult = context.BindingContext.ParseResult.RootCommandResult;
+        await using var textWriter = context.Console.Out.CreateTextWriter();
+
         ExitCode exitCode;
 
         try
         {
-            exitCode = await InvokeAsync(commandResult, cancellationToken);
+            exitCode = await InvokeAsync(commandResult, textWriter, cancellationToken);
         }
         catch (Exception e)
         {
@@ -37,9 +40,12 @@ internal abstract class CliCommandHandler : ICommandHandler
             exitCode = ExitCode.UnhandledException;
         }
 
-        context.ExitCode = (int)exitCode;
+        context.ExitCode = (int) exitCode;
         return context.ExitCode;
     }
 
-    protected abstract Task<ExitCode> InvokeAsync(CommandResult commandResult, CancellationToken cancellationToken);
+    protected abstract Task<ExitCode> InvokeAsync(
+        CommandResult commandResult,
+        TextWriter textWriter,
+        CancellationToken cancellationToken);
 }

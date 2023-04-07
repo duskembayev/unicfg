@@ -1,6 +1,6 @@
-using unicfg.Base.Elements;
-using unicfg.Base.Elements.Values;
 using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
+using unicfg.Base.SyntaxTree.Values;
 
 namespace unicfg.Uni.Tree.Builders;
 
@@ -20,9 +20,9 @@ internal sealed class AttributeBuilder : IValueOwner
         _values.Add(value);
     }
 
-    public UniAttribute Build(Document document, ElementWithName parent)
+    public AttributeSymbol Build(Document document, AbstractSymbol parent)
     {
-        var result = new UniAttribute(_name, document, parent);
+        var result = new AttributeSymbol(_name, document, parent);
         result.Values = _values.ToImmutable();
         return result;
     }

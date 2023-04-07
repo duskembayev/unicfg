@@ -1,16 +1,16 @@
 using System.Text;
-using unicfg.Base.Elements;
+using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Base.Extensions;
 
 public static class ElementExtensions
 {
-    public static string ToDisplayName(this ElementWithName @this)
+    public static string ToDisplayName(this AbstractSymbol @this)
     {
         if (@this.Name.IsEmpty)
             throw new InvalidOperationException();
 
-        var path = new Stack<ElementWithName>();
+        var path = new Stack<AbstractSymbol>();
         var parent = @this.Parent;
         var capacity = @this.Name.Length + 2;
 
@@ -31,9 +31,9 @@ public static class ElementExtensions
             builder.Append(parent.Name.ToString());
         }
 
-        if (@this is UniAttribute) builder.Append('[');
+        if (@this is AttributeSymbol) builder.Append('[');
         builder.Append(@this.Name.ToString());
-        if (@this is UniAttribute) builder.Append(']');
+        if (@this is AttributeSymbol) builder.Append(']');
 
         return builder.ToString();
     }

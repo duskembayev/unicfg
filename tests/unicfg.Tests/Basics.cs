@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using unicfg.Base.Analysis;
-using unicfg.Base.Elements;
 using unicfg.Base.Environment;
+using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
-using unicfg.Base.Sources;
+using unicfg.Base.SyntaxTree;
 using unicfg.Evaluation;
 using unicfg.Uni.Lex;
 using unicfg.Uni.Tree;

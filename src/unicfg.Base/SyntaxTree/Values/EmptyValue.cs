@@ -1,4 +1,4 @@
-namespace unicfg.Base.Elements.Values;
+namespace unicfg.Base.SyntaxTree.Values;
 
 public sealed class EmptyValue : IValue
 {

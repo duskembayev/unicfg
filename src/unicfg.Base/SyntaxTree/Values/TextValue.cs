@@ -1,6 +1,6 @@
 ﻿using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Elements.Values;
+namespace unicfg.Base.SyntaxTree.Values;
 
 public sealed class TextValue : IValue
 {

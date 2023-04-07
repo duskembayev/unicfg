@@ -1,6 +1,6 @@
 ﻿using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Sources;
+namespace unicfg.Base.Inputs;
 
 public interface ISource
 {

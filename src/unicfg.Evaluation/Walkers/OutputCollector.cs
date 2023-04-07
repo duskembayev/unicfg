@@ -1,5 +1,5 @@
-﻿using unicfg.Base.Elements;
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Evaluation.Walkers;
 
@@ -19,7 +19,7 @@ internal sealed class OutputCollector : AbstractWalker
         return _result.ToImmutable();
     }
 
-    public override void Visit(UniScope scope)
+    public override void Visit(ScopeSymbol scope)
     {
         if (!scope.Name.IsEmpty)
             _path.Push(scope.Name);
@@ -30,7 +30,7 @@ internal sealed class OutputCollector : AbstractWalker
         _path.TryPop(out _);
     }
 
-    public override void Visit(UniAttribute attribute)
+    public override void Visit(AttributeSymbol attribute)
     {
         if (!attribute.Name.Equals(Attributes.Output))
             return;

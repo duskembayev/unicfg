@@ -1,6 +1,6 @@
 using unicfg.Base.Analysis;
+using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
-using unicfg.Base.Sources;
 using unicfg.Uni.Lex.Extensions;
 using unicfg.Uni.Lex.Handlers;
 

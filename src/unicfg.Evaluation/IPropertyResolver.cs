@@ -1,9 +1,9 @@
-﻿using unicfg.Base.Elements;
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Evaluation;
 
 public interface IPropertyResolver
 {
-    UniProperty? ResolveProperty(SymbolRef propertyRef);
+    PropertySymbol? ResolveProperty(SymbolRef propertyRef);
 }

@@ -1,7 +1,7 @@
 ﻿using unicfg.Base.Extensions;
 using unicfg.Base.Primitives;
 
-namespace unicfg.Base.Sources;
+namespace unicfg.Base.Inputs;
 
 internal sealed class MemorySource : ISource
 {

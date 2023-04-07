@@ -1,8 +1,8 @@
 using unicfg.Base.Analysis;
-using unicfg.Base.Elements;
-using unicfg.Base.Elements.Values;
 using unicfg.Base.Extensions;
 using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
+using unicfg.Base.SyntaxTree.Values;
 using static unicfg.Base.Analysis.DiagnosticDescriptor;
 
 namespace unicfg.Evaluation;
@@ -18,7 +18,7 @@ public sealed class EvaluatorImpl
         _propertyResolver = propertyResolver;
     }
 
-    public StringRef Evaluate(ElementWithValue node)
+    public StringRef Evaluate(AbstractSymbolWithValue node)
     {
         if (node.EvaluationState == EvaluationState.Unevaluated)
             EvaluateValue(node);
@@ -26,10 +26,10 @@ public sealed class EvaluatorImpl
         return node.EvaluatedValue;
     }
 
-    private void EvaluateValue(ElementWithValue node)
+    private void EvaluateValue(AbstractSymbolWithValue node)
     {
         var dependencyBuffer = new Dictionary<SymbolRef, StringRef>();
-        var evalNodes = new Stack<ElementWithValue>();
+        var evalNodes = new Stack<AbstractSymbolWithValue>();
 
         evalNodes.Push(node);
 
@@ -119,7 +119,7 @@ public sealed class EvaluatorImpl
         return propertyRefCollector.GetResult();
     }
 
-    private void Report(IValue value, DiagnosticDescriptor descriptor, IEnumerable<ElementWithValue> evalNodes)
+    private void Report(IValue value, DiagnosticDescriptor descriptor, IEnumerable<AbstractSymbolWithValue> evalNodes)
     {
         var arg = string.Join(" -> ", evalNodes.Select(n => n.ToDisplayName()));
         _diagnostics.Report(descriptor, value.SourceRange, new object?[]{ arg });

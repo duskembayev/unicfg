@@ -1,7 +1,7 @@
 ﻿using unicfg.Base.Analysis;
-using unicfg.Base.Elements;
-using unicfg.Base.Elements.Values;
 using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
+using unicfg.Base.SyntaxTree.Values;
 
 namespace unicfg.Uni.Tree.Builders;
 
@@ -69,7 +69,7 @@ internal sealed class SymbolBuilder : IValueOwner
         return child;
     }
 
-    public IElement? Build(Document document, ElementWithName parent)
+    public IElement? Build(Document document, AbstractSymbol parent)
     {
         return _kind switch
         {
@@ -79,14 +79,14 @@ internal sealed class SymbolBuilder : IValueOwner
         };
     }
 
-    public UniScope BuildAsNamespace(Document document, ElementWithName? parent)
+    public ScopeSymbol BuildAsNamespace(Document document, AbstractSymbol? parent)
     {
         if (_kind != SymbolKind.PropertyGroup)
             throw new InvalidOperationException();
 
-        var result = new UniScope(_name, document, parent);
-        var namespaces = ImmutableArray.CreateBuilder<UniScope>(_children.Count);
-        var properties = ImmutableArray.CreateBuilder<UniProperty>(_children.Count);
+        var result = new ScopeSymbol(_name, document, parent);
+        var namespaces = ImmutableArray.CreateBuilder<ScopeSymbol>(_children.Count);
+        var properties = ImmutableArray.CreateBuilder<PropertySymbol>(_children.Count);
 
         foreach (var (_, child) in _children)
         {
@@ -97,10 +97,10 @@ internal sealed class SymbolBuilder : IValueOwner
 
             switch (node)
             {
-                case UniScope group:
+                case ScopeSymbol group:
                     namespaces.Add(group);
                     break;
-                case UniProperty property:
+                case PropertySymbol property:
                     properties.Add(property);
                     break;
             }
@@ -112,22 +112,22 @@ internal sealed class SymbolBuilder : IValueOwner
         return result;
     }
 
-    public UniProperty BuildAsProperty(Document document, ElementWithName parent)
+    public PropertySymbol BuildAsProperty(Document document, AbstractSymbol parent)
     {
         if (_kind != SymbolKind.Property)
             throw new InvalidOperationException();
 
-        var result = new UniProperty(_name, document, parent);
+        var result = new PropertySymbol(_name, document, parent);
 
         result.Attributes = BuildAttributes(document, result);
         result.Values = _values.ToImmutable();
         return result;
     }
 
-    private ImmutableArray<UniAttribute> BuildAttributes(Document document, ElementWithName parent)
+    private ImmutableArray<AttributeSymbol> BuildAttributes(Document document, AbstractSymbol parent)
     {
         return _attributes.Count > 0
             ? _attributes.Select(pair => pair.Value.Build(document, parent)).ToImmutableArray()
-            : ImmutableArray<UniAttribute>.Empty;
+            : ImmutableArray<AttributeSymbol>.Empty;
     }
 }

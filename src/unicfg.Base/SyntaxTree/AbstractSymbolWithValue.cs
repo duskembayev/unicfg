@@ -1,14 +1,14 @@
-using unicfg.Base.Elements.Values;
 using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree.Values;
 
-namespace unicfg.Base.Elements;
+namespace unicfg.Base.SyntaxTree;
 
-public abstract class ElementWithValue : ElementWithName
+public abstract class AbstractSymbolWithValue : AbstractSymbol
 {
     private static readonly StringRef ErrorValue = "<ERROR>";
     private StringRef _evaluatedValue = StringRef.Empty;
 
-    protected ElementWithValue(StringRef name, Document document, ElementWithName parent)
+    protected AbstractSymbolWithValue(StringRef name, Document document, AbstractSymbol parent)
         : base(name, document, parent)
     {
     }

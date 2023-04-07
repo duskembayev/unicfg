@@ -1,8 +1,8 @@
 using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
+using unicfg.Base.SemanticTree;
 using unicfg.Cli;
 using unicfg.Evaluation;
-using unicfg.Evaluation.EmitModel;
 
 namespace unicfg.Build;
 
