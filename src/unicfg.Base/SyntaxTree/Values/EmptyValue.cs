@@ -10,8 +10,8 @@ public sealed class EmptyValue : IValue
 
     public Range SourceRange { get; } = Range.All;
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
+        return visitor.Visit(this);
     }
 }

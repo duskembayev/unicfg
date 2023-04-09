@@ -1,7 +1,4 @@
-﻿using unicfg.Base.Extensions;
-using unicfg.Base.Primitives;
-
-namespace unicfg.Base.SyntaxTree;
+﻿namespace unicfg.Base.SyntaxTree;
 
 public sealed class Document : IElement
 {
@@ -22,24 +19,8 @@ public sealed class Document : IElement
         internal set => _rootGroup = value;
     }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
-    }
-
-    public ISymbol? FindSymbol(SymbolRef symbolRef)
-    {
-        if (symbolRef.Path.Length == 0)
-            return RootScope;
-
-        ISymbol result = RootScope;
-        var depth = 0;
-
-        do
-        {
-            result = ((ScopeSymbol) result).GetChildSymbol(symbolRef.Path[depth]);
-        } while (++depth < symbolRef.Path.Length && result is ScopeSymbol);
-
-        return depth == symbolRef.Path.Length ? result : null;
+        return visitor.Visit(this);
     }
 }

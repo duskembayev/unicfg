@@ -13,8 +13,8 @@ public sealed class RefValue : IValue
     public Range SourceRange { get; }
     public SymbolRef Property { get; }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
+        return visitor.Visit(this);
     }
 }

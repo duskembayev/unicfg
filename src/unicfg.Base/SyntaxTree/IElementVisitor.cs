@@ -2,15 +2,15 @@
 
 namespace unicfg.Base.SyntaxTree;
 
-public interface IElementVisitor
+public interface IElementVisitor<out T>
 {
-    void Visit(Document document);
-    void Visit(ScopeSymbol scope);
-    void Visit(PropertySymbol property);
-    void Visit(AttributeElement attribute);
-    void Visit(TextValue textValue);
-    void Visit(RefValue refValue);
-    void Visit(EmptyValue emptyValue);
-    void Visit(ErrorValue errorValue);
-    void Visit(CollectionValue collectionValue);
+    T Visit(Document document);
+    T Visit(ScopeSymbol scope);
+    T Visit(PropertySymbol property);
+    T Visit(AttributeElement attribute);
+    T Visit(TextValue textValue);
+    T Visit(RefValue refValue);
+    T Visit(EmptyValue emptyValue);
+    T Visit(ErrorValue errorValue);
+    T Visit(CollectionValue collectionValue);
 }

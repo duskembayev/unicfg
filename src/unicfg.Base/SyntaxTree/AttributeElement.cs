@@ -18,8 +18,8 @@ public sealed class AttributeElement : INamedElement, IElementWithValue
     public ISymbol Parent { get; }
     public StringRef Name { get; }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
+        return visitor.Visit(this);
     }
 }

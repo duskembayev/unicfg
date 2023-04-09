@@ -11,8 +11,8 @@ public sealed class CollectionValue : IValue
     public ImmutableArray<IValue> Values { get; }
     public Range SourceRange { get; }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
+        return visitor.Visit(this);
     }
 }

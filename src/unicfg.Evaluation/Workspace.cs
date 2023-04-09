@@ -33,18 +33,22 @@ public sealed class Workspace : IWorkspace
 
     public ISet<DocumentOutput> Outputs => _outputs;
     public ISet<IFormatter> Formatters => _formatters;
-    
-    public void OpenFrom(string filePath)
+
+    public async Task OpenFromAsync(string filePath, CancellationToken cancellationToken)
     {
-        Open(_documentResolver.LoadFromFile(filePath, DocumentFormat.Uni));
+        var document = await _documentResolver
+            .LoadFromFileAsync(filePath, DocumentFormat.Uni, cancellationToken)
+            .ConfigureAwait(false);
+
+        await OpenAsync(document, cancellationToken).ConfigureAwait(false);
     }
 
-    public void Open(Document document)
+    public async Task OpenAsync(Document document, CancellationToken cancellationToken)
     {
         if (document.Location is null)
             throw new InvalidOperationException();
 
-        _outputs.UnionWith(document.GetOutputs());
+        _outputs.UnionWith(await document.GetOutputsAsync(cancellationToken).ConfigureAwait(false));
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
         _entries.Add(_priorityIndex++, document);
     }
@@ -72,18 +76,25 @@ public sealed class Workspace : IWorkspace
 
         return results.ToImmutableArray();
     }
-    
+
     private async Task<EmitResult> EmitDocumentAsync(
         DocumentOutput documentOutput,
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        var outputBuilder = new OutputBuilder(documentOutput.ScopeRef, cancellationToken);
-        
-        foreach (var entry in evaluationContext.Entries)
-            entry.Accept(outputBuilder);
+        var valueEvaluator = new ValueEvaluator(evaluationContext);
+        var outputBuilder = new OutputBuilder(valueEvaluator, cancellationToken);
 
-        var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(outputBuilder.Scope.Attributes));
+        foreach (var entry in evaluationContext.Entries)
+        {
+            var symbol = entry.FindSymbol(documentOutput.ScopeRef);
+
+            if (symbol is not null)
+                await symbol.Accept(outputBuilder).ConfigureAwait(false);
+        }
+
+        var formatter = evaluationContext.Formatters
+            .FirstOrDefault(f => f.Matches(outputBuilder.Scope.Attributes));
 
         if (formatter is null)
             throw new NotImplementedException();

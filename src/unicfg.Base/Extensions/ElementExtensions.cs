@@ -6,16 +6,16 @@ namespace unicfg.Base.Extensions;
 
 public static class ElementExtensions
 {
-    public static string ToDisplayName(this AbstractSymbol @this)
+    public static string ToDisplayName(this INamedElement @this)
     {
         if (@this.Name.IsEmpty)
             throw new InvalidOperationException();
 
-        var path = new Stack<AbstractSymbol>();
+        var path = new Stack<ISymbol>();
         var parent = @this.Parent;
         var capacity = @this.Name.Length + 2;
 
-        while (parent is { Name.IsEmpty: false })
+        while (parent is {Name.IsEmpty: false})
         {
             path.Push(parent);
             capacity += parent.Name.Length + 1;
@@ -38,8 +38,8 @@ public static class ElementExtensions
 
         return builder.ToString();
     }
-    
-    public static SymbolRef GetSymbolRef(this AbstractSymbol @this)
+
+    public static SymbolRef GetSymbolRef(this ISymbol @this)
     {
         if (@this.Parent is null)
             return SymbolRef.Null;

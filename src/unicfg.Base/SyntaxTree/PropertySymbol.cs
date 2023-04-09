@@ -23,8 +23,8 @@ public sealed class PropertySymbol : ISymbol, IElementWithValue
     public ISymbol Parent { get; }
     public Document Document { get; }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
+        return visitor.Visit(this);
     }
 }

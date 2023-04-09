@@ -8,10 +8,10 @@ public sealed class ErrorValue : IValue
     {
     }
 
-    public void Accept(IElementVisitor visitor)
-    {
-        visitor.Visit(this);
-    }
-
     public Range SourceRange { get; } = Range.All;
+
+    public T Accept<T>(IElementVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
 }

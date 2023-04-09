@@ -25,13 +25,8 @@ public sealed class ScopeSymbol : ISymbol
     public ISymbol? Parent { get; }
     public Document Document { get; }
 
-    public void Accept(IElementVisitor visitor)
+    public T Accept<T>(IElementVisitor<T> visitor)
     {
-        visitor.Visit(this);
-    }
-
-    public ISymbol? GetChildSymbol(StringRef name)
-    {
-        return Children.TryGetValue(name, out var result) ? result : null;
+        return visitor.Visit(this);
     }
 }

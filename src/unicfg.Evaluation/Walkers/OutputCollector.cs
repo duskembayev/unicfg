@@ -3,15 +3,15 @@ using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Evaluation.Walkers;
 
-internal sealed class OutputCollector : AbstractWalker
+internal sealed class OutputCollector : AsyncWalker
 {
-    private readonly Stack<StringRef> _path;
+    private readonly List<StringRef> _path;
     private readonly ImmutableHashSet<DocumentOutput>.Builder _result;
 
-    public OutputCollector()
+    public OutputCollector(CancellationToken cancellationToken) : base(cancellationToken)
     {
         _result = ImmutableHashSet.CreateBuilder<DocumentOutput>();
-        _path = new Stack<StringRef>();
+        _path = new List<StringRef>();
     }
 
     public ImmutableHashSet<DocumentOutput> GetResult()
@@ -19,26 +19,32 @@ internal sealed class OutputCollector : AbstractWalker
         return _result.ToImmutable();
     }
 
-    public override void Visit(ScopeSymbol scope)
+    public override async ValueTask Visit(ScopeSymbol scope)
     {
-        if (!scope.Name.IsEmpty)
-            _path.Push(scope.Name);
+        if (!scope.IsRoot)
+            _path.Add(scope.Name);
 
-        foreach (var attribute in scope.Attributes) attribute.Accept(this);
-        foreach (var propertyGroup in scope.Scopes) propertyGroup.Accept(this);
+        await base.Visit(scope).ConfigureAwait(false);
 
-        _path.TryPop(out _);
+        if (!scope.IsRoot)
+            _path.RemoveAt(_path.Count - 1);
     }
 
-    public override void Visit(AttributeElement attribute)
+    public override ValueTask Visit(PropertySymbol property)
+    {
+        return ValueTask.CompletedTask;
+    }
+
+    public override ValueTask Visit(AttributeElement attribute)
     {
         if (!attribute.Name.Equals(Attributes.Output))
-            return;
+            return ValueTask.CompletedTask;
 
-        var groupRef = _path.Count > 0
-            ? new SymbolRef(_path.Reverse().ToImmutableArray())
+        var scopeRef = _path.Count > 0
+            ? new SymbolRef(_path.ToImmutableArray())
             : SymbolRef.Null;
 
-        _result.Add(new DocumentOutput(groupRef));
+        _result.Add(new DocumentOutput(scopeRef));
+        return ValueTask.CompletedTask;
     }
 }

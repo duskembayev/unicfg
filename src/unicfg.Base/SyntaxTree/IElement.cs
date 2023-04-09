@@ -2,5 +2,5 @@
 
 public interface IElement
 {
-    void Accept(IElementVisitor visitor);
+    T Accept<T>(IElementVisitor<T> visitor);
 }

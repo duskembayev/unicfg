@@ -1,6 +1,7 @@
 using unicfg.Base.Formatters;
 using unicfg.Base.Primitives;
 using unicfg.Base.SemanticTree;
+using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Evaluation;
 
@@ -10,7 +11,8 @@ public interface IWorkspace
 
     ISet<IFormatter> Formatters { get; }
 
-    void OpenFrom(string filePath);
+    Task OpenFromAsync(string filePath, CancellationToken cancellationToken);
+    Task OpenAsync(Document document, CancellationToken cancellationToken);
 
     void OverrideProperty(SymbolRef property, StringRef value);
 
