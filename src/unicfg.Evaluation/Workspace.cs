@@ -68,7 +68,7 @@ public sealed class Workspace : IWorkspace
             _formatters.ToImmutableArray());
 
         var emitting = _outputs.Select(output => EmitDocumentAsync(output, evaluationContext, cancellationToken));
-        var results = await Task.WhenAll(emitting);
+        var results = await Task.WhenAll(emitting).ConfigureAwait(false);
 
         return results.ToImmutableArray();
     }
@@ -78,17 +78,18 @@ public sealed class Workspace : IWorkspace
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        var targetScope = new EmitScope();
-        var outputBuilder = new OutputBuilder(documentOutput.ScopeRef, targetScope, cancellationToken);
+        var outputBuilder = new OutputBuilder(documentOutput.ScopeRef, cancellationToken);
         
         foreach (var entry in evaluationContext.Entries)
             entry.Accept(outputBuilder);
 
-        var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(targetScope.Attributes));
+        var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(outputBuilder.Scope.Attributes));
 
         if (formatter is null)
             throw new NotImplementedException();
 
-        return await formatter.FormatAsync(targetScope, cancellationToken);
+        return await formatter
+            .FormatAsync(documentOutput.ScopeRef, outputBuilder.Scope, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

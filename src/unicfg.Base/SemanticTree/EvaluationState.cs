@@ -1,4 +1,4 @@
-namespace unicfg.Base.SyntaxTree;
+namespace unicfg.Base.SemanticTree;
 
 public enum EvaluationState
 {

@@ -1,4 +1,5 @@
 using System.Text;
+using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Base.Extensions;
@@ -36,5 +37,25 @@ public static class ElementExtensions
         if (@this is AttributeSymbol) builder.Append(']');
 
         return builder.ToString();
+    }
+    
+    public static SymbolRef GetSymbolRef(this AbstractSymbol @this)
+    {
+        if (@this.Parent is null)
+            return SymbolRef.Null;
+
+        if (@this.Name.IsEmpty)
+            throw new InvalidOperationException();
+
+        var symbol = @this;
+        var builder = ImmutableArray.CreateBuilder<StringRef>();
+
+        do
+        {
+            builder.Insert(0, symbol.Name);
+            symbol = symbol.Parent;
+        } while (symbol is {Name.IsEmpty: false});
+
+        return new SymbolRef(builder.ToImmutable());
     }
 }

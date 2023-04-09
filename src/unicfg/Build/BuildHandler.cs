@@ -19,6 +19,7 @@ internal class BuildHandler : CliCommandHandler
 
     protected override async Task<ExitCode> InvokeAsync(
         CommandResult commandResult,
+        TextWriter stdoutWriter,
         CancellationToken cancellationToken)
     {
         var inputs = commandResult.GetValueForArgument(CliSymbols.InputsArgument);

@@ -2,58 +2,60 @@
 
 namespace unicfg.Base.SemanticTree;
 
-public sealed class EmitScope
+public sealed class EmitScope : EmitSymbol
 {
-    private readonly Dictionary<StringRef, EmitScope> _scopes;
     private readonly Dictionary<StringRef, EmitProperty> _properties;
-    private readonly Dictionary<StringRef, StringRef> _attributes;
+    private readonly Dictionary<StringRef, EmitScope> _scopes;
 
-    public EmitScope()
+    public EmitScope() : this(StringRef.Empty)
+    {
+    }
+
+    public EmitScope(StringRef name) : base(name)
     {
         _scopes = new Dictionary<StringRef, EmitScope>();
         _properties = new Dictionary<StringRef, EmitProperty>();
-        _attributes = new Dictionary<StringRef, StringRef>();
     }
-
-    public StringRef? Name { get; init; }
-    public EmitScope? Parent { get; init; }
 
     public IReadOnlyDictionary<StringRef, EmitScope> Scopes => _scopes;
     public IReadOnlyDictionary<StringRef, EmitProperty> Properties => _properties;
-    public IReadOnlyDictionary<StringRef, StringRef> Attributes => _attributes;
 
-    public EmitScope? Scope(StringRef name)
+    public EmitScope? GetScope(StringRef name)
     {
+        if (name.IsEmpty)
+            throw new InvalidOperationException();
+
         if (_properties.ContainsKey(name))
             return null;
 
         if (_scopes.TryGetValue(name, out var scope))
             return scope;
 
-        return _scopes[name] = new EmitScope
+        return _scopes[name] = new EmitScope(name)
         {
-            Name = name,
             Parent = this
         };
     }
 
-    public EmitProperty? Property(StringRef name)
+    public EmitProperty? GetProperty(StringRef name)
     {
+        if (name.IsEmpty)
+            throw new InvalidOperationException();
+
         if (_scopes.ContainsKey(name))
             return null;
 
         if (_properties.TryGetValue(name, out var property))
             return property;
 
-        return _properties[name] = new EmitProperty
+        return _properties[name] = new EmitProperty(name)
         {
-            Name = name,
-            Parent = this,
+            Parent = this
         };
     }
 
-    public void Argument(StringRef name, StringRef value)
+    public override ValueTask AcceptAsync(IEmitAsyncVisitor visitor, CancellationToken cancellationToken)
     {
-        _attributes[name] = value;
+        return visitor.VisitScopeAsync(this, cancellationToken);
     }
 }

@@ -10,13 +10,14 @@ internal class OutputBuilder : AbstractWalker
     private readonly EmitScope _outputScope;
     private int _depth;
 
-    public OutputBuilder(SymbolRef targetScope, EmitScope outputScope, CancellationToken cancellationToken)
+    public OutputBuilder(SymbolRef targetScope, CancellationToken cancellationToken)
     {
-        _outputScope = outputScope;
-        
+        _outputScope = new EmitScope();
         _targetPath = targetScope.Path;
         _depth = 0;
     }
+
+    public EmitScope Scope { get; }
 
     public override void Visit(ScopeSymbol scope)
     {

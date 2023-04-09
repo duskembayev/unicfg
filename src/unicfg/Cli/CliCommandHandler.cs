@@ -26,13 +26,13 @@ internal abstract class CliCommandHandler : ICommandHandler
     {
         var cancellationToken = context.GetCancellationToken();
         var commandResult = context.BindingContext.ParseResult.RootCommandResult;
-        await using var textWriter = context.Console.Out.CreateTextWriter();
+        await using var stdOutWriter = context.Console.Out.CreateTextWriter();
 
         ExitCode exitCode;
 
         try
         {
-            exitCode = await InvokeAsync(commandResult, textWriter, cancellationToken);
+            exitCode = await InvokeAsync(commandResult, stdOutWriter, cancellationToken);
         }
         catch (Exception e)
         {
@@ -46,6 +46,6 @@ internal abstract class CliCommandHandler : ICommandHandler
 
     protected abstract Task<ExitCode> InvokeAsync(
         CommandResult commandResult,
-        TextWriter textWriter,
+        TextWriter stdOutWriter,
         CancellationToken cancellationToken);
 }

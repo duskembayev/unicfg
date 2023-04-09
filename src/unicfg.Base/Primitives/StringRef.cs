@@ -14,6 +14,8 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<ReadOnlyMem
         _memory = memory;
     }
 
+    internal SegmentMemory<char> Memory => _memory;
+
     public bool Equals(StringRef other)
     {
         return _memory.Equals(other._memory);

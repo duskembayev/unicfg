@@ -1,20 +1,17 @@
 using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
 
 namespace unicfg.Base.SemanticTree;
 
-public sealed class EmitProperty
+public sealed class EmitProperty : EmitSymbol
 {
-    private readonly Dictionary<StringRef, StringRef> _attributes;
-
-    public EmitProperty()
+    public EmitProperty(StringRef name) : base(name)
     {
-        _attributes = new Dictionary<StringRef, StringRef>();
     }
 
-    public StringRef Name { get; init; }
-    public EmitScope? Parent { get; init; }
-    public PropertySymbol? Symbol { get; set; }
+    public EmitValue? Value { get; set; }
 
-    public IReadOnlyDictionary<StringRef, StringRef> Attributes => _attributes;
+    public override ValueTask AcceptAsync(IEmitAsyncVisitor visitor, CancellationToken cancellationToken)
+    {
+        return visitor.VisitPropertyAsync(this, cancellationToken);
+    }
 }

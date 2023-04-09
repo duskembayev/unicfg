@@ -5,6 +5,6 @@ namespace unicfg.Base.Formatters;
 
 public interface IFormatter
 {
-    bool Matches(IReadOnlyDictionary<StringRef, StringRef> attributes);
-    Task<EmitResult> FormatAsync(EmitScope scope, CancellationToken cancellationToken);
+    bool Matches(IReadOnlyDictionary<StringRef, EmitValue> attributes);
+    Task<EmitResult> FormatAsync(SymbolRef scopeRef, EmitScope scope, CancellationToken cancellationToken);
 }

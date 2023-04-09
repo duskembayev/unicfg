@@ -3,6 +3,7 @@ using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
+using unicfg.Evaluation.Formatter;
 
 namespace unicfg.Eval;
 
@@ -19,7 +20,7 @@ internal class EvalHandler : CliCommandHandler
 
     protected override async Task<ExitCode> InvokeAsync(
         CommandResult commandResult,
-        TextWriter textWriter,
+        TextWriter stdOutWriter,
         CancellationToken cancellationToken)
     {
         var inputs = commandResult.GetValueForArgument(CliSymbols.InputsArgument);
@@ -45,14 +46,9 @@ internal class EvalHandler : CliCommandHandler
         _workspace.Outputs.UnionWith(outputs);
 
         _workspace.Formatters.Clear();
-        _workspace.Formatters.Add(new EvaluationFormatter(textWriter, ));
+        _workspace.Formatters.Add(new EvaluationFormatter("STDOUT", stdOutWriter));
 
         var results = await _workspace.EmitAsync(cancellationToken);
-
-        if (symbols.Count == 0)
-        {
-            _
-        }
 
         return ExitCode.Success;
     }

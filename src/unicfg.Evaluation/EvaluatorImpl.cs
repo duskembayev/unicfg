@@ -1,6 +1,7 @@
 using unicfg.Base.Analysis;
 using unicfg.Base.Extensions;
 using unicfg.Base.Primitives;
+using unicfg.Base.SemanticTree;
 using unicfg.Base.SyntaxTree;
 using unicfg.Base.SyntaxTree.Values;
 using static unicfg.Base.Analysis.DiagnosticDescriptor;
