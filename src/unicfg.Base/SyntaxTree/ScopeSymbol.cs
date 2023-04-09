@@ -1,20 +1,37 @@
-﻿using unicfg.Base.Primitives;
+﻿using System.Diagnostics.CodeAnalysis;
+using unicfg.Base.Primitives;
 
 namespace unicfg.Base.SyntaxTree;
 
-public sealed class ScopeSymbol : AbstractSymbol
+public sealed class ScopeSymbol : ISymbol
 {
-    public ScopeSymbol(StringRef name, Document document, AbstractSymbol? parent)
-        : base(name, document, parent)
+    internal ScopeSymbol(StringRef name, ISymbol? parent, Document document)
     {
+        Name = name;
+        Parent = parent;
+        Document = document;
+
+        Children = ImmutableDictionary<StringRef, ISymbol>.Empty;
+        Attributes = ImmutableDictionary<StringRef, AttributeElement>.Empty;
     }
 
-    public ImmutableArray<ScopeSymbol> Scopes { get; internal set; }
-    public ImmutableArray<PropertySymbol> Properties { get; internal set; }
-    public ImmutableArray<AttributeSymbol> Attributes { get; internal set; }
+    [MemberNotNullWhen(false, nameof(Parent))]
+    public bool IsRoot => Parent is null;
 
-    public override void Accept(IElementVisitor visitor)
+    public ImmutableDictionary<StringRef, ISymbol> Children { get; internal set; }
+    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; internal set; }
+
+    public StringRef Name { get; }
+    public ISymbol? Parent { get; }
+    public Document Document { get; }
+
+    public void Accept(IElementVisitor visitor)
     {
         visitor.Visit(this);
+    }
+
+    public ISymbol? GetChildSymbol(StringRef name)
+    {
+        return Children.TryGetValue(name, out var result) ? result : null;
     }
 }

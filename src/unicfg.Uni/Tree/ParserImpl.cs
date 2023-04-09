@@ -20,7 +20,7 @@ public sealed class ParserImpl
     {
         _diagnostics = diagnostics;
         _process = process;
-        _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.PropertyGroup, _diagnostics);
+        _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.Scope, _diagnostics);
 
         _handlers = ImmutableArray.Create<ISyntaxHandler>(
             new SymbolHandler(_rootBuilder),
@@ -39,7 +39,7 @@ public sealed class ParserImpl
         var baseDirectory = GetDocumentBaseDirectory(source.Location);
         var document = new Document(baseDirectory, source.Location);
 
-        document.RootScope = _rootBuilder.BuildAsNamespace(document, null);
+        document.RootScope = (ScopeSymbol) _rootBuilder.Build(document, null);
         return document;
     }
 

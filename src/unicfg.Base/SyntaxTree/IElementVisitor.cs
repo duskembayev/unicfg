@@ -7,7 +7,7 @@ public interface IElementVisitor
     void Visit(Document document);
     void Visit(ScopeSymbol scope);
     void Visit(PropertySymbol property);
-    void Visit(AttributeSymbol attribute);
+    void Visit(AttributeElement attribute);
     void Visit(TextValue textValue);
     void Visit(RefValue refValue);
     void Visit(EmptyValue emptyValue);

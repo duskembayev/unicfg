@@ -1,18 +1,16 @@
-﻿using unicfg.Base.Primitives;
+﻿using unicfg.Base.Extensions;
+using unicfg.Base.Primitives;
 
 namespace unicfg.Base.SyntaxTree;
 
 public sealed class Document : IElement
 {
-    private readonly Dictionary<SymbolRef,PropertySymbol?> _properties;
     private ScopeSymbol? _rootGroup;
 
     internal Document(string baseDirectory, string? location)
     {
         BaseDirectory = baseDirectory;
         Location = location;
-
-        _properties = new Dictionary<SymbolRef, PropertySymbol?>();
     }
 
     public string? Location { get; }
@@ -28,29 +26,20 @@ public sealed class Document : IElement
     {
         visitor.Visit(this);
     }
-    
-    public PropertySymbol? FindProperty(SymbolRef propertyRef)
+
+    public ISymbol? FindSymbol(SymbolRef symbolRef)
     {
-        if (_properties.TryGetValue(propertyRef, out var property))
-            return property;
+        if (symbolRef.Path.Length == 0)
+            return RootScope;
 
-        property = _properties[propertyRef] = FindPropertyCore(propertyRef);
-        return property;
-    }
+        ISymbol result = RootScope;
+        var depth = 0;
 
-    private PropertySymbol? FindPropertyCore(SymbolRef propertyRef)
-    {
-        var group = RootScope;
-        var names = new Queue<StringRef>(propertyRef.Path);
-
-        while (group != null && names.TryDequeue(out var name))
+        do
         {
-            if (names.Count == 0)
-                return group.Properties.SingleOrDefault(p => p.Name.Equals(name));
+            result = ((ScopeSymbol) result).GetChildSymbol(symbolRef.Path[depth]);
+        } while (++depth < symbolRef.Path.Length && result is ScopeSymbol);
 
-            group = group.Scopes.SingleOrDefault(n => n.Name.Equals(name));
-        }
-
-        return null;
+        return depth == symbolRef.Path.Length ? result : null;
     }
 }

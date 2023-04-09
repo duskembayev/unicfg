@@ -30,7 +30,7 @@ internal sealed class OutputCollector : AbstractWalker
         _path.TryPop(out _);
     }
 
-    public override void Visit(AttributeSymbol attribute)
+    public override void Visit(AttributeElement attribute)
     {
         if (!attribute.Name.Equals(Attributes.Output))
             return;

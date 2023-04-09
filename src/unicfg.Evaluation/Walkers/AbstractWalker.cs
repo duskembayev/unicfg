@@ -12,21 +12,18 @@ internal abstract class AbstractWalker : IElementVisitor
 
     public virtual void Visit(ScopeSymbol scope)
     {
-        foreach (var attribute in scope.Attributes) attribute.Accept(this);
-
-        foreach (var property in scope.Properties) property.Accept(this);
-
-        foreach (var subScope in scope.Scopes) subScope.Accept(this);
+        foreach (var (_, element) in scope.Attributes) element.Accept(this);
+        foreach (var (_, symbol) in scope.Children) symbol.Accept(this);
     }
 
     public virtual void Visit(PropertySymbol property)
     {
-        foreach (var attribute in property.Attributes) attribute.Accept(this);
+        foreach (var (_, element) in property.Attributes) element.Accept(this);
 
         property.Value.Accept(this);
     }
 
-    public virtual void Visit(AttributeSymbol attribute)
+    public virtual void Visit(AttributeElement attribute)
     {
         attribute.Value.Accept(this);
     }

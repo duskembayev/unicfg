@@ -32,9 +32,9 @@ public static class ElementExtensions
             builder.Append(parent.Name.ToString());
         }
 
-        if (@this is AttributeSymbol) builder.Append('[');
+        if (@this is AttributeElement) builder.Append('[');
         builder.Append(@this.Name.ToString());
-        if (@this is AttributeSymbol) builder.Append(']');
+        if (@this is AttributeElement) builder.Append(']');
 
         return builder.ToString();
     }

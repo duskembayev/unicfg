@@ -6,18 +6,21 @@ namespace unicfg.Evaluation.Walkers;
 
 internal class OutputBuilder : AbstractWalker
 {
-    private readonly ImmutableArray<StringRef> _targetPath;
+    private readonly SymbolRef _targetScope;
     private readonly EmitScope _outputScope;
-    private int _depth;
 
     public OutputBuilder(SymbolRef targetScope, CancellationToken cancellationToken)
     {
+        _targetScope = targetScope;
         _outputScope = new EmitScope();
-        _targetPath = targetScope.Path;
-        _depth = 0;
     }
 
     public EmitScope Scope { get; }
+
+    public override void Visit(Document document)
+    {
+        document.FindProperty()
+    }
 
     public override void Visit(ScopeSymbol scope)
     {

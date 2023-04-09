@@ -20,10 +20,8 @@ internal sealed class AttributeBuilder : IValueOwner
         _values.Add(value);
     }
 
-    public AttributeSymbol Build(Document document, AbstractSymbol parent)
+    public AttributeElement Build(ISymbol parent)
     {
-        var result = new AttributeSymbol(_name, document, parent);
-        result.Values = _values.ToImmutable();
-        return result;
+        return new AttributeElement(_name, parent, _values.ToImmutable());
     }
 }
