@@ -2,7 +2,6 @@ namespace unicfg.Base.SemanticTree;
 
 public enum EvaluationState
 {
-    Unevaluated = 0,
-    Evaluated = 1,
-    Error = 2,
+    Evaluated = 0,
+    Error = 1,
 }

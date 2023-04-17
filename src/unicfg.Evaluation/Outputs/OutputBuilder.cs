@@ -1,7 +1,8 @@
 ﻿using unicfg.Base.SemanticTree;
 using unicfg.Base.SyntaxTree;
+using unicfg.Evaluation.Walkers;
 
-namespace unicfg.Evaluation.Walkers;
+namespace unicfg.Evaluation.Outputs;
 
 internal class OutputBuilder : AsyncWalker
 {
@@ -46,10 +47,13 @@ internal class OutputBuilder : AsyncWalker
         if (_currentSymbol is null)
             throw new NotImplementedException();
 
-        foreach (var (_, element) in property.Attributes) await element.Accept(this).ConfigureAwait(false);
+        foreach (var (_, element) in property.Attributes)
+            await element
+                .Accept(this)
+                .ConfigureAwait(false);
 
         var value = await _valueEvaluator
-            .EvaluateAsync(property.Value, _cancellationToken)
+            .EvaluateAsync(property, _cancellationToken)
             .ConfigureAwait(false);
         
         ((EmitProperty) _currentSymbol).Value = value;
@@ -62,7 +66,7 @@ internal class OutputBuilder : AsyncWalker
             throw new NotImplementedException();
 
         var value = await _valueEvaluator
-            .EvaluateAsync(attribute.Value, _cancellationToken)
+            .EvaluateAsync(attribute, _cancellationToken)
             .ConfigureAwait(false);
 
         _currentSymbol.SetAttributeValue(attribute.Name, value);

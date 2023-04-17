@@ -2,7 +2,7 @@
 
 namespace unicfg.Base.SyntaxTree;
 
-public interface IElementWithValue : IElement
+public interface IElementWithValue : INamedElement
 {
     IValue Value { get; }
 }

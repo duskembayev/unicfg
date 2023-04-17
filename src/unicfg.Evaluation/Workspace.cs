@@ -5,6 +5,7 @@ using unicfg.Base.Primitives;
 using unicfg.Base.SemanticTree;
 using unicfg.Base.SyntaxTree;
 using unicfg.Evaluation.Extensions;
+using unicfg.Evaluation.Outputs;
 using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;

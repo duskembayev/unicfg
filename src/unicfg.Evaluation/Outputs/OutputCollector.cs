@@ -1,7 +1,8 @@
 ﻿using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
+using unicfg.Evaluation.Walkers;
 
-namespace unicfg.Evaluation.Walkers;
+namespace unicfg.Evaluation.Outputs;
 
 internal sealed class OutputCollector : AsyncWalker
 {

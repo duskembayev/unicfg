@@ -5,38 +5,31 @@ namespace unicfg.Base.SemanticTree;
 
 public sealed class EmitValue
 {
-    private static readonly StringRef ErrorValue = "<ERROR>";
-    private StringRef _evaluatedValue = StringRef.Empty;
+    public static readonly EmitValue Error = new(EvaluationState.Error, "<ERROR>");
 
-    public StringRef EvaluatedValue
+    private readonly StringRef _value;
+
+    private EmitValue(EvaluationState state, StringRef value)
+    {
+        State = state;
+        _value = value;
+    }
+
+    public StringRef Value
     {
         get
         {
-            return EvaluationState switch
-            {
-                EvaluationState.Error => ErrorValue,
-                EvaluationState.Evaluated => _evaluatedValue,
-                _ => throw new InvalidOperationException()
-            };
+            if (State != EvaluationState.Evaluated)
+                throw new InvalidOperationException();
+
+            return _value;
         }
     }
 
-    public EvaluationState EvaluationState { get; private set; }
+    public EvaluationState State { get; }
 
-    public void SetEvaluatedValue(StringRef evaluatedValue)
+    public static EmitValue CreateEvaluatedValue(StringRef value)
     {
-        if (EvaluationState != EvaluationState.Unevaluated)
-            throw new InvalidOperationException();
-
-        _evaluatedValue = evaluatedValue;
-        EvaluationState = EvaluationState.Evaluated;
-    }
-
-    public void SetEvaluationError()
-    {
-        if (EvaluationState != EvaluationState.Unevaluated)
-            throw new InvalidOperationException();
-
-        EvaluationState = EvaluationState.Error;
+        return new EmitValue(EvaluationState.Evaluated, value);
     }
 }

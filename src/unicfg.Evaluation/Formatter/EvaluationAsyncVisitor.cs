@@ -45,9 +45,9 @@ public sealed class EvaluationAsyncVisitor : IEmitAsyncVisitor
         await _writer.WriteAsync(property.Name, cancellationToken).ConfigureAwait(false);
         await _writer.WriteAsync(Equality).ConfigureAwait(false);
 
-        if (property.Value is {EvaluationState: EvaluationState.Evaluated})
+        if (property.Value is {State: EvaluationState.Evaluated})
         {
-            await _writer.WriteAsync(property.Value.EvaluatedValue, cancellationToken).ConfigureAwait(false);
+            await _writer.WriteAsync(property.Value.Value, cancellationToken).ConfigureAwait(false);
             SuccessPropertyCount++;
         }
 
