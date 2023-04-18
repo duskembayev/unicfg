@@ -1,5 +1,7 @@
-﻿using unicfg.Model.Elements;
-using unicfg.Model.Elements.Values;
+﻿using unicfg.Base.Analysis;
+using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
+using unicfg.Base.SyntaxTree.Values;
 
 namespace unicfg.Uni.Tree.Builders;
 
@@ -27,8 +29,11 @@ internal sealed class SymbolBuilder : IValueOwner
         if (_kind == SymbolKind.Auto)
             _kind = SymbolKind.Property;
 
-        if (_kind == SymbolKind.PropertyGroup)
-            _diagnostics.Report(DiagnosticDescriptor.UnexpectedValueDeclaration, value.SourceRange, _name);
+        if (_kind == SymbolKind.Scope)
+            _diagnostics.Report(
+                DiagnosticDescriptor.UnexpectedValueDeclaration,
+                value.SourceRange,
+                new object?[] {_name});
 
         _values.Add(value);
     }
@@ -47,10 +52,13 @@ internal sealed class SymbolBuilder : IValueOwner
     public SymbolBuilder AddSymbol(in StringRef name, in Range sourceRange)
     {
         if (_kind == SymbolKind.Auto)
-            _kind = SymbolKind.PropertyGroup;
+            _kind = SymbolKind.Scope;
 
         if (_kind == SymbolKind.Property)
-            _diagnostics.Report(DiagnosticDescriptor.UnexpectedSymbolDeclaration, sourceRange, _name);
+            _diagnostics.Report(
+                DiagnosticDescriptor.UnexpectedSymbolDeclaration,
+                sourceRange,
+                new object?[] {_name});
 
         if (!_children.TryGetValue(name, out var child))
         {
@@ -61,65 +69,51 @@ internal sealed class SymbolBuilder : IValueOwner
         return child;
     }
 
-    public IElement? Build(Document document, ElementWithName parent)
+    public ISymbol Build(Document document, ISymbol? parent)
     {
         return _kind switch
         {
-            SymbolKind.PropertyGroup => BuildAsNamespace(document, parent),
+            SymbolKind.Auto => BuildAsScope(document, parent),
+            SymbolKind.Scope => BuildAsScope(document, parent),
             SymbolKind.Property => BuildAsProperty(document, parent),
-            _ => null
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    public UniPropertyGroup BuildAsNamespace(Document document, ElementWithName? parent)
+    private ScopeSymbol BuildAsScope(Document document, ISymbol? parent)
     {
-        if (_kind != SymbolKind.PropertyGroup)
-            throw new InvalidOperationException();
-
-        var result = new UniPropertyGroup(_name, document, parent);
-        var namespaces = ImmutableArray.CreateBuilder<UniPropertyGroup>(_children.Count);
-        var properties = ImmutableArray.CreateBuilder<UniProperty>(_children.Count);
-
-        foreach (var (_, child) in _children)
-        {
-            var node = child.Build(document, result);
-
-            if (node is null)
-                continue;
-
-            switch (node)
-            {
-                case UniPropertyGroup group:
-                    namespaces.Add(group);
-                    break;
-                case UniProperty property:
-                    properties.Add(property);
-                    break;
-            }
-        }
-
-        result.Attributes = BuildAttributes(document, result);
-        result.PropertyGroups = namespaces.ToImmutable();
-        result.Properties = properties.ToImmutable();
+        var result = new ScopeSymbol(_name, parent, document);
+        result.Attributes = BuildAttributes(result);
+        result.Children = BuildChildren(result, document);
         return result;
     }
 
-    public UniProperty BuildAsProperty(Document document, ElementWithName parent)
+    private PropertySymbol BuildAsProperty(Document document, ISymbol? parent)
     {
-        if (_kind != SymbolKind.Property)
-            throw new InvalidOperationException();
+        ArgumentNullException.ThrowIfNull(parent);
 
-        var result = new UniProperty(_name, document, parent);
-
-        result.Attributes = BuildAttributes(document, result);
-        result.Values = _values.ToImmutable();
+        var result = new PropertySymbol(_name, parent, document, _values.ToImmutable());
+        result.Attributes = BuildAttributes(result);
         return result;
     }
 
-    private ImmutableArray<UniAttribute> BuildAttributes(Document document, ElementWithName parent)
+    private ImmutableDictionary<StringRef, ISymbol> BuildChildren(ISymbol parent, Document document)
     {
-        return _attributes.Count > 0
-            ? _attributes.Select(pair => pair.Value.Build(document, parent)).ToImmutableArray()
-            : ImmutableArray<UniAttribute>.Empty;
+        if (_children.Count == 0)
+            return ImmutableDictionary<StringRef, ISymbol>.Empty;
+
+        return _children.ToImmutableDictionary(
+            p => p.Key,
+            p => p.Value.Build(document, parent));
+    }
+
+    private ImmutableDictionary<StringRef, AttributeElement> BuildAttributes(ISymbol parent)
+    {
+        if (_attributes.Count == 0)
+            return ImmutableDictionary<StringRef, AttributeElement>.Empty;
+
+        return _attributes.ToImmutableDictionary(
+            p => p.Key,
+            p => p.Value.Build(parent));
     }
 }

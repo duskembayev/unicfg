@@ -1,3 +1,5 @@
+using unicfg.Base.Primitives;
+
 namespace unicfg.Uni.Tree.Extensions;
 
 internal static class TokenIndexerExtensions

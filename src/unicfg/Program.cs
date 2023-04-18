@@ -1,73 +1,48 @@
-﻿using System.Collections.Immutable;
-using unicfg;
-using unicfg.Evaluation;
-using unicfg.Model.Analysis;
-using unicfg.Model.Elements;
-using unicfg.Model.Extensions;
-using unicfg.Model.Primitives;
-using unicfg.Model.Sources;
-using unicfg.Uni.Lex;
-using unicfg.Uni.Tree;
+﻿using System.CommandLine;
+using System.CommandLine.Builder;
+using System.CommandLine.Hosting;
+using System.CommandLine.Parsing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using unicfg.Build;
+using unicfg.Cli;
+using unicfg.Enhanced.DependencyInjection;
+using unicfg.Eval;
 
-var source = Source.FromFile(args[0]);
-var diagnostics = new Diagnostics(source);
-
-var lexer = new LexerImpl(diagnostics);
-var tokens = lexer.Process(source);
-
-var parser = new ParserImpl(diagnostics);
-var document = parser.Execute(source, tokens);
-
-var propertyResolver = new PropertyResolver(document);
-var evaluator = new EvaluatorImpl(propertyResolver, diagnostics);
-document.Accept(new ValueEvaluator(evaluator, Console.Out));
-
-
-//PrintTokens(tokens, source);
-
-foreach (var diagnostic in diagnostics)
-    Console.WriteLine(diagnostic.ToString());
-
-void PrintTokens(ImmutableArray<Token> iTokens, ISource iSource)
+var rootCommand = new RootCommand("unicfg CLI")
 {
-    foreach (var token in iTokens)
-    {
-        Console.Write($"[{token.Type:F}");
+    new BuildCommand(),
+    new EvalCommand()
+};
 
-        if (!token.IsEndOfLine())
-        {
-            Console.Write(" :: ");
-            Console.Write(iSource.GetText(token.RawRange).ToString());
-        }
+rootCommand.AddGlobalOption(Verbosity.Option);
 
-        Console.Write("]");
+return await new CommandLineBuilder(rootCommand)
+    .UseHelp()
+    .UseVersionOption()
+    .UseTypoCorrections()
+    .UseParseErrorReporting()
+    .UseExceptionHandler()
+    .CancelOnProcessTermination()
+    .UseHost(ConfigureHost)
+    .Build()
+    .InvokeAsync(args);
 
-        if (token.Type == TokenType.Eol)
-            Console.WriteLine();
-    }
-}
-
-namespace unicfg
+static void ConfigureHost(IHostBuilder builder)
 {
-    public sealed class ValueEvaluator : AbstractElementVisitor
+    var invocationContext = builder.GetInvocationContext();
+
+    if (invocationContext.ParseResult.Errors.Count > 0)
+        return;
+
+    builder.ConfigureLoggingByVerbosity();
+    builder.ConfigureServices(collection =>
     {
-        private readonly EvaluatorImpl _evaluator;
-        private readonly TextWriter _writer;
+        collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
+        collection.AddEnhancedModules();
+    });
 
-        public ValueEvaluator(EvaluatorImpl evaluator, TextWriter writer)
-        {
-            _evaluator = evaluator;
-            _writer = writer;
-        }
-
-        public override void Visit(UniProperty property)
-        {
-            _writer.WriteLine("{0}={1}", property.ToDisplayName(), _evaluator.Evaluate(property));
-        }
-
-        public override void Visit(UniAttribute attribute)
-        {
-            _writer.WriteLine("{0}={1}", attribute.ToDisplayName(), _evaluator.Evaluate(attribute));
-        }
-    }
+    builder.UseCommandHandler<BuildCommand, BuildHandler>();
+    builder.UseCommandHandler<EvalCommand, EvalHandler>();
 }

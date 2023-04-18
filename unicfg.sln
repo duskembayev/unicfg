@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "unicfg", "src\unicfg\unicfg.csproj", "{B7F06104-D2D1-44D9-9C97-F90D9A0709B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "unicfg.Model", "src\unicfg.Model\unicfg.Model.csproj", "{2CE32237-3DE0-45AD-A5FA-18ED9C05EE42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "unicfg.Base", "src\unicfg.Base\unicfg.Base.csproj", "{2CE32237-3DE0-45AD-A5FA-18ED9C05EE42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unicfg.Evaluation", "src\unicfg.Evaluation\unicfg.Evaluation.csproj", "{F85FA8AC-5332-4159-8062-0B8F6F958E34}"
 EndProject

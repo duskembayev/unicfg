@@ -1,3 +1,5 @@
+using unicfg.Base.Primitives;
+
 namespace unicfg.Uni.Tree.Handlers;
 
 internal sealed class EolHandler : ISyntaxHandler

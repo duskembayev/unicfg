@@ -3,6 +3,6 @@ namespace unicfg.Uni.Tree.Builders;
 internal enum SymbolKind
 {
     Auto,
-    PropertyGroup,
+    Scope,
     Property
 }

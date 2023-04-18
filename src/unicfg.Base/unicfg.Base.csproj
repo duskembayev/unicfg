@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <InternalsVisibleTo Include="unicfg.Uni" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Enhanced.DependencyInjection" Version="1.0.1" />
+  </ItemGroup>
+</Project>

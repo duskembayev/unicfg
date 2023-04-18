@@ -1,4 +1,6 @@
-using unicfg.Model.Sources;
+using unicfg.Base.Analysis;
+using unicfg.Base.Inputs;
+using unicfg.Base.Primitives;
 using unicfg.Uni.Lex.Extensions;
 using unicfg.Uni.Lex.Handlers;
 
@@ -51,7 +53,7 @@ public sealed class LexerImpl
                 result.Add(currentToken.Value);
                 
                 if (currentToken is { Type: TokenType.Unknown })
-                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, currentToken.Value.RawRange);
+                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, source, currentToken.Value.RawRange);
             }
         }
 

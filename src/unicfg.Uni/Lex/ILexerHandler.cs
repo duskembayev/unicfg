@@ -1,3 +1,5 @@
+using unicfg.Base.Primitives;
+
 namespace unicfg.Uni.Lex;
 
 public interface ILexerHandler

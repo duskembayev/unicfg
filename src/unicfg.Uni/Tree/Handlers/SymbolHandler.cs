@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using unicfg.Model.Elements.Values;
+using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree.Values;
 using unicfg.Uni.Tree.Builders;
 using unicfg.Uni.Tree.Extensions;
 
@@ -146,9 +147,9 @@ internal sealed class SymbolHandler : ISyntaxHandler
         return new RefValue(refTokenStart..indexer.Token.RawRange.End, propertyRef);
     }
 
-    private static bool TryParsePropertyRef(ref TokenIndexer indexer, out PropertyRef propertyRef)
+    private static bool TryParsePropertyRef(ref TokenIndexer indexer, out SymbolRef propertyRef)
     {
-        propertyRef = PropertyRef.Null;
+        propertyRef = SymbolRef.Null;
         indexer = indexer.Next;
 
         if (!indexer.Token.IsBraceL())
@@ -161,7 +162,7 @@ internal sealed class SymbolHandler : ISyntaxHandler
         if (path.IsEmpty || !indexer.Token.IsBraceR())
             return false;
 
-        propertyRef = new PropertyRef(path);
+        propertyRef = new SymbolRef(path);
         return true;
     }
 

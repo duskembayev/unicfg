@@ -1,9 +1,10 @@
 ﻿using NUnit.Framework;
+using unicfg.Base.Analysis;
+using unicfg.Base.Environment;
+using unicfg.Base.Inputs;
+using unicfg.Base.Primitives;
+using unicfg.Base.SyntaxTree;
 using unicfg.Evaluation;
-using unicfg.Model.Analysis;
-using unicfg.Model.Elements;
-using unicfg.Model.Primitives;
-using unicfg.Model.Sources;
 using unicfg.Uni.Lex;
 using unicfg.Uni.Tree;
 
@@ -28,10 +29,10 @@ picture.subject=moon";
     public void Setup()
     {
         var source = Source.Create(Input);
-        var diagnostics = new Diagnostics(source);
+        var diagnostics = new Diagnostics().WithSource(source);
         var lexer = new LexerImpl(diagnostics);
         var tokens = lexer.Process(source);
-        var parser = new ParserImpl(diagnostics);
+        var parser = new ParserImpl(diagnostics, new CurrentProcess());
 
         _document = parser.Execute(source, tokens);
         _propertyResolver = new PropertyResolver(_document);
@@ -41,7 +42,7 @@ picture.subject=moon";
     [Test]
     public void ResolveNamespaceAttribute()
     {
-        var group = _document.RootGroup.PropertyGroups.Single(n => n.Name.Equals("picture"));
+        var group = _document.RootScope.Scopes.Single(n => n.Name.Equals("picture"));
         var attribute = group.Attributes.Single(a => a.Name.Equals("border"));
         var value = _evaluator.Evaluate(attribute);
 
@@ -51,7 +52,7 @@ picture.subject=moon";
     [Test]
     public void ResolvePropertyAttribute()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("picture.background"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("picture.background"));
         Assert.NotNull(property);
 
         var attribute = property.Attributes.Single(a => a.Name.Equals("color"));
@@ -63,7 +64,7 @@ picture.subject=moon";
     [Test]
     public void ResolvePropertyAttributeWithRef()
     {
-        var property = _propertyResolver.ResolveProperty(PropertyRef.FromPath("picture.subject"));
+        var property = _propertyResolver.ResolveProperty(SymbolRef.FromPath("picture.subject"));
         Assert.NotNull(property);
 
         var attribute = property.Attributes.Single(a => a.Name.Equals("color"));
