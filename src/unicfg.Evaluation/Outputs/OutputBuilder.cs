@@ -24,7 +24,7 @@ internal class OutputBuilder : AsyncWalker
     {
         _currentSymbol = _currentSymbol switch
         {
-            null when scope.IsRoot => Scope,
+            null => Scope,
             EmitScope parent => parent.GetScope(scope.Name),
             _ => null
         };
@@ -55,7 +55,7 @@ internal class OutputBuilder : AsyncWalker
         var value = await _valueEvaluator
             .EvaluateAsync(property, _cancellationToken)
             .ConfigureAwait(false);
-        
+
         ((EmitProperty) _currentSymbol).Value = value;
         _currentSymbol = _currentSymbol.Parent;
     }
