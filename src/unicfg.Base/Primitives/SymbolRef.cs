@@ -5,7 +5,7 @@ namespace unicfg.Base.Primitives;
 public readonly struct SymbolRef : IEquatable<SymbolRef>
 {
     private const char PathSeparator = '.';
-    public static readonly SymbolRef Null = default;
+    public static readonly SymbolRef Null = new(ImmutableArray<StringRef>.Empty);
 
     public SymbolRef(ImmutableArray<StringRef> path)
     {
@@ -19,6 +19,9 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
         if (other.Path.Length != Path.Length)
             return false;
 
+        if (other.Path.Length == 0)
+            return true;
+
         var index = -1;
         var result = true;
 
@@ -26,6 +29,16 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
             result &= other.Path[index].Equals(Path[index]);
 
         return result;
+    }
+
+    public static bool operator ==(SymbolRef left, SymbolRef right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(SymbolRef left, SymbolRef right)
+    {
+        return !(left == right);
     }
 
     public override bool Equals(object? obj)

@@ -33,13 +33,13 @@ internal class EvalHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(properties);
 
         foreach (var file in inputs)
-            _workspace.OpenFrom(file.FullName);
+            await _workspace.OpenFromAsync(file.FullName, cancellationToken);
 
         foreach (var (path, value) in properties)
             _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
 
         var outputs = symbols
-            .Select(info => new DocumentOutput(SymbolRef.FromPath(info.Path)))
+            .Select(info => new DocumentOutput(info == SymbolInfo.Root ? SymbolRef.Null : SymbolRef.FromPath(info.Path)))
             .ToImmutableArray();
 
         _workspace.Outputs.Clear();

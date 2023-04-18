@@ -31,12 +31,12 @@ internal class BuildHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(outputDir);
 
         foreach (var file in inputs)
-            _workspace.OpenFrom(file.FullName);
+            await _workspace.OpenFromAsync(file.FullName, cancellationToken);
 
         foreach (var (path, value) in properties)
             _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
 
-        var results = await _workspace.EmitAllAsync(outputDir.FullName, cancellationToken);
+        var results = await _workspace.EmitAsync(cancellationToken);
 
         if (results.Length == 0)
             return ExitCode.NoResult;

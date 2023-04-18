@@ -1,4 +1,5 @@
-﻿using unicfg.Base.Extensions;
+﻿using System.Diagnostics;
+using unicfg.Base.Extensions;
 using unicfg.Base.Primitives;
 using unicfg.Base.SemanticTree;
 using unicfg.Base.SyntaxTree;
@@ -37,11 +38,12 @@ internal sealed class ValueEvaluator : IValueEvaluator
             return emitValue;
 
         var valueBuilder = new ValueBuilder(_values, cancellationToken);
-        var valueStack = new Stack<(SymbolRef Path, IValue Value)>(3);
+        var tale = new Stack<(SymbolRef Path, IValue Value)>(3);
 
-        valueStack.Push((symbolRef, value));
+        emitValue = null;
+        tale.Push((symbolRef, value));
 
-        while (valueStack.TryPeek(out var item))
+        while (tale.TryPeek(out var item))
         {
             valueBuilder.Reset();
             await item.Value.Accept(valueBuilder).ConfigureAwait(false);
@@ -49,24 +51,39 @@ internal sealed class ValueEvaluator : IValueEvaluator
 
             if (emitValue is not null)
             {
-                _values[item.Path] = emitValue;
-                valueStack.Pop();
+                if (item.Path != SymbolRef.Null)
+                    _values[item.Path] = emitValue;
+
+                tale.Pop();
                 continue;
             }
 
-            foreach (var depPath in valueBuilder.UnresolvedDependencies)
+            Debug.Assert(valueBuilder.UnresolvedDependency != SymbolRef.Null);
+
+            var property = FindProperty(valueBuilder.UnresolvedDependency);
+
+            if (property is null)
             {
-                var property = FindProperty(depPath);
-
-                if (property is null)
-                {
-                    _values[depPath] = EmitValue.Error;
-                    continue;
-                }
-
-                valueStack.Push((depPath, property.Value));
+                _values[valueBuilder.UnresolvedDependency] = EmitValue.Error;
+                continue;
             }
+
+            if (HasCircularReference(valueBuilder.UnresolvedDependency, tale))
+            {
+                _values[valueBuilder.UnresolvedDependency] = EmitValue.Error;
+                continue;
+            }
+
+            tale.Push((valueBuilder.UnresolvedDependency, property.Value));
         }
+
+        Debug.Assert(emitValue != null);
+        return emitValue;
+    }
+
+    private static bool HasCircularReference(SymbolRef symbolRef, IEnumerable<(SymbolRef Path, IValue Value)> tale)
+    {
+        return tale.Any(item => item.Path.Equals(symbolRef));
     }
 
     private PropertySymbol? FindProperty(SymbolRef path)

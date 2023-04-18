@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\unicfg.Base\unicfg.Base.csproj" />
+    <ProjectReference Include="..\unicfg.Uni\unicfg.Uni.csproj" />
   </ItemGroup>
 </Project>

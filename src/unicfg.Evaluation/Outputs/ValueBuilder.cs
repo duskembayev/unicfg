@@ -9,8 +9,8 @@ internal sealed class ValueBuilder : AsyncWalker
 {
     private readonly IReadOnlyDictionary<SymbolRef, EmitValue> _dependencies;
     private readonly CancellationToken _cancellationToken;
-    private readonly HashSet<SymbolRef> _unresolvedDependencies;
 
+    private SymbolRef _unresolvedDependency;
     private bool _hasErrors;
     private StringRef _value;
 
@@ -19,17 +19,17 @@ internal sealed class ValueBuilder : AsyncWalker
     {
         _dependencies = dependencies;
         _cancellationToken = cancellationToken;
-        _unresolvedDependencies = new HashSet<SymbolRef>();
+        _unresolvedDependency = SymbolRef.Null;
     }
 
-    public IEnumerable<SymbolRef> UnresolvedDependencies => _unresolvedDependencies;
+    public SymbolRef UnresolvedDependency => _unresolvedDependency;
 
     public EmitValue? GetResult()
     {
         if (_hasErrors)
             return EmitValue.Error;
 
-        if (_unresolvedDependencies.Count > 0)
+        if (_unresolvedDependency != SymbolRef.Null)
             return null;
 
         return EmitValue.CreateEvaluatedValue(_value);
@@ -37,7 +37,7 @@ internal sealed class ValueBuilder : AsyncWalker
 
     public void Reset()
     {
-        _unresolvedDependencies.Clear();
+        _unresolvedDependency = SymbolRef.Null;
         _hasErrors = false;
         _value = StringRef.Empty;
     }
@@ -49,6 +49,9 @@ internal sealed class ValueBuilder : AsyncWalker
         if (_hasErrors)
             return ValueTask.CompletedTask;
 
+        if (_unresolvedDependency != SymbolRef.Null)
+            return ValueTask.CompletedTask;
+        
         _value += textValue.Text;
         return ValueTask.CompletedTask;
     }
@@ -69,9 +72,13 @@ internal sealed class ValueBuilder : AsyncWalker
         if (_hasErrors)
             return ValueTask.CompletedTask;
 
+        if (_unresolvedDependency != SymbolRef.Null)
+            return ValueTask.CompletedTask;
+
         if (!_dependencies.TryGetValue(refValue.Property, out var value))
         {
-            _unresolvedDependencies.Add(refValue.Property);
+            _unresolvedDependency = refValue.Property;
+            _value = StringRef.Empty;
             return ValueTask.CompletedTask;
         }
 
