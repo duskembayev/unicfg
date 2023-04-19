@@ -81,7 +81,7 @@ To include special characters in parameter values, they must be escaped using th
 . = $ { } [ ] @ ! ( ) " '
 ```
 
-To escape a character, it must be duplicated one or more times. For example, to include the "=" character in a parameter value, it must be written twice:
+To escape a character, it must be repeated two or more times. For example, to include the "=" character in a parameter value, it must be written twice:
 
 ```properties
 db.user=joe@@example
