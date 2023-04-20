@@ -12,9 +12,12 @@ public interface IWorkspace
     ISet<IFormatter> Formatters { get; }
 
     Task OpenFromAsync(string filePath, CancellationToken cancellationToken);
+
     Task OpenAsync(Document document, CancellationToken cancellationToken);
 
-    void OverrideProperty(SymbolRef property, StringRef value);
+    void DefaultPropertyValue(SymbolRef propertyPath, StringRef value);
+
+    void OverridePropertyValue(SymbolRef propertyPath, StringRef value);
 
     Task<ImmutableArray<EmitResult>> EmitAsync(CancellationToken cancellationToken);
 }

@@ -37,7 +37,7 @@ internal sealed class EvalHandler : CliCommandHandler
             await _workspace.OpenFromAsync(file.FullName, cancellationToken);
 
         foreach (var (path, value) in properties)
-            _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
+            _workspace.OverridePropertyValue(SymbolRef.FromPath(path), value);
 
         var outputs = symbols
             .Select(info => new DocumentOutput(ParseSymbolRef(info)))

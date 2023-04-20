@@ -1,5 +1,7 @@
-﻿using unicfg.Base.SemanticTree;
+﻿using unicfg.Base.Primitives;
+using unicfg.Base.SemanticTree;
 using unicfg.Base.SyntaxTree;
+using unicfg.Evaluation.Extensions;
 using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation.Outputs;
@@ -10,12 +12,19 @@ internal class OutputBuilder : AsyncWalker
     private readonly CancellationToken _cancellationToken;
     private EmitSymbol? _currentSymbol;
 
-    public OutputBuilder(IValueEvaluator valueEvaluator, CancellationToken cancellationToken) : base(cancellationToken)
+    public OutputBuilder(
+        IValueEvaluator valueEvaluator,
+        ImmutableDictionary<SymbolRef, StringRef> defaults,
+        CancellationToken cancellationToken)
+        : base(cancellationToken)
     {
         _valueEvaluator = valueEvaluator;
         _cancellationToken = cancellationToken;
 
         Scope = new EmitScope();
+
+        foreach (var (key, value) in defaults)
+            Scope.SetPropertyValue(key, EmitValue.CreateEvaluatedValue(value));
     }
 
     public EmitScope Scope { get; }

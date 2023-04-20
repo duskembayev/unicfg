@@ -1,5 +1,4 @@
 ﻿using unicfg.Base.Analysis;
-using unicfg.Base.Extensions;
 using unicfg.Base.Formatters;
 using unicfg.Base.Primitives;
 using unicfg.Base.SemanticTree;
@@ -15,18 +14,21 @@ public sealed class Workspace : IWorkspace
     private readonly Dictionary<DocumentKey, Document> _registry;
     private readonly IDocumentResolver _documentResolver;
     private readonly Diagnostics _diagnostics;
-    private readonly SortedList<int, Document> _entries;
+    private readonly List<Document> _entries;
     private readonly HashSet<DocumentOutput> _outputs;
     private readonly HashSet<IFormatter> _formatters;
-
-    private int _priorityIndex;
+    private readonly Dictionary<SymbolRef, StringRef> _overrides;
+    private readonly Dictionary<SymbolRef, StringRef> _defaults;
 
     public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
     {
         _documentResolver = documentResolver;
         _diagnostics = diagnostics;
-        _entries = new SortedList<int, Document>();
+
+        _overrides = new Dictionary<SymbolRef, StringRef>();
+        _defaults = new Dictionary<SymbolRef, StringRef>();
         _registry = new Dictionary<DocumentKey, Document>();
+        _entries = new List<Document>();
         _outputs = new HashSet<DocumentOutput>();
         _formatters = new HashSet<IFormatter>();
     }
@@ -50,12 +52,17 @@ public sealed class Workspace : IWorkspace
 
         _outputs.UnionWith(await document.GetOutputsAsync(cancellationToken).ConfigureAwait(false));
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
-        _entries.Add(_priorityIndex++, document);
+        _entries.Add(document);
     }
 
-    public void OverrideProperty(SymbolRef property, StringRef value)
+    public void DefaultPropertyValue(SymbolRef propertyPath, StringRef value)
     {
-        throw new NotImplementedException();
+        _defaults[propertyPath] = value;
+    }
+
+    public void OverridePropertyValue(SymbolRef propertyPath, StringRef value)
+    {
+        _overrides[propertyPath] = value;
     }
 
     public async Task<ImmutableArray<EmitResult>> EmitAsync(CancellationToken cancellationToken)
@@ -67,40 +74,50 @@ public sealed class Workspace : IWorkspace
         }
 
         var evaluationContext = new EvaluationContext(
-            _entries.ToImmutableArrayOfValues(),
+            _entries.ToImmutableArray(),
             _registry.ToImmutableDictionary(),
+            _defaults.ToImmutableDictionary(),
+            _overrides.ToImmutableDictionary(),
             _formatters.ToImmutableArray());
 
-        var emitting = _outputs.Select(output => EmitDocumentAsync(output, evaluationContext, cancellationToken));
+        var emitting = _outputs.Select(output => EmitDocumentAsync(output.ScopeRef, evaluationContext, cancellationToken));
         var results = await Task.WhenAll(emitting).ConfigureAwait(false);
 
         return results.ToImmutableArray();
     }
 
     private async Task<EmitResult> EmitDocumentAsync(
-        DocumentOutput documentOutput,
+        SymbolRef scopeRef,
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        var valueEvaluator = new ValueEvaluator(evaluationContext);
-        var outputBuilder = new OutputBuilder(valueEvaluator, cancellationToken);
-
-        foreach (var entry in evaluationContext.Entries)
-        {
-            var symbol = entry.FindSymbol(documentOutput.ScopeRef);
-
-            if (symbol is not null)
-                await symbol.Accept(outputBuilder).ConfigureAwait(false);
-        }
-
-        var formatter = evaluationContext.Formatters
-            .FirstOrDefault(f => f.Matches(outputBuilder.Scope.Attributes));
+        var scope = await BuildScopeAsync(scopeRef, evaluationContext, cancellationToken).ConfigureAwait(false);
+        var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(scope.Attributes));
 
         if (formatter is null)
             throw new NotImplementedException();
 
         return await formatter
-            .FormatAsync(documentOutput.ScopeRef, outputBuilder.Scope, cancellationToken)
+            .FormatAsync(scopeRef, scope, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    private static async Task<EmitScope> BuildScopeAsync(
+        SymbolRef scopeRef,
+        EvaluationContext evaluationContext,
+        CancellationToken cancellationToken)
+    {
+        var valueEvaluator = new ValueEvaluator(evaluationContext.Entries, evaluationContext.Overrides);
+        var outputBuilder = new OutputBuilder(valueEvaluator, evaluationContext.Defaults, cancellationToken);
+
+        foreach (var entry in evaluationContext.Entries)
+        {
+            var symbol = entry.FindSymbol(scopeRef);
+
+            if (symbol is not null)
+                await symbol.Accept(outputBuilder).ConfigureAwait(false);
+        }
+
+        return outputBuilder.Scope;
     }
 }

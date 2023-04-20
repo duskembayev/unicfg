@@ -10,13 +10,16 @@ namespace unicfg.Evaluation.Outputs;
 
 internal sealed class ValueEvaluator : IValueEvaluator
 {
-    private readonly EvaluationContext _evaluationContext;
+    private readonly ImmutableArray<Document> _entries;
     private readonly Dictionary<SymbolRef, EmitValue> _values;
 
-    public ValueEvaluator(EvaluationContext evaluationContext)
+    public ValueEvaluator(ImmutableArray<Document> entries, ImmutableDictionary<SymbolRef, StringRef> overrides)
     {
-        _evaluationContext = evaluationContext;
+        _entries = entries;
         _values = new Dictionary<SymbolRef, EmitValue>();
+
+        foreach (var (key, value) in overrides)
+            _values[key] = EmitValue.CreateEvaluatedValue(value);
     }
 
     public async ValueTask<EmitValue> EvaluateAsync(IElementWithValue element, CancellationToken cancellationToken)
@@ -88,9 +91,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
 
     private PropertySymbol? FindProperty(SymbolRef path)
     {
-        for (var index = 1; index <= _evaluationContext.Entries.Length; index++)
+        for (var index = 1; index <= _entries.Length; index++)
         {
-            var depSymbol = _evaluationContext.Entries[^index].FindSymbol(path);
+            var depSymbol = _entries[^index].FindSymbol(path);
 
             switch (depSymbol)
             {

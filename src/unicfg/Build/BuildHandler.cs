@@ -34,7 +34,7 @@ internal sealed class BuildHandler : CliCommandHandler
             await _workspace.OpenFromAsync(file.FullName, cancellationToken);
 
         foreach (var (path, value) in properties)
-            _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
+            _workspace.OverridePropertyValue(SymbolRef.FromPath(path), value);
 
         var results = await _workspace.EmitAsync(cancellationToken);
 
