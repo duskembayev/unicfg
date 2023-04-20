@@ -15,7 +15,7 @@ public sealed class EvaluationAsyncVisitor : IEmitAsyncVisitor
     {
         _writer = writer;
         _path = new List<StringRef>();
-        
+
         TotalPropertyCount = 0;
         SuccessPropertyCount = 0;
     }
@@ -57,10 +57,10 @@ public sealed class EvaluationAsyncVisitor : IEmitAsyncVisitor
 
     private async ValueTask AcceptChildrenAsync(EmitScope scope, CancellationToken cancellationToken)
     {
-        foreach (var (_, childScope) in scope.Scopes)
-            await childScope.AcceptAsync(this, cancellationToken).ConfigureAwait(false);
-
         foreach (var (_, childProperty) in scope.Properties)
             await childProperty.AcceptAsync(this, cancellationToken).ConfigureAwait(false);
+
+        foreach (var (_, childScope) in scope.Scopes)
+            await childScope.AcceptAsync(this, cancellationToken).ConfigureAwait(false);
     }
 }

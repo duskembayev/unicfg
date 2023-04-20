@@ -3,7 +3,7 @@ using System.Text;
 
 namespace unicfg.Base.Primitives;
 
-public readonly struct StringRef : IEquatable<StringRef>, IEquatable<ReadOnlyMemory<char>>, IEquatable<string>
+public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IEquatable<ReadOnlyMemory<char>>, IComparable<StringRef>
 {
     public static readonly StringRef Empty = default;
 
@@ -29,6 +29,34 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<ReadOnlyMem
     public bool Equals([NotNullWhen(true)] string? other)
     {
         return other is not null && _memory.Equals(other.AsMemory());
+    }
+
+    public int CompareTo(StringRef other)
+    {
+        switch (IsEmpty, other.IsEmpty)
+        {
+            case (true, true):
+                return 0;
+            case (true, false):
+                return -1;
+            case (false, true):
+                return 1;
+        }
+
+        var i = 0;
+
+        while (i < Length && i < other.Length)
+        {
+            var c1 = this[i];
+            var c2 = other[i];
+
+            if (c1 != c2)
+                return c1 - c2;
+
+            i++;
+        }
+
+        return Length - other.Length;
     }
 
     public override bool Equals(object? obj)

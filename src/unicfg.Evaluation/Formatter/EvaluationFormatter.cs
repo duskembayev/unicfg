@@ -36,11 +36,11 @@ public sealed class EvaluationFormatter : IFormatter
         await using var bufferWriter = new StringWriter();
         var visitor = new EvaluationAsyncVisitor(bufferWriter);
 
-        foreach (var (_, childScope) in scope.Scopes)
-            await childScope.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-
         foreach (var (_, childProperty) in scope.Properties)
             await childProperty.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+
+        foreach (var (_, childScope) in scope.Scopes)
+            await childScope.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
 
         return (bufferWriter.GetStringBuilder(), visitor.TotalPropertyCount,
             visitor.TotalPropertyCount - visitor.SuccessPropertyCount);

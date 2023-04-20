@@ -4,8 +4,8 @@ namespace unicfg.Base.SemanticTree;
 
 public sealed class EmitScope : EmitSymbol
 {
-    private readonly Dictionary<StringRef, EmitProperty> _properties;
-    private readonly Dictionary<StringRef, EmitScope> _scopes;
+    private readonly SortedDictionary<StringRef, EmitProperty> _properties;
+    private readonly SortedDictionary<StringRef, EmitScope> _scopes;
 
     public EmitScope() : this(StringRef.Empty)
     {
@@ -13,8 +13,8 @@ public sealed class EmitScope : EmitSymbol
 
     public EmitScope(StringRef name) : base(name)
     {
-        _scopes = new Dictionary<StringRef, EmitScope>();
-        _properties = new Dictionary<StringRef, EmitProperty>();
+        _scopes = new SortedDictionary<StringRef, EmitScope>();
+        _properties = new SortedDictionary<StringRef, EmitProperty>();
     }
 
     public IReadOnlyDictionary<StringRef, EmitScope> Scopes => _scopes;
