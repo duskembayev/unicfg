@@ -1,13 +1,15 @@
 using System.Collections.Immutable;
 using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
+using unicfg.Base.SemanticTree;
 using unicfg.Cli;
 using unicfg.Evaluation;
 using unicfg.Evaluation.Formatter;
+using unicfg.Extensions;
 
 namespace unicfg.Eval;
 
-internal class EvalHandler : CliCommandHandler
+internal sealed class EvalHandler : CliCommandHandler
 {
     private readonly IWorkspace _workspace;
     private readonly ILogger<EvalHandler> _logger;
@@ -26,7 +28,6 @@ internal class EvalHandler : CliCommandHandler
         var inputs = commandResult.GetValueForArgument(CliSymbols.InputsArgument);
         var symbols = commandResult.GetValueForOption(CliSymbols.SymbolsOption);
         var properties = commandResult.GetValueForOption(CliSymbols.PropertiesOption);
-        var noname = commandResult.GetValueForOption(CliSymbols.NonameOption);
 
         ArgumentNullException.ThrowIfNull(inputs);
         ArgumentNullException.ThrowIfNull(symbols);
@@ -39,7 +40,7 @@ internal class EvalHandler : CliCommandHandler
             _workspace.OverrideProperty(SymbolRef.FromPath(path), value);
 
         var outputs = symbols
-            .Select(info => new DocumentOutput(info == SymbolInfo.Root ? SymbolRef.Null : SymbolRef.FromPath(info.Path)))
+            .Select(info => new DocumentOutput(ParseSymbolRef(info)))
             .ToImmutableArray();
 
         _workspace.Outputs.Clear();
@@ -50,6 +51,11 @@ internal class EvalHandler : CliCommandHandler
 
         var results = await _workspace.EmitAsync(cancellationToken);
 
-        return ExitCode.Success;
+        return _logger.OutputResults(results, "Evaluation");
+    }
+
+    private static SymbolRef ParseSymbolRef(SymbolInfo info)
+    {
+        return info == SymbolInfo.Root ? SymbolRef.Null : SymbolRef.FromPath(info.Path);
     }
 }

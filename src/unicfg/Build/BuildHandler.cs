@@ -1,12 +1,12 @@
 using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
 using unicfg.Cli;
 using unicfg.Evaluation;
+using unicfg.Extensions;
 
 namespace unicfg.Build;
 
-internal class BuildHandler : CliCommandHandler
+internal sealed class BuildHandler : CliCommandHandler
 {
     private readonly IWorkspace _workspace;
     private readonly ILogger<BuildHandler> _logger;
@@ -38,43 +38,6 @@ internal class BuildHandler : CliCommandHandler
 
         var results = await _workspace.EmitAsync(cancellationToken);
 
-        if (results.Length == 0)
-            return ExitCode.NoResult;
-
-        var errors = 0;
-
-        foreach (var emitResult in results)
-        {
-            if (emitResult.HasErrors)
-            {
-                OutputErrorResult(emitResult);
-                errors++;
-                continue;
-            }
-
-            OutputResult(emitResult);
-        }
-
-        if (errors > 0 && errors < results.Length)
-            return ExitCode.PartialError;
-
-        return errors == 0 ? ExitCode.Success : ExitCode.Error;
-    }
-
-    private void OutputErrorResult(EmitResult emitResult)
-    {
-        _logger.LogError("Build failed: {SCOPE} -> {FILE} ({ERRORS}/{TOTAL})",
-            emitResult.Scope,
-            emitResult.OutputPath,
-            emitResult.ErrorPropertyCount,
-            emitResult.TotalPropertyCount);
-    }
-
-    private void OutputResult(EmitResult emitResult)
-    {
-        _logger.LogInformation("Build succeeded: {SCOPE} -> {FILE} ({TOTAL})",
-            emitResult.Scope,
-            emitResult.OutputPath,
-            emitResult.TotalPropertyCount);
+        return _logger.OutputResults(results, "Build");
     }
 }

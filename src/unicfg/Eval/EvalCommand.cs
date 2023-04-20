@@ -10,6 +10,5 @@ internal class EvalCommand : Command
         Add(CliSymbols.InputsArgument);
         Add(CliSymbols.SymbolsOption);
         Add(CliSymbols.PropertiesOption);
-        Add(CliSymbols.NonameOption);
     }
 }

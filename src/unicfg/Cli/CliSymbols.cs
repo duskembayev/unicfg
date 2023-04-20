@@ -6,19 +6,9 @@ namespace unicfg.Cli;
 internal static class CliSymbols
 {
     internal static readonly Argument<List<FileInfo>> InputsArgument = CreateInputsArgument();
-    internal static readonly Option<bool> NonameOption = CreateNonameOption();
     internal static readonly Option<DirectoryInfo> OutputDirOption = CreateOutputDirOption();
     internal static readonly Option<List<PropertyInfo>> PropertiesOption = CreatePropertiesOption();
     internal static readonly Option<List<SymbolInfo>> SymbolsOption = CreateSymbolsOption();
-
-    private static Option<bool> CreateNonameOption()
-    {
-        return new Option<bool>("--noname")
-        {
-            Arity = ArgumentArity.Zero,
-            Description = "Do not display the evaluated property names."
-        };
-    }
 
     private static Option<DirectoryInfo> CreateOutputDirOption()
     {
