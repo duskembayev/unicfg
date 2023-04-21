@@ -11,14 +11,14 @@ namespace unicfg.Evaluation;
 [ContainerEntry(ServiceLifetime.Scoped, typeof(IWorkspace))]
 public sealed class Workspace : IWorkspace
 {
-    private readonly Dictionary<DocumentKey, Document> _registry;
-    private readonly IDocumentResolver _documentResolver;
-    private readonly Diagnostics _diagnostics;
-    private readonly List<Document> _entries;
-    private readonly HashSet<DocumentOutput> _outputs;
-    private readonly HashSet<IFormatter> _formatters;
-    private readonly Dictionary<SymbolRef, StringRef> _overrides;
     private readonly Dictionary<SymbolRef, StringRef> _defaults;
+    private readonly Diagnostics _diagnostics;
+    private readonly IDocumentResolver _documentResolver;
+    private readonly List<Document> _entries;
+    private readonly HashSet<IFormatter> _formatters;
+    private readonly HashSet<DocumentOutput> _outputs;
+    private readonly Dictionary<SymbolRef, StringRef> _overrides;
+    private readonly Dictionary<DocumentKey, Document> _registry;
 
     public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
     {
@@ -80,7 +80,8 @@ public sealed class Workspace : IWorkspace
             _overrides.ToImmutableDictionary(),
             _formatters.ToImmutableArray());
 
-        var emitting = _outputs.Select(output => EmitDocumentAsync(output.ScopeRef, evaluationContext, cancellationToken));
+        var emitting =
+            _outputs.Select(output => EmitDocumentAsync(output.ScopeRef, evaluationContext, cancellationToken));
         var results = await Task.WhenAll(emitting).ConfigureAwait(false);
 
         return results.ToImmutableArray();
