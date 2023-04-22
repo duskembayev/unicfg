@@ -65,13 +65,13 @@ internal class OutputBuilder : AsyncWalker
         foreach (var (_, element) in property.Attributes)
         {
             await element
-                  .Accept(this)
-                  .ConfigureAwait(false);
+                .Accept(this)
+                .ConfigureAwait(false);
         }
 
         var value = await _valueEvaluator
-                          .EvaluateAsync(property, _cancellationToken)
-                          .ConfigureAwait(false);
+            .EvaluateAsync(property, _cancellationToken)
+            .ConfigureAwait(false);
 
         ((EmitProperty)_currentSymbol).Value = value;
         _currentSymbol = _currentSymbol.Parent;
@@ -85,8 +85,8 @@ internal class OutputBuilder : AsyncWalker
         }
 
         var value = await _valueEvaluator
-                          .EvaluateAsync(attribute, _cancellationToken)
-                          .ConfigureAwait(false);
+            .EvaluateAsync(attribute, _cancellationToken)
+            .ConfigureAwait(false);
 
         _currentSymbol.SetAttributeValue(attribute.Name, value);
     }

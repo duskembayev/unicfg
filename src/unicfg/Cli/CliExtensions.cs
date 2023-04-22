@@ -24,11 +24,11 @@ internal static class CliExtensions
 
         builder.UseSerilog(
             (_, configuration) => configuration
-                                  .MinimumLevel.Is(logLevel)
-                                  .Enrich.FromLogContext()
-                                  .WriteTo.Console(
-                                      theme: AnsiConsoleTheme.Code,
-                                      standardErrorFromLevel: LogEventLevel.Verbose));
+                .MinimumLevel.Is(logLevel)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(
+                    theme: AnsiConsoleTheme.Code,
+                    standardErrorFromLevel: LogEventLevel.Verbose));
 
         return builder;
     }

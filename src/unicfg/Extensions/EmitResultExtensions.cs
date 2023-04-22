@@ -6,7 +6,7 @@ namespace unicfg.Extensions;
 
 internal static class EmitResultExtensions
 {
-    internal static ExitCode OutputResults(
+    internal static ExitCode Output(
         this IReadOnlyCollection<EmitResult> results,
         string operation,
         ILogger logger)

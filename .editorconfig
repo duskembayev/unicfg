@@ -10,6 +10,7 @@ resharper_align_multiline_calls_chain = true
 resharper_align_multiline_extends_list = true
 resharper_align_multline_type_parameter_constrains = true
 resharper_autodetect_indent_settings = true
+resharper_csharp_align_multiline_calls_chain = false
 resharper_csharp_stick_comment = false
 resharper_csharp_wrap_after_declaration_lpar = true
 resharper_csharp_wrap_after_invocation_lpar = true

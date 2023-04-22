@@ -4,6 +4,7 @@ using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
 using unicfg.Evaluation.Formatter;
+using unicfg.Extensions;
 
 namespace unicfg.Eval;
 
@@ -52,8 +53,7 @@ internal sealed class EvalHandler : CliCommandHandler
         _workspace.Formatters.Add(new EvaluationFormatter("STDOUT", stdOutWriter));
 
         var results = await _workspace.EmitAsync(cancellationToken);
-
-        return _logger.OutputResults(results, "Evaluation");
+        return results.Output("Evaluation", _logger);
     }
 
     private static SymbolRef ParseSymbolRef(SymbolInfo info)

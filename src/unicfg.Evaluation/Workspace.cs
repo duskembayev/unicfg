@@ -39,8 +39,8 @@ public sealed class Workspace : IWorkspace
     public async Task OpenFromAsync(string filePath, CancellationToken cancellationToken)
     {
         var document = await _documentResolver
-                             .LoadFromFileAsync(filePath, DocumentFormat.Uni, cancellationToken)
-                             .ConfigureAwait(false);
+            .LoadFromFileAsync(filePath, DocumentFormat.Uni, cancellationToken)
+            .ConfigureAwait(false);
 
         await OpenAsync(document, cancellationToken).ConfigureAwait(false);
     }
@@ -103,8 +103,8 @@ public sealed class Workspace : IWorkspace
         }
 
         return await formatter
-                     .FormatAsync(scopeRef, scope, cancellationToken)
-                     .ConfigureAwait(false);
+            .FormatAsync(scopeRef, scope, cancellationToken)
+            .ConfigureAwait(false);
     }
 
     private static async Task<EmitScope> BuildScopeAsync(

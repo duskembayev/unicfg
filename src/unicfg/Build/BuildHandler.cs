@@ -2,6 +2,7 @@
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
+using unicfg.Extensions;
 
 namespace unicfg.Build;
 
@@ -40,7 +41,6 @@ internal sealed class BuildHandler : CliCommandHandler
         }
 
         var results = await _workspace.EmitAsync(cancellationToken);
-
-        return _logger.OutputResults(results, "Build");
+        return results.Output("Build", _logger);
     }
 }
