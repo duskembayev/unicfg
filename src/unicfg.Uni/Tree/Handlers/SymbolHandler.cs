@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree.Values;
 using unicfg.Uni.Tree.Builders;
@@ -27,10 +27,14 @@ internal sealed class SymbolHandler : ISyntaxHandler
             var valueOwner = ResolveValueOwner(ref indexer);
 
             if (valueOwner is null)
+            {
                 return HandleResult.ErrorResult(indexer.Token);
+            }
 
             if (!indexer.Token.IsEquality())
+            {
                 return HandleResult.ErrorResult(indexer.Token);
+            }
 
             indexer.NextNotWhitespace();
 
@@ -57,10 +61,14 @@ internal sealed class SymbolHandler : ISyntaxHandler
         var symbol = ResolveSymbol(ref indexer);
 
         if (symbol is null)
+        {
             return null;
+        }
 
         if (indexer.Token.IsBracketL())
+        {
             return ResolveAttribute(ref indexer, symbol);
+        }
 
         return symbol;
     }
@@ -71,13 +79,17 @@ internal sealed class SymbolHandler : ISyntaxHandler
         var path = ResolvePath(ref indexer);
 
         if (path.IsEmpty)
+        {
             return null;
+        }
 
         var symbolEnd = indexer.Prev.Token.RawRange.End;
         var symbolBuilder = _rootSymbolBuilder;
 
         foreach (var name in path)
+        {
             symbolBuilder = symbolBuilder.AddSymbol(name, symbolStart..symbolEnd);
+        }
 
         return symbolBuilder;
     }
@@ -96,7 +108,9 @@ internal sealed class SymbolHandler : ISyntaxHandler
         indexer.SkipWhitespace();
 
         if (!indexer.Token.IsBracketR())
+        {
             return null;
+        }
 
         indexer.NextNotWhitespace();
         return parentSymbol.AddAttribute(attributeName);
@@ -118,7 +132,9 @@ internal sealed class SymbolHandler : ISyntaxHandler
             };
 
             if (value is null)
+            {
                 return null;
+            }
 
             valueBuilder.Add(value);
             indexer = indexer.Next;
@@ -142,7 +158,9 @@ internal sealed class SymbolHandler : ISyntaxHandler
         var refTokenStart = indexer.Token.RawRange.Start;
 
         if (!TryParsePropertyRef(ref indexer, out var propertyRef))
+        {
             return null;
+        }
 
         return new RefValue(refTokenStart..indexer.Token.RawRange.End, propertyRef);
     }
@@ -153,14 +171,18 @@ internal sealed class SymbolHandler : ISyntaxHandler
         indexer = indexer.Next;
 
         if (!indexer.Token.IsBraceL())
+        {
             return false;
+        }
 
         indexer.NextNotWhitespace();
 
         var path = ResolvePath(ref indexer);
 
         if (path.IsEmpty || !indexer.Token.IsBraceR())
+        {
             return false;
+        }
 
         propertyRef = new SymbolRef(path);
         return true;
@@ -176,7 +198,9 @@ internal sealed class SymbolHandler : ISyntaxHandler
             indexer.SkipWhitespace();
 
             if (!indexer.Token.IsDot())
+            {
                 break;
+            }
 
             indexer.NextNotWhitespace();
         }

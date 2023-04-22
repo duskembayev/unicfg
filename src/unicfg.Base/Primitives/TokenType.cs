@@ -22,5 +22,5 @@ public enum TokenType : ushort
     EndOfLine = 500, // marker
     Comment,
     Eol,
-    Eof,
+    Eof
 }

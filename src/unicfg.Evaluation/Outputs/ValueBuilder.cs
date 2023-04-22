@@ -7,11 +7,10 @@ namespace unicfg.Evaluation.Outputs;
 
 internal sealed class ValueBuilder : AsyncWalker
 {
-    private readonly IReadOnlyDictionary<SymbolRef, EmitValue> _dependencies;
     private readonly CancellationToken _cancellationToken;
-
-    private SymbolRef _unresolvedDependency;
+    private readonly IReadOnlyDictionary<SymbolRef, EmitValue> _dependencies;
     private bool _hasErrors;
+
     private StringRef _value;
 
     public ValueBuilder(IReadOnlyDictionary<SymbolRef, EmitValue> dependencies, CancellationToken cancellationToken)
@@ -19,25 +18,29 @@ internal sealed class ValueBuilder : AsyncWalker
     {
         _dependencies = dependencies;
         _cancellationToken = cancellationToken;
-        _unresolvedDependency = SymbolRef.Null;
+        UnresolvedDependency = SymbolRef.Null;
     }
 
-    public SymbolRef UnresolvedDependency => _unresolvedDependency;
+    public SymbolRef UnresolvedDependency { get; private set; }
 
     public EmitValue? GetResult()
     {
         if (_hasErrors)
+        {
             return EmitValue.Error;
+        }
 
-        if (_unresolvedDependency != SymbolRef.Null)
+        if (UnresolvedDependency != SymbolRef.Null)
+        {
             return null;
+        }
 
         return EmitValue.CreateEvaluatedValue(_value);
     }
 
     public void Reset()
     {
-        _unresolvedDependency = SymbolRef.Null;
+        UnresolvedDependency = SymbolRef.Null;
         _hasErrors = false;
         _value = StringRef.Empty;
     }
@@ -47,11 +50,15 @@ internal sealed class ValueBuilder : AsyncWalker
         _cancellationToken.ThrowIfCancellationRequested();
 
         if (_hasErrors)
+        {
             return ValueTask.CompletedTask;
+        }
 
-        if (_unresolvedDependency != SymbolRef.Null)
+        if (UnresolvedDependency != SymbolRef.Null)
+        {
             return ValueTask.CompletedTask;
-        
+        }
+
         _value += textValue.Text;
         return ValueTask.CompletedTask;
     }
@@ -70,14 +77,18 @@ internal sealed class ValueBuilder : AsyncWalker
         _cancellationToken.ThrowIfCancellationRequested();
 
         if (_hasErrors)
+        {
             return ValueTask.CompletedTask;
+        }
 
-        if (_unresolvedDependency != SymbolRef.Null)
+        if (UnresolvedDependency != SymbolRef.Null)
+        {
             return ValueTask.CompletedTask;
+        }
 
         if (!_dependencies.TryGetValue(refValue.Property, out var value))
         {
-            _unresolvedDependency = refValue.Property;
+            UnresolvedDependency = refValue.Property;
             _value = StringRef.Empty;
             return ValueTask.CompletedTask;
         }

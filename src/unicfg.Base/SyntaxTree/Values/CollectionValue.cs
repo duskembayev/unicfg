@@ -1,4 +1,4 @@
-namespace unicfg.Base.SyntaxTree.Values;
+﻿namespace unicfg.Base.SyntaxTree.Values;
 
 public sealed class CollectionValue : IValue
 {

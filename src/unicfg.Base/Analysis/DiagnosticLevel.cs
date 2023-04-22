@@ -1,4 +1,4 @@
-namespace unicfg.Base.Analysis;
+﻿namespace unicfg.Base.Analysis;
 
 public enum DiagnosticLevel
 {

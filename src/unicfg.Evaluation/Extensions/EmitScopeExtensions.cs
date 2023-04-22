@@ -16,13 +16,17 @@ public static class EmitScopeExtensions
             currentScope = currentScope.GetScope(part);
 
             if (currentScope is null)
+            {
                 return false;
+            }
         }
 
         var property = currentScope.GetProperty(path[^1]);
 
         if (property is null)
+        {
             return false;
+        }
 
         property.Value = value;
         return true;

@@ -1,4 +1,4 @@
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
 using unicfg.Base.SyntaxTree.Values;
 

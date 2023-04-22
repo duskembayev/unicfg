@@ -1,4 +1,4 @@
-using unicfg.Base.Inputs;
+﻿using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
 
 namespace unicfg.Uni.Tree;
@@ -25,7 +25,9 @@ internal readonly ref struct TokenIndexer
         get
         {
             if (OutOfRange)
+            {
                 throw new InvalidOperationException();
+            }
 
             return ref _tokens.ItemRef(Index);
         }
@@ -35,5 +37,4 @@ internal readonly ref struct TokenIndexer
     public TokenIndexer Prev => this with { Index = Index - 1 };
 
     public StringRef Content => Source.GetText(Token.ContentRange);
-
 }

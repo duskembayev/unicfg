@@ -1,4 +1,4 @@
-namespace unicfg.Base.Analysis;
+﻿namespace unicfg.Base.Analysis;
 
 public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Arguments)
 {
@@ -8,7 +8,7 @@ public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Argum
 
     public string? Location { get; init; }
     public DiagnosticPosition Position { get; init; } = DiagnosticPosition.Unknown;
- 
+
     public override string ToString()
     {
         return $"[{Descriptor.Level:G} {Descriptor.Code}, {Descriptor.Category}] {Message}, {Position}";

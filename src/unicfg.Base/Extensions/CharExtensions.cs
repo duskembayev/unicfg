@@ -11,8 +11,12 @@ public static class CharExtensions
     public static bool IsEol(this char @this)
     {
         for (var i = 0; i < EolChars.Length; i++)
+        {
             if (EolChars[i] == @this)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -22,7 +26,7 @@ public static class CharExtensions
         stride = default;
         var idx = @this.IndexOfAny(EolChars);
 
-        if ((uint) idx < (uint) @this.Length)
+        if ((uint)idx < (uint)@this.Length)
         {
             stride = 1; // needle found
 
@@ -32,7 +36,10 @@ public static class CharExtensions
             if (@this[idx] == '\r')
             {
                 var nextCharIdx = idx + 1;
-                if ((uint) nextCharIdx < (uint) @this.Length && @this[nextCharIdx] == '\n') stride = 2;
+                if ((uint)nextCharIdx < (uint)@this.Length && @this[nextCharIdx] == '\n')
+                {
+                    stride = 2;
+                }
             }
         }
 

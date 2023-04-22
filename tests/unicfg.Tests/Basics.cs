@@ -1,10 +1,8 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using unicfg.Base.Analysis;
-using unicfg.Base.Environment;
 using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
-using unicfg.Evaluation;
 using unicfg.Uni.Lex;
 using unicfg.Uni.Tree;
 
@@ -13,16 +11,6 @@ namespace unicfg.Tests;
 [TestFixture]
 public class Basics
 {
-    private Document _document;
-    private PropertyResolver _propertyResolver;
-    private EvaluatorImpl _evaluator;
-
-    private const string Input = @"
-message.dot=!!
-message.part.1=Hello
-message.part.2=World
-message.result=${message.part.1} ${message.part.2}${message.dot}";
-
     [OneTimeSetUp]
     public void Setup()
     {
@@ -36,6 +24,16 @@ message.result=${message.part.1} ${message.part.2}${message.dot}";
         _propertyResolver = new PropertyResolver(_document);
         _evaluator = new EvaluatorImpl(_propertyResolver, diagnostics);
     }
+
+    private Document _document;
+    private PropertyResolver _propertyResolver;
+    private EvaluatorImpl _evaluator;
+
+    private const string Input = @"
+message.dot=!!
+message.part.1=Hello
+message.part.2=World
+message.result=${message.part.1} ${message.part.2}${message.dot}";
 
     [Test]
     public void EvaluateSimpleProperty()

@@ -13,7 +13,9 @@ internal abstract class MultiCharLexerHandler : ILexerHandler
         var tokenType = OnHandle(ref reader);
 
         if (start.Equals(reader.Position))
+        {
             return null;
+        }
 
         return new Token(tokenType, start.AsRange(reader.Position));
     }

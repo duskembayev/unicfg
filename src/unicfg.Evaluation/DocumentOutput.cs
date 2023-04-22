@@ -10,5 +10,4 @@ public sealed class DocumentOutput
     }
 
     public SymbolRef ScopeRef { get; }
-    
 }

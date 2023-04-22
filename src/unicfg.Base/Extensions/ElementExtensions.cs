@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
 
@@ -9,13 +9,15 @@ public static class ElementExtensions
     public static string ToDisplayName(this INamedElement @this)
     {
         if (@this.Name.IsEmpty)
+        {
             throw new InvalidOperationException();
+        }
 
         var path = new Stack<ISymbol>();
         var parent = @this.Parent;
         var capacity = @this.Name.Length + 2;
 
-        while (parent is {Name.IsEmpty: false})
+        while (parent is { Name.IsEmpty: false })
         {
             path.Push(parent);
             capacity += parent.Name.Length + 1;
@@ -27,14 +29,23 @@ public static class ElementExtensions
         while (path.TryPop(out parent))
         {
             if (builder.Length > 0)
+            {
                 builder.Append('.');
+            }
 
             builder.Append(parent.Name.ToString());
         }
 
-        if (@this is AttributeElement) builder.Append('[');
+        if (@this is AttributeElement)
+        {
+            builder.Append('[');
+        }
+
         builder.Append(@this.Name.ToString());
-        if (@this is AttributeElement) builder.Append(']');
+        if (@this is AttributeElement)
+        {
+            builder.Append(']');
+        }
 
         return builder.ToString();
     }
@@ -42,10 +53,14 @@ public static class ElementExtensions
     public static SymbolRef GetSymbolRef(this ISymbol @this)
     {
         if (@this.Parent is null)
+        {
             return SymbolRef.Null;
+        }
 
         if (@this.Name.IsEmpty)
+        {
             throw new InvalidOperationException();
+        }
 
         var symbol = @this;
         var builder = ImmutableArray.CreateBuilder<StringRef>();
@@ -54,7 +69,7 @@ public static class ElementExtensions
         {
             builder.Insert(0, symbol.Name);
             symbol = symbol.Parent;
-        } while (symbol is {Name.IsEmpty: false});
+        } while (symbol is { Name.IsEmpty: false });
 
         return new SymbolRef(builder.ToImmutable());
     }

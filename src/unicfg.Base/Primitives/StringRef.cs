@@ -1,9 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace unicfg.Base.Primitives;
 
-public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IEquatable<ReadOnlyMemory<char>>, IComparable<StringRef>
+public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IEquatable<ReadOnlyMemory<char>>,
+    IComparable<StringRef>
 {
     public static readonly StringRef Empty = default;
 
@@ -51,7 +52,9 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IE
             var c2 = other[i];
 
             if (c1 != c2)
+            {
                 return c1 - c2;
+            }
 
             i++;
         }
@@ -80,7 +83,9 @@ public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IE
         var builder = new StringBuilder(Length);
 
         foreach (var memory in _memory.Segments)
+        {
             builder.Append(memory);
+        }
 
         return builder.ToString();
     }

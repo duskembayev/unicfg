@@ -11,8 +11,8 @@ namespace unicfg.Evaluation;
 [ContainerEntry(ServiceLifetime.Scoped, typeof(IDocumentResolver))]
 internal sealed class DocumentResolver : IDocumentResolver
 {
-    private readonly Diagnostics _diagnostics;
     private readonly ICurrentProcess _currentProcess;
+    private readonly Diagnostics _diagnostics;
 
     public DocumentResolver(Diagnostics diagnostics, ICurrentProcess currentProcess)
     {

@@ -1,6 +1,6 @@
 ﻿<Project>
   <Import Project="..\Directory.Build.props" />
-  
+
   <PropertyGroup>
     <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>

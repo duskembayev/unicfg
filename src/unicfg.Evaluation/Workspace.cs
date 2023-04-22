@@ -48,7 +48,9 @@ public sealed class Workspace : IWorkspace
     public async Task OpenAsync(Document document, CancellationToken cancellationToken)
     {
         if (document.Location is null)
+        {
             throw new InvalidOperationException();
+        }
 
         _outputs.UnionWith(await document.GetOutputsAsync(cancellationToken).ConfigureAwait(false));
         _registry.Add(DocumentKey.FromLocation(document.Location), document);
@@ -96,7 +98,9 @@ public sealed class Workspace : IWorkspace
         var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(scope.Attributes));
 
         if (formatter is null)
+        {
             throw new NotImplementedException();
+        }
 
         return await formatter
             .FormatAsync(scopeRef, scope, cancellationToken)
@@ -116,7 +120,9 @@ public sealed class Workspace : IWorkspace
             var symbol = entry.FindSymbol(scopeRef);
 
             if (symbol is not null)
+            {
                 await symbol.Accept(outputBuilder).ConfigureAwait(false);
+            }
         }
 
         return outputBuilder.Scope;

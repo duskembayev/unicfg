@@ -1,4 +1,4 @@
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
 
 namespace unicfg.Base.SyntaxTree.Values;
 
@@ -10,8 +10,9 @@ public sealed class RefValue : IValue
         Property = property;
     }
 
-    public Range SourceRange { get; }
     public SymbolRef Property { get; }
+
+    public Range SourceRange { get; }
 
     public T Accept<T>(IElementVisitor<T> visitor)
     {

@@ -27,7 +27,9 @@ public abstract class EmitSymbol
         get
         {
             if (_writableAttributes is null)
+            {
                 return EmptyAttributes;
+            }
 
             return _readOnlyAttributes ??= new ReadOnlyDictionary<StringRef, EmitValue>(_writableAttributes);
         }
@@ -36,7 +38,9 @@ public abstract class EmitSymbol
     public void SetAttributeValue(StringRef name, EmitValue value)
     {
         if (name.IsEmpty)
+        {
             throw new InvalidOperationException();
+        }
 
         _writableAttributes ??= new Dictionary<StringRef, EmitValue>();
         _writableAttributes[name] = value;

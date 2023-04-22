@@ -23,12 +23,16 @@ internal sealed class OutputCollector : AsyncWalker
     public override async ValueTask Visit(ScopeSymbol scope)
     {
         if (!scope.IsRoot)
+        {
             _path.Add(scope.Name);
+        }
 
         await base.Visit(scope).ConfigureAwait(false);
 
         if (!scope.IsRoot)
+        {
             _path.RemoveAt(_path.Count - 1);
+        }
     }
 
     public override ValueTask Visit(PropertySymbol property)
@@ -39,7 +43,9 @@ internal sealed class OutputCollector : AsyncWalker
     public override ValueTask Visit(AttributeElement attribute)
     {
         if (!attribute.Name.Equals(Attributes.Output))
+        {
             return ValueTask.CompletedTask;
+        }
 
         var scopeRef = _path.Count > 0
             ? new SymbolRef(_path.ToImmutableArray())

@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using unicfg.Base.Primitives;
 
 namespace unicfg.Uni.Tree;
@@ -9,8 +9,8 @@ internal readonly record struct HandleResult
 
     private HandleResult(bool success, Token? errorToken)
     {
-        this.Success = success;
-        this.ErrorToken = errorToken;
+        Success = success;
+        ErrorToken = errorToken;
     }
 
     [MemberNotNullWhen(false, nameof(ErrorToken))]

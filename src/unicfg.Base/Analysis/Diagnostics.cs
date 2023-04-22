@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Concurrent;
 using Enhanced.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +9,8 @@ namespace unicfg.Base.Analysis;
 [ContainerEntry(ServiceLifetime.Scoped, typeof(Diagnostics))]
 public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 {
-    private readonly ISource? _source;
     private readonly ConcurrentBag<Diagnostic> _bag;
+    private readonly ISource? _source;
 
     public Diagnostics() : this(null, new ConcurrentBag<Diagnostic>())
     {
@@ -21,6 +21,18 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
         _source = source;
         _bag = bag;
     }
+
+    public IEnumerator<Diagnostic> GetEnumerator()
+    {
+        return _bag.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public int Count => _bag.Count;
 
     public void Report(DiagnosticDescriptor descriptor)
     {
@@ -39,10 +51,7 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 
     public void Report(DiagnosticDescriptor descriptor, string location, object?[] args)
     {
-        ReportCore(new Diagnostic(descriptor, args)
-        {
-            Location = location
-        });
+        ReportCore(new Diagnostic(descriptor, args) { Location = location });
     }
 
     public void Report(DiagnosticDescriptor descriptor, ISource source, Range range)
@@ -55,7 +64,7 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
         ReportCore(new Diagnostic(descriptor, args)
         {
             Location = source.Location,
-            Position = GetDiagnosticPosition(source,  range)
+            Position = GetDiagnosticPosition(source, range)
         });
     }
 
@@ -67,12 +76,14 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
     public void Report(DiagnosticDescriptor descriptor, Range range, object?[] args)
     {
         if (_source is null)
+        {
             throw new NotSupportedException();
-        
+        }
+
         ReportCore(new Diagnostic(descriptor, args)
         {
             Location = _source.Location,
-            Position = GetDiagnosticPosition(_source,  range)
+            Position = GetDiagnosticPosition(_source, range)
         });
     }
 
@@ -86,16 +97,12 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
         _bag.Add(diagnostic);
     }
 
-    public IEnumerator<Diagnostic> GetEnumerator() => _bag.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    public int Count => _bag.Count;
-
     private static DiagnosticPosition GetDiagnosticPosition(ISource source, Range range)
     {
         if (range.Equals(Range.All))
+        {
             return DiagnosticPosition.Unknown;
+        }
 
         var text = source.GetText(range);
         var (startLine, startColumn, _, _) = source.GetPosition(in range);

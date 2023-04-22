@@ -1,7 +1,6 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
 using unicfg.Cli;
 using unicfg.Evaluation;
 using unicfg.Evaluation.Formatter;
@@ -11,8 +10,8 @@ namespace unicfg.Eval;
 
 internal sealed class EvalHandler : CliCommandHandler
 {
-    private readonly IWorkspace _workspace;
     private readonly ILogger<EvalHandler> _logger;
+    private readonly IWorkspace _workspace;
 
     public EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
     {
@@ -34,10 +33,14 @@ internal sealed class EvalHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(properties);
 
         foreach (var file in inputs)
+        {
             await _workspace.OpenFromAsync(file.FullName, cancellationToken);
+        }
 
         foreach (var (path, value) in properties)
+        {
             _workspace.OverridePropertyValue(SymbolRef.FromPath(path), value);
+        }
 
         var outputs = symbols
             .Select(info => new DocumentOutput(ParseSymbolRef(info)))

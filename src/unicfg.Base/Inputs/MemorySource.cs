@@ -37,13 +37,17 @@ internal sealed class MemorySource : ISource
     private (int line, int column) GetPosition(Index index)
     {
         if (_lines.Length == 0)
+        {
             return (0, 0);
+        }
 
         var offset = index.GetOffset(_memory.Length);
         var line = _lines.BinarySearch(offset);
 
         if (line >= 0)
+        {
             return (line + 1, 1);
+        }
 
         line = ~line;
         return (line, offset - _lines[line - 1] + 1);
@@ -52,7 +56,9 @@ internal sealed class MemorySource : ISource
     private static ImmutableArray<int> DetermineLines(ReadOnlySpan<char> text)
     {
         if (text.Length == 0)
+        {
             return ImmutableArray<int>.Empty;
+        }
 
         var lines = ImmutableArray.CreateBuilder<int>();
         var unread = text;
@@ -65,7 +71,9 @@ internal sealed class MemorySource : ISource
             var eol = unread.IndexOfEol(out var stride);
 
             if (eol < 0)
+            {
                 break;
+            }
 
             offset += eol + stride;
             unread = unread[(eol + stride)..];

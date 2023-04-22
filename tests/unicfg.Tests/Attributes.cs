@@ -1,10 +1,8 @@
 ﻿using NUnit.Framework;
 using unicfg.Base.Analysis;
-using unicfg.Base.Environment;
 using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
-using unicfg.Evaluation;
 using unicfg.Uni.Lex;
 using unicfg.Uni.Tree;
 
@@ -13,18 +11,6 @@ namespace unicfg.Tests;
 [TestFixture]
 public class Attributes
 {
-    private Document _document;
-    private PropertyResolver _propertyResolver;
-    private EvaluatorImpl _evaluator;
-
-    private const string Input = @"
-subjectColor=white
-picture[border]=10
-picture.background[color]=black
-picture.background=night
-picture.subject[color]=${subjectColor}
-picture.subject=moon";
-
     [OneTimeSetUp]
     public void Setup()
     {
@@ -38,6 +24,18 @@ picture.subject=moon";
         _propertyResolver = new PropertyResolver(_document);
         _evaluator = new EvaluatorImpl(_propertyResolver, diagnostics);
     }
+
+    private Document _document;
+    private PropertyResolver _propertyResolver;
+    private EvaluatorImpl _evaluator;
+
+    private const string Input = @"
+subjectColor=white
+picture[border]=10
+picture.background[color]=black
+picture.background=night
+picture.subject[color]=${subjectColor}
+picture.subject=moon";
 
     [Test]
     public void ResolveNamespaceAttribute()

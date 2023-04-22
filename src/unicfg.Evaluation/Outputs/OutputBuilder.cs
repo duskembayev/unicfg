@@ -8,8 +8,8 @@ namespace unicfg.Evaluation.Outputs;
 
 internal class OutputBuilder : AsyncWalker
 {
-    private readonly IValueEvaluator _valueEvaluator;
     private readonly CancellationToken _cancellationToken;
+    private readonly IValueEvaluator _valueEvaluator;
     private EmitSymbol? _currentSymbol;
 
     public OutputBuilder(
@@ -24,7 +24,9 @@ internal class OutputBuilder : AsyncWalker
         Scope = new EmitScope();
 
         foreach (var (key, value) in defaults)
+        {
             Scope.SetPropertyValue(key, EmitValue.CreateEvaluatedValue(value));
+        }
     }
 
     public EmitScope Scope { get; }
@@ -39,7 +41,9 @@ internal class OutputBuilder : AsyncWalker
         };
 
         if (_currentSymbol is null)
+        {
             throw new NotImplementedException();
+        }
 
         await base.Visit(scope).ConfigureAwait(false);
         _currentSymbol = _currentSymbol.Parent;
@@ -54,25 +58,31 @@ internal class OutputBuilder : AsyncWalker
         };
 
         if (_currentSymbol is null)
+        {
             throw new NotImplementedException();
+        }
 
         foreach (var (_, element) in property.Attributes)
+        {
             await element
                 .Accept(this)
                 .ConfigureAwait(false);
+        }
 
         var value = await _valueEvaluator
             .EvaluateAsync(property, _cancellationToken)
             .ConfigureAwait(false);
 
-        ((EmitProperty) _currentSymbol).Value = value;
+        ((EmitProperty)_currentSymbol).Value = value;
         _currentSymbol = _currentSymbol.Parent;
     }
 
     public override async ValueTask Visit(AttributeElement attribute)
     {
         if (_currentSymbol is null)
+        {
             throw new NotImplementedException();
+        }
 
         var value = await _valueEvaluator
             .EvaluateAsync(attribute, _cancellationToken)

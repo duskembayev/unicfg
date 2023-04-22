@@ -27,13 +27,17 @@ internal sealed class SymbolBuilder : IValueOwner
     public void SetValue(IValue value)
     {
         if (_kind == SymbolKind.Auto)
+        {
             _kind = SymbolKind.Property;
+        }
 
         if (_kind == SymbolKind.Scope)
+        {
             _diagnostics.Report(
                 DiagnosticDescriptor.UnexpectedValueDeclaration,
                 value.SourceRange,
-                new object?[] {_name});
+                new object?[] { _name });
+        }
 
         _values.Add(value);
     }
@@ -52,13 +56,17 @@ internal sealed class SymbolBuilder : IValueOwner
     public SymbolBuilder AddSymbol(in StringRef name, in Range sourceRange)
     {
         if (_kind == SymbolKind.Auto)
+        {
             _kind = SymbolKind.Scope;
+        }
 
         if (_kind == SymbolKind.Property)
+        {
             _diagnostics.Report(
                 DiagnosticDescriptor.UnexpectedSymbolDeclaration,
                 sourceRange,
-                new object?[] {_name});
+                new object?[] { _name });
+        }
 
         if (!_children.TryGetValue(name, out var child))
         {
@@ -100,7 +108,9 @@ internal sealed class SymbolBuilder : IValueOwner
     private ImmutableDictionary<StringRef, ISymbol> BuildChildren(ISymbol parent, Document document)
     {
         if (_children.Count == 0)
+        {
             return ImmutableDictionary<StringRef, ISymbol>.Empty;
+        }
 
         return _children.ToImmutableDictionary(
             p => p.Key,
@@ -110,7 +120,9 @@ internal sealed class SymbolBuilder : IValueOwner
     private ImmutableDictionary<StringRef, AttributeElement> BuildAttributes(ISymbol parent)
     {
         if (_attributes.Count == 0)
+        {
             return ImmutableDictionary<StringRef, AttributeElement>.Empty;
+        }
 
         return _attributes.ToImmutableDictionary(
             p => p.Key,

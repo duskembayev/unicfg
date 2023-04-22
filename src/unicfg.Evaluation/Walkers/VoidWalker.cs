@@ -13,14 +13,26 @@ internal abstract class VoidWalker : IElementVisitor<Void>
 
     public virtual Void Visit(ScopeSymbol scope)
     {
-        foreach (var (_, element) in scope.Attributes) element.Accept(this);
-        foreach (var (_, symbol) in scope.Children) symbol.Accept(this);
+        foreach (var (_, element) in scope.Attributes)
+        {
+            element.Accept(this);
+        }
+
+        foreach (var (_, symbol) in scope.Children)
+        {
+            symbol.Accept(this);
+        }
+
         return Void.Value;
     }
 
     public virtual Void Visit(PropertySymbol property)
     {
-        foreach (var (_, element) in property.Attributes) element.Accept(this);
+        foreach (var (_, element) in property.Attributes)
+        {
+            element.Accept(this);
+        }
+
         property.Value.Accept(this);
         return Void.Value;
     }
@@ -53,7 +65,11 @@ internal abstract class VoidWalker : IElementVisitor<Void>
 
     public virtual Void Visit(CollectionValue collectionValue)
     {
-        foreach (var value in collectionValue.Values) value.Accept(this);
+        foreach (var value in collectionValue.Values)
+        {
+            value.Accept(this);
+        }
+
         return Void.Value;
     }
 }

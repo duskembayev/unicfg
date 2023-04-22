@@ -1,4 +1,4 @@
-using System.CommandLine.Invocation;
+﻿using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 
@@ -40,7 +40,7 @@ internal abstract class CliCommandHandler : ICommandHandler
             exitCode = ExitCode.UnhandledException;
         }
 
-        context.ExitCode = (int) exitCode;
+        context.ExitCode = (int)exitCode;
         return context.ExitCode;
     }
 

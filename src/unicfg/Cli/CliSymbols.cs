@@ -1,4 +1,4 @@
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Parsing;
 
 namespace unicfg.Cli;
@@ -37,12 +37,12 @@ internal static class CliSymbols
 
     private static Option<List<SymbolInfo>> CreateSymbolsOption()
     {
-        return new Option<List<SymbolInfo>>(new[] {"-s", "--symbol"}, ParseSymbolsInfo, isDefault: true)
+        return new Option<List<SymbolInfo>>(new[] { "-s", "--symbol" }, ParseSymbolsInfo, true)
         {
             Arity = ArgumentArity.OneOrMore,
             Description =
                 "One or more symbols to evaluate. Specify each symbol separately, or use a semicolon or comma to separate multiple symbols.",
-            ArgumentHelpName = "SYMBOL_PATH",
+            ArgumentHelpName = "SYMBOL_PATH"
         };
     }
 
@@ -53,7 +53,7 @@ internal static class CliSymbols
             Arity = ArgumentArity.OneOrMore,
             Description =
                 "Set or override the specified properties. Specify each property separately, or use a semicolon or comma to separate multiple properties.",
-            ArgumentHelpName = "NAME=VALUE",
+            ArgumentHelpName = "NAME=VALUE"
         };
     }
 
@@ -66,11 +66,15 @@ internal static class CliSymbols
             var tokenValues = token.Value.Split(',', ';');
 
             foreach (var symbolPath in tokenValues)
+            {
                 symbols.Add(new SymbolInfo(symbolPath));
+            }
         }
 
         if (symbols.Count == 0)
+        {
             symbols.Add(SymbolInfo.Root);
+        }
 
         return symbols;
     }
@@ -90,10 +94,14 @@ internal static class CliSymbols
                 var propertyValue = string.Empty;
 
                 if (equalityIndex >= 0)
+                {
                     propertyPath = tokenValue[..equalityIndex];
+                }
 
                 if (equalityIndex > 0 && equalityIndex < tokenValue.Length - 1)
+                {
                     propertyValue = tokenValue[(equalityIndex + 1)..];
+                }
 
                 properties.Add(new PropertyInfo(propertyPath, propertyValue));
             }

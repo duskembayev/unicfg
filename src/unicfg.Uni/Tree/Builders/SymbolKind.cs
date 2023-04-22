@@ -1,4 +1,4 @@
-namespace unicfg.Uni.Tree.Builders;
+﻿namespace unicfg.Uni.Tree.Builders;
 
 internal enum SymbolKind
 {

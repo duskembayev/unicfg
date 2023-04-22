@@ -1,4 +1,4 @@
-namespace unicfg.Base.Extensions;
+﻿namespace unicfg.Base.Extensions;
 
 public static class CollectionExtensions
 {

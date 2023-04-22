@@ -33,7 +33,9 @@ static void ConfigureHost(IHostBuilder builder)
     var invocationContext = builder.GetInvocationContext();
 
     if (invocationContext.ParseResult.Errors.Count > 0)
+    {
         return;
+    }
 
     builder.ConfigureLoggingByVerbosity();
     builder.ConfigureServices(collection =>

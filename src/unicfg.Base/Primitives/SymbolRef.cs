@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace unicfg.Base.Primitives;
 
@@ -17,16 +17,22 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
     public bool Equals(SymbolRef other)
     {
         if (other.Path.Length != Path.Length)
+        {
             return false;
+        }
 
         if (other.Path.Length == 0)
+        {
             return true;
+        }
 
         var index = -1;
         var result = true;
 
         while (result && ++index < other.Path.Length)
+        {
             result &= other.Path[index].Equals(Path[index]);
+        }
 
         return result;
     }
@@ -51,7 +57,9 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
         var hashCode = new HashCode();
 
         for (var index = 0; index < Path.Length; index++)
+        {
             hashCode.Add(Path[index]);
+        }
 
         return hashCode.ToHashCode();
     }
@@ -63,9 +71,11 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
         for (var index = 0; index < Path.Length; index++)
         {
             if (index > 0)
+            {
                 builder.Append(PathSeparator);
+            }
 
-            builder.Append((string) Path[index]);
+            builder.Append((string)Path[index]);
         }
 
         return builder.ToString();
@@ -87,14 +97,18 @@ public readonly struct SymbolRef : IEquatable<SymbolRef>
             }
 
             if (index == 0 || index + 1 >= remaining.Length)
+            {
                 throw new FormatException();
+            }
 
             pathBuilder.Add(remaining[..index]);
             remaining = remaining[++index..];
         }
 
         if (pathBuilder.Count == 0)
+        {
             throw new FormatException();
+        }
 
         return new SymbolRef(pathBuilder.ToImmutable());
     }

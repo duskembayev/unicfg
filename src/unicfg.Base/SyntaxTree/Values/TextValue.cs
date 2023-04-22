@@ -10,8 +10,9 @@ public sealed class TextValue : IValue
         Text = text;
     }
 
-    public Range SourceRange { get; }
     public StringRef Text { get; }
+
+    public Range SourceRange { get; }
 
     public T Accept<T>(IElementVisitor<T> visitor)
     {

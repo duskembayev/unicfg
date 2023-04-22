@@ -19,7 +19,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
         _values = new Dictionary<SymbolRef, EmitValue>();
 
         foreach (var (key, value) in overrides)
+        {
             _values[key] = EmitValue.CreateEvaluatedValue(value);
+        }
     }
 
     public async ValueTask<EmitValue> EvaluateAsync(IElementWithValue element, CancellationToken cancellationToken)
@@ -27,7 +29,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
         var symbolRef = SymbolRef.Null;
 
         if (element is ISymbol symbol)
+        {
             symbolRef = symbol.GetSymbolRef();
+        }
 
         return await EvaluateAsync(symbolRef, element.Value, cancellationToken).ConfigureAwait(false);
     }
@@ -38,7 +42,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
         CancellationToken cancellationToken)
     {
         if (!SymbolRef.Null.Equals(symbolRef) && _values.TryGetValue(symbolRef, out var emitValue))
+        {
             return emitValue;
+        }
 
         var valueBuilder = new ValueBuilder(_values, cancellationToken);
         var tale = new Stack<(SymbolRef Path, IValue Value)>(3);
@@ -55,7 +61,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
             if (emitValue is not null)
             {
                 if (item.Path != SymbolRef.Null)
+                {
                     _values[item.Path] = emitValue;
+                }
 
                 tale.Pop();
                 continue;

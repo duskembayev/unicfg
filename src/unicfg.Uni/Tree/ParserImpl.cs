@@ -12,9 +12,9 @@ namespace unicfg.Uni.Tree;
 public sealed class ParserImpl
 {
     private readonly Diagnostics _diagnostics;
+    private readonly ImmutableArray<ISyntaxHandler> _handlers;
     private readonly ICurrentProcess _process;
     private readonly SymbolBuilder _rootBuilder;
-    private readonly ImmutableArray<ISyntaxHandler> _handlers;
 
     public ParserImpl(Diagnostics diagnostics, ICurrentProcess process)
     {
@@ -33,28 +33,36 @@ public sealed class ParserImpl
         var indexer = new TokenIndexer(0, source, tokens);
 
         while (!indexer.OutOfRange)
+        {
             if (!HandleRootToken(ref indexer))
+            {
                 indexer = indexer.Next;
+            }
+        }
 
         var baseDirectory = GetDocumentBaseDirectory(source.Location);
         var document = new Document(baseDirectory, source.Location);
 
-        document.RootScope = (ScopeSymbol) _rootBuilder.Build(document, null);
+        document.RootScope = (ScopeSymbol)_rootBuilder.Build(document, null);
         return document;
     }
 
     private bool HandleRootToken(ref TokenIndexer indexer)
     {
         foreach (var handler in _handlers)
+        {
             if (handler.CanHandle(in indexer.Token))
             {
                 var result = handler.Handle(ref indexer);
 
                 if (!result.Success)
+                {
                     _diagnostics.Report(UnexpectedToken, indexer.Source, result.ErrorToken.Value.RawRange);
+                }
 
                 return true;
             }
+        }
 
         _diagnostics.Report(UnexpectedToken, indexer.Source, indexer.Token.RawRange);
         return false;
@@ -63,7 +71,9 @@ public sealed class ParserImpl
     private string GetDocumentBaseDirectory(string? documentLocation)
     {
         if (documentLocation is null)
+        {
             return _process.WorkingDirectory;
+        }
 
         return Path.GetDirectoryName(documentLocation) ?? _process.WorkingDirectory;
     }

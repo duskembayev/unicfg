@@ -17,8 +17,9 @@ public sealed class PropertySymbol : ISymbol, IElementWithValue
         Attributes = ImmutableDictionary<StringRef, AttributeElement>.Empty;
     }
 
-    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; internal set; }
     public IValue Value => _values[^1];
+
+    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; internal set; }
     public StringRef Name { get; }
     public ISymbol Parent { get; }
     public Document Document { get; }

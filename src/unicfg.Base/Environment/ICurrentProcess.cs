@@ -1,4 +1,4 @@
-namespace unicfg.Base.Environment;
+﻿namespace unicfg.Base.Environment;
 
 public interface ICurrentProcess
 {

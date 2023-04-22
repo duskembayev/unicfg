@@ -14,10 +14,7 @@ public static class Source
         var location = Path.GetFullPath(path);
         var content = File.ReadAllText(path, encoding);
 
-        return new MemorySource(content.AsMemory())
-        {
-            Location = location
-        };
+        return new MemorySource(content.AsMemory()) { Location = location };
     }
 
     public static ISource Create(string input)

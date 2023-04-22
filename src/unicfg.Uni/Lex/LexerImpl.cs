@@ -1,4 +1,4 @@
-using unicfg.Base.Analysis;
+﻿using unicfg.Base.Analysis;
 using unicfg.Base.Inputs;
 using unicfg.Base.Primitives;
 using unicfg.Uni.Lex.Extensions;
@@ -51,9 +51,11 @@ public sealed class LexerImpl
             if (currentToken.HasValue)
             {
                 result.Add(currentToken.Value);
-                
+
                 if (currentToken is { Type: TokenType.Unknown })
+                {
                     _diagnostics.Report(DiagnosticDescriptor.UnknownToken, source, currentToken.Value.RawRange);
+                }
             }
         }
 
@@ -67,7 +69,11 @@ public sealed class LexerImpl
 
         for (var index = 0; index < _handlers.Length; index++)
         {
-            if (!_handlers[index].CanHandle(c)) continue;
+            if (!_handlers[index].CanHandle(c))
+            {
+                continue;
+            }
+
             token = _handlers[index].Handle(ref inputReader);
             return true;
         }

@@ -23,35 +23,41 @@ public sealed class EmitScope : EmitSymbol
     public EmitScope? GetScope(StringRef name)
     {
         if (name.IsEmpty)
+        {
             throw new InvalidOperationException();
+        }
 
         if (_properties.ContainsKey(name))
+        {
             return null;
+        }
 
         if (_scopes.TryGetValue(name, out var scope))
-            return scope;
-
-        return _scopes[name] = new EmitScope(name)
         {
-            Parent = this
-        };
+            return scope;
+        }
+
+        return _scopes[name] = new EmitScope(name) { Parent = this };
     }
 
     public EmitProperty? GetProperty(StringRef name)
     {
         if (name.IsEmpty)
+        {
             throw new InvalidOperationException();
+        }
 
         if (_scopes.ContainsKey(name))
+        {
             return null;
+        }
 
         if (_properties.TryGetValue(name, out var property))
-            return property;
-
-        return _properties[name] = new EmitProperty(name)
         {
-            Parent = this
-        };
+            return property;
+        }
+
+        return _properties[name] = new EmitProperty(name) { Parent = this };
     }
 
     public override ValueTask AcceptAsync(IEmitAsyncVisitor visitor, CancellationToken cancellationToken)

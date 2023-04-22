@@ -10,7 +10,9 @@ internal static class LoggerExtensions
         string operation)
     {
         if (results.Count == 0)
+        {
             return ExitCode.NoResult;
+        }
 
         var errors = 0;
 
@@ -27,10 +29,14 @@ internal static class LoggerExtensions
         }
 
         if (errors > 0 && errors < results.Count)
+        {
             return ExitCode.PartialError;
+        }
 
         if (errors == results.Count)
+        {
             return ExitCode.Error;
+        }
 
         return ExitCode.Success;
     }

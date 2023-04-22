@@ -1,4 +1,4 @@
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
 
 namespace unicfg.Base.Analysis;
 

@@ -1,4 +1,4 @@
-namespace unicfg.Evaluation;
+﻿namespace unicfg.Evaluation;
 
 public readonly struct DocumentKey : IEquatable<DocumentKey>
 {

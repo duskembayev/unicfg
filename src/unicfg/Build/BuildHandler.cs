@@ -1,4 +1,4 @@
-using System.CommandLine.Parsing;
+﻿using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
@@ -8,8 +8,8 @@ namespace unicfg.Build;
 
 internal sealed class BuildHandler : CliCommandHandler
 {
-    private readonly IWorkspace _workspace;
     private readonly ILogger<BuildHandler> _logger;
+    private readonly IWorkspace _workspace;
 
     public BuildHandler(IWorkspace workspace, ILogger<BuildHandler> logger) : base(logger)
     {
@@ -31,10 +31,14 @@ internal sealed class BuildHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(outputDir);
 
         foreach (var file in inputs)
+        {
             await _workspace.OpenFromAsync(file.FullName, cancellationToken);
+        }
 
         foreach (var (path, value) in properties)
+        {
             _workspace.OverridePropertyValue(SymbolRef.FromPath(path), value);
+        }
 
         var results = await _workspace.EmitAsync(cancellationToken);
 

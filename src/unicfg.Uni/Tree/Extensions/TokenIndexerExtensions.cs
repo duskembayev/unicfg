@@ -1,4 +1,4 @@
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
 
 namespace unicfg.Uni.Tree.Extensions;
 
@@ -8,11 +8,13 @@ internal static class TokenIndexerExtensions
     {
         return indexer.MoveTo(type => type != TokenType.Whitespace);
     }
-    
+
     public static bool MoveTo(this ref TokenIndexer indexer, Predicate<TokenType> predicate)
     {
         while (!indexer.OutOfRange && !predicate.Invoke(indexer.Token.Type))
+        {
             indexer = indexer.Next;
+        }
 
         return !indexer.OutOfRange;
     }
@@ -29,8 +31,9 @@ internal static class TokenIndexerExtensions
 
         return result;
     }
-    
-    public static bool TryReadContentTo(this ref TokenIndexer indexer, Predicate<TokenType> predicate, out StringRef result)
+
+    public static bool TryReadContentTo(this ref TokenIndexer indexer, Predicate<TokenType> predicate,
+        out StringRef result)
     {
         result = indexer.ReadContentTo(predicate);
         return !result.IsEmpty;
