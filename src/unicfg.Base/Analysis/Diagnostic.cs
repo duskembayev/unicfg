@@ -2,9 +2,10 @@
 
 public sealed record Diagnostic(DiagnosticDescriptor Descriptor, object?[] Arguments)
 {
-    public string Message => Arguments.Length > 0
-        ? string.Format(Descriptor.MessageFormat, Arguments)
-        : Descriptor.MessageFormat;
+    public string Message =>
+        Arguments.Length > 0
+            ? string.Format(Descriptor.MessageFormat, Arguments)
+            : Descriptor.MessageFormat;
 
     public string? Location { get; init; }
     public DiagnosticPosition Position { get; init; } = DiagnosticPosition.Unknown;

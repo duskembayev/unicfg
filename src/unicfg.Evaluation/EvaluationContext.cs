@@ -6,7 +6,8 @@ namespace unicfg.Evaluation;
 
 public sealed class EvaluationContext
 {
-    public EvaluationContext(ImmutableArray<Document> entries,
+    public EvaluationContext(
+        ImmutableArray<Document> entries,
         ImmutableDictionary<DocumentKey, Document> registry,
         ImmutableDictionary<SymbolRef, StringRef> defaults,
         ImmutableDictionary<SymbolRef, StringRef> overrides,

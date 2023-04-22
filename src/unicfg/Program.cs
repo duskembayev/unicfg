@@ -38,11 +38,12 @@ static void ConfigureHost(IHostBuilder builder)
     }
 
     builder.ConfigureLoggingByVerbosity();
-    builder.ConfigureServices(collection =>
-    {
-        collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
-        collection.AddEnhancedModules();
-    });
+    builder.ConfigureServices(
+        collection =>
+        {
+            collection.Configure<InvocationLifetimeOptions>(options => options.SuppressStatusMessages = true);
+            collection.AddEnhancedModules();
+        });
 
     builder.UseCommandHandler<BuildCommand, BuildHandler>();
     builder.UseCommandHandler<EvalCommand, EvalHandler>();

@@ -4,10 +4,12 @@ using unicfg.Cli;
 
 namespace unicfg.Extensions;
 
-internal static class LoggerExtensions
+internal static class EmitResultExtensions
 {
-    internal static ExitCode OutputResults(this ILogger logger, IReadOnlyCollection<EmitResult> results,
-        string operation)
+    internal static ExitCode OutputResults(
+        this IReadOnlyCollection<EmitResult> results,
+        string operation,
+        ILogger logger)
     {
         if (results.Count == 0)
         {
@@ -28,22 +30,18 @@ internal static class LoggerExtensions
             logger.OutputResult(emitResult, operation);
         }
 
-        if (errors > 0 && errors < results.Count)
+        return errors switch
         {
-            return ExitCode.PartialError;
-        }
-
-        if (errors == results.Count)
-        {
-            return ExitCode.Error;
-        }
-
-        return ExitCode.Success;
+            > 0 when errors < results.Count => ExitCode.PartialError,
+            > 0 => ExitCode.Error,
+            _ => ExitCode.Success
+        };
     }
 
     private static void OutputErrorResult(this ILogger logger, EmitResult emitResult, string operation)
     {
-        logger.LogError("{OPERATION} failed: {SCOPE} -> {FILE} ({ERRORS} errors of {TOTAL} properties)",
+        logger.LogError(
+            "{OPERATION} failed: {SCOPE} -> {FILE} ({ERRORS} errors of {TOTAL} properties)",
             operation,
             emitResult.Scope == SymbolRef.Null ? "ROOT" : emitResult.Scope,
             emitResult.OutputPath,
@@ -53,7 +51,8 @@ internal static class LoggerExtensions
 
     private static void OutputResult(this ILogger logger, EmitResult emitResult, string operation)
     {
-        logger.LogInformation("{OPERATION} succeeded: {SCOPE} -> {FILE} ({TOTAL} properties)",
+        logger.LogInformation(
+            "{OPERATION} succeeded: {SCOPE} -> {FILE} ({TOTAL} properties)",
             operation,
             emitResult.Scope == SymbolRef.Null ? "ROOT" : emitResult.Scope,
             emitResult.OutputPath,

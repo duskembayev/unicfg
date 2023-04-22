@@ -4,7 +4,6 @@ using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
 using unicfg.Evaluation.Formatter;
-using unicfg.Extensions;
 
 namespace unicfg.Eval;
 

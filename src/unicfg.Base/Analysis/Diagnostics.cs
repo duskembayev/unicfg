@@ -61,11 +61,12 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 
     public void Report(DiagnosticDescriptor descriptor, ISource source, Range range, object?[] args)
     {
-        ReportCore(new Diagnostic(descriptor, args)
-        {
-            Location = source.Location,
-            Position = GetDiagnosticPosition(source, range)
-        });
+        ReportCore(
+            new Diagnostic(descriptor, args)
+            {
+                Location = source.Location,
+                Position = GetDiagnosticPosition(source, range)
+            });
     }
 
     public void Report(DiagnosticDescriptor descriptor, Range range)
@@ -80,11 +81,12 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
             throw new NotSupportedException();
         }
 
-        ReportCore(new Diagnostic(descriptor, args)
-        {
-            Location = _source.Location,
-            Position = GetDiagnosticPosition(_source, range)
-        });
+        ReportCore(
+            new Diagnostic(descriptor, args)
+            {
+                Location = _source.Location,
+                Position = GetDiagnosticPosition(_source, range)
+            });
     }
 
     public Diagnostics WithSource(ISource source)

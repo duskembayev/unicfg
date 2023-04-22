@@ -27,8 +27,7 @@ public sealed class LexerImpl
         new EscapableCharacterLexerHandler('(', TokenType.Reserved),
         new EscapableCharacterLexerHandler(')', TokenType.Reserved),
         new EscapableCharacterLexerHandler('\"', TokenType.Reserved),
-        new EscapableCharacterLexerHandler('\'', TokenType.Reserved)
-    );
+        new EscapableCharacterLexerHandler('\'', TokenType.Reserved));
 
     public LexerImpl(Diagnostics diagnostics)
     {

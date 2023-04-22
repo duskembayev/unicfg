@@ -18,21 +18,22 @@ internal static class Verbosity
             ArgumentHelpName = "LEVEL"
         };
 
-        verbosityOption.AddValidator(result =>
-        {
-            if (result.Tokens.Count == 0)
+        verbosityOption.AddValidator(
+            result =>
             {
-                return;
-            }
+                if (result.Tokens.Count == 0)
+                {
+                    return;
+                }
 
-            var value = result.Tokens.Single().Value;
-            var levels = Enum.GetNames<Level>();
+                var value = result.Tokens.Single().Value;
+                var levels = Enum.GetNames<Level>();
 
-            if (!levels.Contains(value, StringComparer.OrdinalIgnoreCase))
-            {
-                result.ErrorMessage = "Invalid verbosity level";
-            }
-        });
+                if (!levels.Contains(value, StringComparer.OrdinalIgnoreCase))
+                {
+                    result.ErrorMessage = "Invalid verbosity level";
+                }
+            });
         return verbosityOption;
     }
 

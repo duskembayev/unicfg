@@ -32,7 +32,9 @@ internal static class TokenIndexerExtensions
         return result;
     }
 
-    public static bool TryReadContentTo(this ref TokenIndexer indexer, Predicate<TokenType> predicate,
+    public static bool TryReadContentTo(
+        this ref TokenIndexer indexer,
+        Predicate<TokenType> predicate,
         out StringRef result)
     {
         result = indexer.ReadContentTo(predicate);

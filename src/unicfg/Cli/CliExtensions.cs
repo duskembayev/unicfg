@@ -22,10 +22,13 @@ internal static class CliExtensions
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        builder.UseSerilog((_, configuration) => configuration
-            .MinimumLevel.Is(logLevel)
-            .Enrich.FromLogContext()
-            .WriteTo.Console(theme: AnsiConsoleTheme.Code, standardErrorFromLevel: LogEventLevel.Verbose));
+        builder.UseSerilog(
+            (_, configuration) => configuration
+                                  .MinimumLevel.Is(logLevel)
+                                  .Enrich.FromLogContext()
+                                  .WriteTo.Console(
+                                      theme: AnsiConsoleTheme.Code,
+                                      standardErrorFromLevel: LogEventLevel.Verbose));
 
         return builder;
     }

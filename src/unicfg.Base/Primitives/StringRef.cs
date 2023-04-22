@@ -3,8 +3,11 @@ using System.Text;
 
 namespace unicfg.Base.Primitives;
 
-public readonly struct StringRef : IEquatable<StringRef>, IEquatable<string>, IEquatable<ReadOnlyMemory<char>>,
-    IComparable<StringRef>
+public readonly struct StringRef
+    : IEquatable<StringRef>,
+      IEquatable<string>,
+      IEquatable<ReadOnlyMemory<char>>,
+      IComparable<StringRef>
 {
     public static readonly StringRef Empty = default;
 

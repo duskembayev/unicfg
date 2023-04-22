@@ -2,7 +2,6 @@
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
-using unicfg.Extensions;
 
 namespace unicfg.Build;
 
