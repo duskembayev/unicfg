@@ -1,8 +1,6 @@
-﻿using unicfg.Base.Primitives;
+﻿namespace unicfg.Uni.Lex;
 
-namespace unicfg.Uni.Lex;
-
-public interface ILexerHandler
+internal interface ILexerHandler
 {
     bool CanHandle(char trigger);
 

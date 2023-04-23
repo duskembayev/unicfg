@@ -1,23 +1,24 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
-using unicfg.Base.SyntaxTree.Values;
-using unicfg.Evaluation.Walkers;
+﻿using unicfg.Base.SyntaxTree.Values;
+using unicfg.Base.SyntaxTree.Walkers;
 
-namespace unicfg.Evaluation.Outputs;
+namespace unicfg.Evaluation.Walkers;
 
-internal sealed class ValueBuilder : AsyncWalker
+internal sealed class EmitValueBuilder : AsyncWalker
 {
     private readonly CancellationToken _cancellationToken;
     private readonly IReadOnlyDictionary<SymbolRef, EmitValue> _dependencies;
-    private bool _hasErrors;
 
+    private bool _hasErrors;
     private StringRef _value;
 
-    public ValueBuilder(IReadOnlyDictionary<SymbolRef, EmitValue> dependencies, CancellationToken cancellationToken)
+    public EmitValueBuilder(
+        IReadOnlyDictionary<SymbolRef, EmitValue> dependencies,
+        CancellationToken cancellationToken)
         : base(cancellationToken)
     {
         _dependencies = dependencies;
         _cancellationToken = cancellationToken;
+
         UnresolvedDependency = SymbolRef.Null;
     }
 
@@ -36,13 +37,6 @@ internal sealed class ValueBuilder : AsyncWalker
         }
 
         return EmitValue.CreateEvaluatedValue(_value);
-    }
-
-    public void Reset()
-    {
-        UnresolvedDependency = SymbolRef.Null;
-        _hasErrors = false;
-        _value = StringRef.Empty;
     }
 
     public override ValueTask Visit(TextValue textValue)

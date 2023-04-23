@@ -1,9 +1,4 @@
-﻿using unicfg.Base.Formatters;
-using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
-using unicfg.Base.SyntaxTree;
-
-namespace unicfg.Evaluation;
+﻿namespace unicfg.Evaluation;
 
 public interface IWorkspace
 {

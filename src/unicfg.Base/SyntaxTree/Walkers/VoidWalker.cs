@@ -1,9 +1,8 @@
-﻿using unicfg.Base.SyntaxTree;
-using unicfg.Base.SyntaxTree.Values;
+﻿using unicfg.Base.SyntaxTree.Values;
 
-namespace unicfg.Evaluation.Walkers;
+namespace unicfg.Base.SyntaxTree.Walkers;
 
-internal abstract class VoidWalker : IElementVisitor<Void>
+public abstract class VoidWalker : IElementVisitor<Void>
 {
     public virtual Void Visit(Document document)
     {

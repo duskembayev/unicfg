@@ -1,7 +1,4 @@
-﻿using unicfg.Base.SemanticTree;
-using unicfg.Base.SyntaxTree;
-
-namespace unicfg.Evaluation.Outputs;
+﻿namespace unicfg.Evaluation;
 
 internal interface IValueEvaluator
 {

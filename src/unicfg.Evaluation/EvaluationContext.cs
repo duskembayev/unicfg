@@ -1,10 +1,6 @@
-﻿using unicfg.Base.Formatters;
-using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
+﻿namespace unicfg.Evaluation;
 
-namespace unicfg.Evaluation;
-
-public sealed class EvaluationContext
+internal sealed class EvaluationContext
 {
     public EvaluationContext(
         ImmutableArray<Document> entries,

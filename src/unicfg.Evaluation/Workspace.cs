@@ -1,28 +1,24 @@
-﻿using unicfg.Base.Analysis;
-using unicfg.Base.Formatters;
-using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
-using unicfg.Base.SyntaxTree;
-using unicfg.Evaluation.Extensions;
-using unicfg.Evaluation.Outputs;
+﻿using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
 [ContainerEntry(ServiceLifetime.Scoped, typeof(IWorkspace))]
-public sealed class Workspace : IWorkspace
+internal sealed class Workspace : IWorkspace
 {
     private readonly Dictionary<SymbolRef, StringRef> _defaults;
-    private readonly Diagnostics _diagnostics;
+    private readonly IDiagnostics _diagnostics;
     private readonly IDocumentResolver _documentResolver;
+    private readonly IScopeEvaluator _scopeEvaluator;
     private readonly List<Document> _entries;
     private readonly HashSet<IFormatter> _formatters;
     private readonly HashSet<DocumentOutput> _outputs;
     private readonly Dictionary<SymbolRef, StringRef> _overrides;
     private readonly Dictionary<DocumentKey, Document> _registry;
 
-    public Workspace(IDocumentResolver documentResolver, Diagnostics diagnostics)
+    public Workspace(IDocumentResolver documentResolver, IScopeEvaluator scopeEvaluator, IDiagnostics diagnostics)
     {
         _documentResolver = documentResolver;
+        _scopeEvaluator = scopeEvaluator;
         _diagnostics = diagnostics;
 
         _overrides = new Dictionary<SymbolRef, StringRef>();
@@ -71,7 +67,7 @@ public sealed class Workspace : IWorkspace
     {
         if (_outputs.Count == 0)
         {
-            _diagnostics.Report(DiagnosticDescriptor.NothingToEmit);
+            _diagnostics.Report(NothingToEmit);
             return ImmutableArray<EmitResult>.Empty;
         }
 
@@ -82,10 +78,10 @@ public sealed class Workspace : IWorkspace
             _overrides.ToImmutableDictionary(),
             _formatters.ToImmutableArray());
 
-        var emitting =
-            _outputs.Select(output => EmitDocumentAsync(output.ScopeRef, evaluationContext, cancellationToken));
-        var results = await Task.WhenAll(emitting).ConfigureAwait(false);
+        var emitting = _outputs
+            .Select(output => EmitDocumentAsync(output.ScopeRef, evaluationContext, cancellationToken));
 
+        var results = await Task.WhenAll(emitting).ConfigureAwait(false);
         return results.ToImmutableArray();
     }
 
@@ -94,7 +90,10 @@ public sealed class Workspace : IWorkspace
         EvaluationContext evaluationContext,
         CancellationToken cancellationToken)
     {
-        var scope = await BuildScopeAsync(scopeRef, evaluationContext, cancellationToken).ConfigureAwait(false);
+        var scope = await _scopeEvaluator
+            .EvaluateAsync(scopeRef, evaluationContext, cancellationToken)
+            .ConfigureAwait(false);
+
         var formatter = evaluationContext.Formatters.FirstOrDefault(f => f.Matches(scope.Attributes));
 
         if (formatter is null)
@@ -105,26 +104,5 @@ public sealed class Workspace : IWorkspace
         return await formatter
             .FormatAsync(scopeRef, scope, cancellationToken)
             .ConfigureAwait(false);
-    }
-
-    private static async Task<EmitScope> BuildScopeAsync(
-        SymbolRef scopeRef,
-        EvaluationContext evaluationContext,
-        CancellationToken cancellationToken)
-    {
-        var valueEvaluator = new ValueEvaluator(evaluationContext.Entries, evaluationContext.Overrides);
-        var outputBuilder = new OutputBuilder(valueEvaluator, evaluationContext.Defaults, cancellationToken);
-
-        foreach (var entry in evaluationContext.Entries)
-        {
-            var symbol = entry.FindSymbol(scopeRef);
-
-            if (symbol is not null)
-            {
-                await symbol.Accept(outputBuilder).ConfigureAwait(false);
-            }
-        }
-
-        return outputBuilder.Scope;
     }
 }

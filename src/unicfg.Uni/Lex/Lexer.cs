@@ -1,15 +1,11 @@
-﻿using unicfg.Base.Analysis;
-using unicfg.Base.Inputs;
-using unicfg.Base.Primitives;
-using unicfg.Uni.Lex.Extensions;
+﻿using unicfg.Uni.Lex.Extensions;
 using unicfg.Uni.Lex.Handlers;
 
 namespace unicfg.Uni.Lex;
 
-public sealed class LexerImpl
+[ContainerEntry(ServiceLifetime.Transient, typeof(ILexer))]
+internal sealed class Lexer : ILexer
 {
-    private readonly Diagnostics _diagnostics;
-
     private readonly ImmutableArray<ILexerHandler> _handlers = ImmutableArray.Create<ILexerHandler>(
         new WhitespacesLexerHandler(),
         new EolLexerHandler(),
@@ -29,12 +25,7 @@ public sealed class LexerImpl
         new EscapableCharacterLexerHandler('\"', TokenType.Reserved),
         new EscapableCharacterLexerHandler('\'', TokenType.Reserved));
 
-    public LexerImpl(Diagnostics diagnostics)
-    {
-        _diagnostics = diagnostics;
-    }
-
-    public ImmutableArray<Token> Process(ISource source)
+    public ImmutableArray<Token> Process(ISource source, IDiagnostics diagnostics)
     {
         var sourceReader = source.CreateReader();
         var result = ImmutableArray.CreateBuilder<Token>();
@@ -53,7 +44,7 @@ public sealed class LexerImpl
 
                 if (currentToken is { Type: TokenType.Unknown })
                 {
-                    _diagnostics.Report(DiagnosticDescriptor.UnknownToken, source, currentToken.Value.RawRange);
+                    diagnostics.Report(UnknownToken, source, currentToken.Value.RawRange);
                 }
             }
         }

@@ -1,3 +1,10 @@
 ﻿global using System.Collections.Immutable;
 global using Enhanced.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using unicfg.Base.Analysis;
+global using unicfg.Base.Formatters;
+global using unicfg.Base.Primitives;
+global using unicfg.Base.SemanticTree;
+global using unicfg.Base.SyntaxTree;
+global using static unicfg.Evaluation.DiagnosticDescriptors;

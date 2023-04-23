@@ -1,8 +1,4 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
-using unicfg.Base.SyntaxTree.Values;
-
-namespace unicfg.Uni.Tree.Builders;
+﻿namespace unicfg.Uni.Tree.Builders;
 
 internal sealed class AttributeBuilder : IValueOwner
 {

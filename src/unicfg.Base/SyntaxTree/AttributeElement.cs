@@ -3,11 +3,11 @@ using unicfg.Base.SyntaxTree.Values;
 
 namespace unicfg.Base.SyntaxTree;
 
-public sealed class AttributeElement : INamedElement, IElementWithValue
+public sealed class AttributeElement : IElementWithValue
 {
     private readonly ImmutableArray<IValue> _values;
 
-    internal AttributeElement(StringRef name, ISymbol parent, ImmutableArray<IValue> values)
+    public AttributeElement(StringRef name, ISymbol parent, ImmutableArray<IValue> values)
     {
         Name = name;
         Parent = parent;

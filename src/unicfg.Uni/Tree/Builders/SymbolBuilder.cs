@@ -1,20 +1,15 @@
-﻿using unicfg.Base.Analysis;
-using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
-using unicfg.Base.SyntaxTree.Values;
-
-namespace unicfg.Uni.Tree.Builders;
+﻿namespace unicfg.Uni.Tree.Builders;
 
 internal sealed class SymbolBuilder : IValueOwner
 {
     private readonly Dictionary<StringRef, AttributeBuilder> _attributes;
     private readonly Dictionary<StringRef, SymbolBuilder> _children;
-    private readonly Diagnostics _diagnostics;
+    private readonly IDiagnostics _diagnostics;
     private readonly StringRef _name;
     private readonly ImmutableArray<IValue>.Builder _values;
     private SymbolKind _kind;
 
-    public SymbolBuilder(StringRef name, SymbolKind kind, Diagnostics diagnostics)
+    public SymbolBuilder(StringRef name, SymbolKind kind, IDiagnostics diagnostics)
     {
         _name = name;
         _kind = kind;
@@ -34,7 +29,7 @@ internal sealed class SymbolBuilder : IValueOwner
         if (_kind == SymbolKind.Scope)
         {
             _diagnostics.Report(
-                DiagnosticDescriptor.UnexpectedValueDeclaration,
+                UnexpectedValueDeclaration,
                 value.SourceRange,
                 new object?[] { _name });
         }
@@ -63,7 +58,7 @@ internal sealed class SymbolBuilder : IValueOwner
         if (_kind == SymbolKind.Property)
         {
             _diagnostics.Report(
-                DiagnosticDescriptor.UnexpectedSymbolDeclaration,
+                UnexpectedSymbolDeclaration,
                 sourceRange,
                 new object?[] { _name });
         }

@@ -1,20 +1,10 @@
 ﻿using unicfg.Base.Primitives;
 using unicfg.Base.SyntaxTree;
-using unicfg.Evaluation.Outputs;
 
-namespace unicfg.Evaluation.Extensions;
+namespace unicfg.Base.Extensions;
 
 public static class DocumentExtensions
 {
-    public static async ValueTask<ImmutableHashSet<DocumentOutput>> GetOutputsAsync(
-        this Document @this,
-        CancellationToken cancellationToken)
-    {
-        var outputCollector = new OutputCollector(cancellationToken);
-        await @this.Accept(outputCollector).ConfigureAwait(false);
-        return outputCollector.GetResult();
-    }
-
     public static ISymbol? FindSymbol(this Document @this, SymbolRef symbolRef)
     {
         if (symbolRef.Path.Length == 0)

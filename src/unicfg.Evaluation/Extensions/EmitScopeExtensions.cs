@@ -1,7 +1,4 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
-
-namespace unicfg.Evaluation.Extensions;
+﻿namespace unicfg.Evaluation.Extensions;
 
 public static class EmitScopeExtensions
 {

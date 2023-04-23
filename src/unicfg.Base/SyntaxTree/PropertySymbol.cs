@@ -7,7 +7,7 @@ public sealed class PropertySymbol : ISymbol, IElementWithValue
 {
     private readonly ImmutableArray<IValue> _values;
 
-    internal PropertySymbol(StringRef name, ISymbol parent, Document document, ImmutableArray<IValue> values)
+    public PropertySymbol(StringRef name, ISymbol parent, Document document, ImmutableArray<IValue> values)
     {
         Name = name;
         Parent = parent;
@@ -19,7 +19,7 @@ public sealed class PropertySymbol : ISymbol, IElementWithValue
 
     public IValue Value => _values[^1];
 
-    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; internal set; }
+    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; set; }
     public StringRef Name { get; }
     public ISymbol Parent { get; }
     public Document Document { get; }

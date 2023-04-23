@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using unicfg.Base.Primitives;
-
-namespace unicfg.Uni.Tree;
+﻿namespace unicfg.Uni.Tree;
 
 internal readonly record struct HandleResult
 {

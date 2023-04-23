@@ -1,7 +1,4 @@
-﻿using unicfg.Base.Inputs;
-using unicfg.Base.Primitives;
-
-namespace unicfg.Uni.Tree;
+﻿namespace unicfg.Uni.Tree;
 
 internal readonly ref struct TokenIndexer
 {

@@ -1,25 +1,21 @@
-﻿using unicfg.Base.Analysis;
-using unicfg.Base.Environment;
-using unicfg.Base.Inputs;
-using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
-using unicfg.Uni.Tree.Builders;
+﻿using unicfg.Uni.Tree.Builders;
 using unicfg.Uni.Tree.Handlers;
-using static unicfg.Base.Analysis.DiagnosticDescriptor;
 
 namespace unicfg.Uni.Tree;
 
-public sealed class ParserImpl
+[ContainerEntry(ServiceLifetime.Transient, typeof(IParser))]
+internal sealed class Parser : IParser
 {
-    private readonly Diagnostics _diagnostics;
     private readonly ImmutableArray<ISyntaxHandler> _handlers;
+    private readonly IDiagnostics _diagnostics;
     private readonly ICurrentProcess _process;
     private readonly SymbolBuilder _rootBuilder;
 
-    public ParserImpl(Diagnostics diagnostics, ICurrentProcess process)
+    public Parser(IDiagnostics diagnostics, ICurrentProcess process)
     {
         _diagnostics = diagnostics;
         _process = process;
+
         _rootBuilder = new SymbolBuilder(StringRef.Empty, SymbolKind.Scope, _diagnostics);
 
         _handlers = ImmutableArray.Create<ISyntaxHandler>(
@@ -44,6 +40,7 @@ public sealed class ParserImpl
         var document = new Document(baseDirectory, source.Location);
 
         document.RootScope = (ScopeSymbol)_rootBuilder.Build(document, null);
+
         return document;
     }
 

@@ -7,22 +7,22 @@ using unicfg.Base.Inputs;
 namespace unicfg.Base.Analysis;
 
 [ContainerEntry(ServiceLifetime.Scoped, typeof(Diagnostics))]
-public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
+internal sealed class Diagnostics : IDiagnostics
 {
-    private readonly ConcurrentBag<Diagnostic> _bag;
+    private readonly ConcurrentBag<DiagnosticMessage> _bag;
     private readonly ISource? _source;
 
-    public Diagnostics() : this(null, new ConcurrentBag<Diagnostic>())
+    public Diagnostics() : this(null, new ConcurrentBag<DiagnosticMessage>())
     {
     }
 
-    private Diagnostics(ISource? source, ConcurrentBag<Diagnostic> bag)
+    private Diagnostics(ISource? source, ConcurrentBag<DiagnosticMessage> bag)
     {
         _source = source;
         _bag = bag;
     }
 
-    public IEnumerator<Diagnostic> GetEnumerator()
+    public IEnumerator<DiagnosticMessage> GetEnumerator()
     {
         return _bag.GetEnumerator();
     }
@@ -41,7 +41,7 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 
     public void Report(DiagnosticDescriptor descriptor, object?[] args)
     {
-        ReportCore(new Diagnostic(descriptor, args));
+        ReportCore(new DiagnosticMessage(descriptor, args));
     }
 
     public void Report(DiagnosticDescriptor descriptor, string location)
@@ -51,7 +51,7 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
 
     public void Report(DiagnosticDescriptor descriptor, string location, object?[] args)
     {
-        ReportCore(new Diagnostic(descriptor, args) { Location = location });
+        ReportCore(new DiagnosticMessage(descriptor, args) { Location = location });
     }
 
     public void Report(DiagnosticDescriptor descriptor, ISource source, Range range)
@@ -62,7 +62,7 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
     public void Report(DiagnosticDescriptor descriptor, ISource source, Range range, object?[] args)
     {
         ReportCore(
-            new Diagnostic(descriptor, args)
+            new DiagnosticMessage(descriptor, args)
             {
                 Location = source.Location,
                 Position = GetDiagnosticPosition(source, range)
@@ -82,21 +82,21 @@ public sealed class Diagnostics : IReadOnlyCollection<Diagnostic>
         }
 
         ReportCore(
-            new Diagnostic(descriptor, args)
+            new DiagnosticMessage(descriptor, args)
             {
                 Location = _source.Location,
                 Position = GetDiagnosticPosition(_source, range)
             });
     }
 
-    public Diagnostics WithSource(ISource source)
+    public IDiagnostics WithSource(ISource source)
     {
         return new Diagnostics(source, _bag);
     }
 
-    private void ReportCore(Diagnostic diagnostic)
+    private void ReportCore(DiagnosticMessage message)
     {
-        _bag.Add(diagnostic);
+        _bag.Add(message);
     }
 
     private static DiagnosticPosition GetDiagnosticPosition(ISource source, Range range)

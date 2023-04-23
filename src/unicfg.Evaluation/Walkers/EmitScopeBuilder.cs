@@ -1,18 +1,15 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
-using unicfg.Base.SyntaxTree;
+﻿using unicfg.Base.SyntaxTree.Walkers;
 using unicfg.Evaluation.Extensions;
-using unicfg.Evaluation.Walkers;
 
-namespace unicfg.Evaluation.Outputs;
+namespace unicfg.Evaluation.Walkers;
 
-internal class OutputBuilder : AsyncWalker
+internal class EmitScopeBuilder : AsyncWalker
 {
     private readonly CancellationToken _cancellationToken;
     private readonly IValueEvaluator _valueEvaluator;
     private EmitSymbol? _currentSymbol;
 
-    public OutputBuilder(
+    public EmitScopeBuilder(
         IValueEvaluator valueEvaluator,
         ImmutableDictionary<SymbolRef, StringRef> defaults,
         CancellationToken cancellationToken)
@@ -64,9 +61,7 @@ internal class OutputBuilder : AsyncWalker
 
         foreach (var (_, element) in property.Attributes)
         {
-            await element
-                .Accept(this)
-                .ConfigureAwait(false);
+            await element.Accept(this).ConfigureAwait(false);
         }
 
         var value = await _valueEvaluator
@@ -81,7 +76,7 @@ internal class OutputBuilder : AsyncWalker
     {
         if (_currentSymbol is null)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Unable to evaluate attribute outside of a property or scope.");
         }
 
         var value = await _valueEvaluator

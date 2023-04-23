@@ -1,6 +1,4 @@
-﻿using unicfg.Base.Primitives;
-
-namespace unicfg.Uni.Tree.Handlers;
+﻿namespace unicfg.Uni.Tree.Handlers;
 
 internal sealed class WhitespaceHandler : ISyntaxHandler
 {

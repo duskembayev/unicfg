@@ -1,6 +1,6 @@
 ﻿namespace unicfg.Base.Primitives;
 
-public readonly record struct Token
+public readonly record struct Token(TokenType Type, Range RawRange, Range ContentRange)
 {
     public static readonly Token Eof = new(TokenType.Eof, Range.All);
     public static readonly Token Null = new(TokenType.Unknown, new Range(Index.End, Index.Start));
@@ -9,17 +9,6 @@ public readonly record struct Token
         : this(type, rawRange, rawRange)
     {
     }
-
-    public Token(TokenType type, Range rawRange, Range contentRange)
-    {
-        Type = type;
-        RawRange = rawRange;
-        ContentRange = contentRange;
-    }
-
-    public TokenType Type { get; }
-    public Range ContentRange { get; }
-    public Range RawRange { get; }
 
     public bool IsExpression()
     {

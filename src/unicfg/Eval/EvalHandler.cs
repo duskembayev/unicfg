@@ -3,7 +3,6 @@ using System.CommandLine.Parsing;
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
-using unicfg.Evaluation.Formatter;
 using unicfg.Extensions;
 
 namespace unicfg.Eval;
@@ -13,7 +12,7 @@ internal sealed class EvalHandler : CliCommandHandler
     private readonly ILogger<EvalHandler> _logger;
     private readonly IWorkspace _workspace;
 
-    public EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
+    internal EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
     {
         _workspace = workspace;
         _logger = logger;
@@ -46,11 +45,13 @@ internal sealed class EvalHandler : CliCommandHandler
             .Select(info => new DocumentOutput(ParseSymbolRef(info)))
             .ToImmutableArray();
 
+        // Remove all detected outputs and add the ones specified by the user.
         _workspace.Outputs.Clear();
         _workspace.Outputs.UnionWith(outputs);
 
+        // Remove all embedded formatters and add the one that writes to STDOUT.
         _workspace.Formatters.Clear();
-        _workspace.Formatters.Add(new EvaluationFormatter("STDOUT", stdOutWriter));
+        _workspace.Formatters.Add(new EvalFormatter("STDOUT", stdOutWriter));
 
         var results = await _workspace.EmitAsync(cancellationToken);
         return results.Output("Evaluation", _logger);

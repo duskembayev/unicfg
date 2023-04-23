@@ -4,7 +4,7 @@ public sealed class Document : IElement
 {
     private ScopeSymbol? _rootGroup;
 
-    internal Document(string baseDirectory, string? location)
+    public Document(string baseDirectory, string? location)
     {
         BaseDirectory = baseDirectory;
         Location = location;
@@ -16,7 +16,7 @@ public sealed class Document : IElement
     public ScopeSymbol RootScope
     {
         get => _rootGroup ?? throw new InvalidOperationException();
-        internal set => _rootGroup = value;
+        set => _rootGroup = value;
     }
 
     public T Accept<T>(IElementVisitor<T> visitor)

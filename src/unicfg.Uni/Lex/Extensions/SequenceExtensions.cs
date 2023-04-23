@@ -1,6 +1,6 @@
 ﻿namespace unicfg.Uni.Lex.Extensions;
 
-public static class SequenceExtensions
+internal static class SequenceExtensions
 {
     public static Index AsIndex(this in SequencePosition @this)
     {

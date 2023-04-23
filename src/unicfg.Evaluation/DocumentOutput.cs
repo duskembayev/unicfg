@@ -1,6 +1,4 @@
-﻿using unicfg.Base.Primitives;
-
-namespace unicfg.Evaluation;
+﻿namespace unicfg.Evaluation;
 
 public sealed class DocumentOutput
 {

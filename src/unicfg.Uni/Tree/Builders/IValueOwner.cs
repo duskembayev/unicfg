@@ -1,6 +1,4 @@
-﻿using unicfg.Base.SyntaxTree.Values;
-
-namespace unicfg.Uni.Tree.Builders;
+﻿namespace unicfg.Uni.Tree.Builders;
 
 internal interface IValueOwner
 {

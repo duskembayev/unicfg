@@ -1,16 +1,15 @@
-﻿using System.Text;
-using unicfg.Base.Formatters;
-using unicfg.Base.Primitives;
+﻿using unicfg.Base.Primitives;
 using unicfg.Base.SemanticTree;
+using unicfg.Uni.Formatter;
 
-namespace unicfg.Evaluation.Formatter;
+namespace unicfg.Eval;
 
-public sealed class EvaluationFormatter : IFormatter
+internal sealed class EvalFormatter : IFormatter
 {
     private readonly string _outputPath;
     private readonly TextWriter _writer;
 
-    public EvaluationFormatter(string outputPath, TextWriter writer)
+    public EvalFormatter(string outputPath, TextWriter writer)
     {
         _outputPath = outputPath;
         _writer = writer;
@@ -34,7 +33,7 @@ public sealed class EvaluationFormatter : IFormatter
         CancellationToken cancellationToken)
     {
         await using var bufferWriter = new StringWriter();
-        var visitor = new EvaluationAsyncVisitor(bufferWriter);
+        var visitor = new UniFormatVisitor(bufferWriter);
 
         foreach (var (_, childProperty) in scope.Properties)
         {

@@ -1,15 +1,14 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
-using unicfg.Evaluation.Walkers;
+﻿using unicfg.Base.SyntaxTree.Walkers;
 
-namespace unicfg.Evaluation.Outputs;
+namespace unicfg.Evaluation.Walkers;
 
-internal sealed class OutputCollector : AsyncWalker
+internal sealed class DocumentOutputCollector : AsyncWalker
 {
     private readonly List<StringRef> _path;
     private readonly ImmutableHashSet<DocumentOutput>.Builder _result;
 
-    public OutputCollector(CancellationToken cancellationToken) : base(cancellationToken)
+    public DocumentOutputCollector(CancellationToken cancellationToken)
+        : base(cancellationToken)
     {
         _result = ImmutableHashSet.CreateBuilder<DocumentOutput>();
         _path = new List<StringRef>();

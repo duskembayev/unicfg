@@ -1,17 +1,15 @@
-﻿using unicfg.Base.Extensions;
-using unicfg.Base.Primitives;
-using unicfg.Base.SemanticTree;
+﻿using unicfg.Base.SemanticTree;
 
-namespace unicfg.Evaluation.Formatter;
+namespace unicfg.Uni.Formatter;
 
-public sealed class EvaluationAsyncVisitor : IEmitAsyncVisitor
+public sealed class UniFormatVisitor : IEmitAsyncVisitor
 {
     private const char Delimiter = '.';
     private const char Equality = '=';
     private readonly List<StringRef> _path;
     private readonly TextWriter _writer;
 
-    public EvaluationAsyncVisitor(TextWriter writer)
+    public UniFormatVisitor(TextWriter writer)
     {
         _writer = writer;
         _path = new List<StringRef>();

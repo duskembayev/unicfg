@@ -1,6 +1,6 @@
 ﻿namespace unicfg.Base.Primitives;
 
-public readonly struct SegmentMemory<T> : IEquatable<ReadOnlyMemory<T>>, IEquatable<SegmentMemory<T>>
+internal readonly struct SegmentMemory<T> : IEquatable<ReadOnlyMemory<T>>, IEquatable<SegmentMemory<T>>
     where T : struct
 {
     public static readonly SegmentMemory<T> Empty = default;

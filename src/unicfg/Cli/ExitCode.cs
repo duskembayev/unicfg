@@ -1,6 +1,6 @@
 ﻿namespace unicfg.Cli;
 
-public enum ExitCode
+internal enum ExitCode
 {
     Success = 0,
     NoResult = 1,

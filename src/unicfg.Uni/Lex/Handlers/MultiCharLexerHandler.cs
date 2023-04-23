@@ -1,5 +1,4 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Uni.Lex.Extensions;
+﻿using unicfg.Uni.Lex.Extensions;
 
 namespace unicfg.Uni.Lex.Handlers;
 

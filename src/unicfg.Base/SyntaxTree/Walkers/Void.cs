@@ -1,6 +1,6 @@
-﻿namespace unicfg.Evaluation.Walkers;
+﻿namespace unicfg.Base.SyntaxTree.Walkers;
 
-internal sealed class Void
+public sealed class Void
 {
     public static readonly Void Value = new();
 

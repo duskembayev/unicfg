@@ -5,7 +5,7 @@ namespace unicfg.Base.SyntaxTree;
 
 public sealed class ScopeSymbol : ISymbol
 {
-    internal ScopeSymbol(StringRef name, ISymbol? parent, Document document)
+    public ScopeSymbol(StringRef name, ISymbol? parent, Document document)
     {
         Name = name;
         Parent = parent;
@@ -18,8 +18,8 @@ public sealed class ScopeSymbol : ISymbol
     [MemberNotNullWhen(false, nameof(Parent))]
     public bool IsRoot => Parent is null;
 
-    public ImmutableDictionary<StringRef, ISymbol> Children { get; internal set; }
-    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; internal set; }
+    public ImmutableDictionary<StringRef, ISymbol> Children { get; set; }
+    public ImmutableDictionary<StringRef, AttributeElement> Attributes { get; set; }
 
     public StringRef Name { get; }
     public ISymbol? Parent { get; }

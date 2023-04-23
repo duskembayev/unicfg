@@ -1,7 +1,4 @@
-﻿using unicfg.Base.Primitives;
-using unicfg.Base.SyntaxTree;
-
-namespace unicfg.Evaluation;
+﻿namespace unicfg.Evaluation;
 
 public interface IPropertyResolver
 {
