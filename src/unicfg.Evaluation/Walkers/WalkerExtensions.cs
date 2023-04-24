@@ -19,9 +19,10 @@ internal static class WalkerExtensions
         SymbolRef scopeRef,
         ImmutableArray<Document> entries,
         ImmutableDictionary<SymbolRef, StringRef> defaults,
+        IDiagnostics diagnostics,
         CancellationToken cancellationToken)
     {
-        var outputBuilder = new EmitScopeBuilder(@this, defaults, cancellationToken);
+        var outputBuilder = new EmitScopeBuilder(@this, defaults, diagnostics, cancellationToken);
 
         foreach (var entry in entries)
         {

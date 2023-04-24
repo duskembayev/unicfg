@@ -1,4 +1,5 @@
-﻿using unicfg.Base.SyntaxTree.Walkers;
+﻿using unicfg.Base.Extensions;
+using unicfg.Base.SyntaxTree.Walkers;
 using unicfg.Evaluation.Extensions;
 
 namespace unicfg.Evaluation.Walkers;
@@ -7,18 +8,21 @@ internal class EmitScopeBuilder : AsyncWalker
 {
     private readonly CancellationToken _cancellationToken;
     private readonly IValueEvaluator _valueEvaluator;
-    private EmitSymbol? _currentSymbol;
+    private readonly IDiagnostics _diagnostics;
+    private EmitSymbol _currentSymbol;
 
     public EmitScopeBuilder(
         IValueEvaluator valueEvaluator,
         ImmutableDictionary<SymbolRef, StringRef> defaults,
+        IDiagnostics diagnostics,
         CancellationToken cancellationToken)
         : base(cancellationToken)
     {
         _valueEvaluator = valueEvaluator;
+        _diagnostics = diagnostics;
         _cancellationToken = cancellationToken;
 
-        Scope = new EmitScope();
+        _currentSymbol = Scope = new EmitScope();
 
         foreach (var (key, value) in defaults)
         {
@@ -30,34 +34,38 @@ internal class EmitScopeBuilder : AsyncWalker
 
     public override async ValueTask Visit(ScopeSymbol scope)
     {
-        _currentSymbol = _currentSymbol switch
+        var child = _currentSymbol switch
         {
-            null => Scope,
-            EmitScope parent => parent.GetScope(scope.Name),
+            EmitScope parent => parent.ResolveScope(scope.Name),
             _ => null
         };
 
-        if (_currentSymbol is null)
+        if (child is null)
         {
-            throw new NotImplementedException();
+            _diagnostics.Report(Conflict, new object[] { scope.GetSymbolRef() });
+            return;
         }
 
+        _currentSymbol = child;
         await base.Visit(scope).ConfigureAwait(false);
-        _currentSymbol = _currentSymbol.Parent;
+        _currentSymbol = child.Parent!;
     }
 
     public override async ValueTask Visit(PropertySymbol property)
     {
-        _currentSymbol = _currentSymbol switch
+        var child = _currentSymbol switch
         {
-            EmitScope parent => parent.GetProperty(property.Name),
+            EmitScope parent => parent.ResolveProperty(property.Name),
             _ => null
         };
 
-        if (_currentSymbol is null)
+        if (child is null)
         {
-            throw new NotImplementedException();
+            _diagnostics.Report(Conflict, new object[] { property.GetSymbolRef() });
+            return;
         }
+
+        _currentSymbol = child;
 
         foreach (var (_, element) in property.Attributes)
         {
@@ -69,16 +77,11 @@ internal class EmitScopeBuilder : AsyncWalker
             .ConfigureAwait(false);
 
         ((EmitProperty)_currentSymbol).Value = value;
-        _currentSymbol = _currentSymbol.Parent;
+        _currentSymbol = _currentSymbol.Parent!;
     }
 
     public override async ValueTask Visit(AttributeElement attribute)
     {
-        if (_currentSymbol is null)
-        {
-            throw new NotSupportedException("Unable to evaluate attribute outside of a property or scope.");
-        }
-
         var value = await _valueEvaluator
             .EvaluateAsync(attribute, _cancellationToken)
             .ConfigureAwait(false);

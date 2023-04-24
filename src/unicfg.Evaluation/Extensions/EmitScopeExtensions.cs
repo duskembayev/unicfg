@@ -10,7 +10,7 @@ public static class EmitScopeExtensions
         for (var i = 0; i < path.Length - 1; i++)
         {
             var part = path[i];
-            currentScope = currentScope.GetScope(part);
+            currentScope = currentScope.ResolveScope(part);
 
             if (currentScope is null)
             {
@@ -18,7 +18,7 @@ public static class EmitScopeExtensions
             }
         }
 
-        var property = currentScope.GetProperty(path[^1]);
+        var property = currentScope.ResolveProperty(path[^1]);
 
         if (property is null)
         {

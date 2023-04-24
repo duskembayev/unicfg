@@ -16,4 +16,7 @@ internal static class DiagnosticDescriptors
 
     internal static readonly DiagnosticDescriptor NothingToEmit
         = new("UNI501", EmitterCategory, DiagnosticLevel.Warn, "Nothing to emit");
+    
+    internal static readonly DiagnosticDescriptor Conflict
+        = new("UNI502", EmitterCategory, DiagnosticLevel.Error, "Symbol conflict: \"{0}.{1}\"");
 }

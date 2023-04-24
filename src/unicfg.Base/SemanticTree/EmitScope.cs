@@ -20,7 +20,7 @@ public sealed class EmitScope : EmitSymbol
     public IReadOnlyDictionary<StringRef, EmitScope> Scopes => _scopes;
     public IReadOnlyDictionary<StringRef, EmitProperty> Properties => _properties;
 
-    public EmitScope? GetScope(StringRef name)
+    public EmitScope? ResolveScope(StringRef name)
     {
         if (name.IsEmpty)
         {
@@ -40,7 +40,7 @@ public sealed class EmitScope : EmitSymbol
         return _scopes[name] = new EmitScope(name) { Parent = this };
     }
 
-    public EmitProperty? GetProperty(StringRef name)
+    public EmitProperty? ResolveProperty(StringRef name)
     {
         if (name.IsEmpty)
         {
