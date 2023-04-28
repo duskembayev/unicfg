@@ -36,3 +36,9 @@ TODO
     1. ~~property references in value~~
     2. property references in key
     3. namespace references in value (TBD)
+
+## Supporters
+
+##### Supported by [JetBrains Open Source Program](https://jb.gg/OpenSourceSupport)
+
+[![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)](https://jb.gg/OpenSourceSupport)
