@@ -41,4 +41,4 @@ TODO
 
 ##### Supported by [JetBrains Open Source Program](https://jb.gg/OpenSourceSupport)
 
-[![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)](https://jb.gg/OpenSourceSupport)
+[<img alt="JetBrains Logo" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="300">](https://jb.gg/OpenSourceSupport)
