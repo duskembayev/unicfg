@@ -1,5 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.CommandLine.Parsing;
+using Enhanced.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
@@ -12,7 +14,7 @@ internal sealed class EvalHandler : CliCommandHandler
     private readonly ILogger<EvalHandler> _logger;
     private readonly IWorkspace _workspace;
 
-    internal EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
+    public EvalHandler(IWorkspace workspace, ILogger<EvalHandler> logger) : base(logger)
     {
         _workspace = workspace;
         _logger = logger;

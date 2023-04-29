@@ -3,7 +3,6 @@ using unicfg.Uni.Tree.Handlers;
 
 namespace unicfg.Uni.Tree;
 
-[ContainerEntry(ServiceLifetime.Transient, typeof(IParser))]
 internal sealed class Parser : IParser
 {
     private readonly ImmutableArray<ISyntaxHandler> _handlers;

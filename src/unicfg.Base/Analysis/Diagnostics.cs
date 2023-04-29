@@ -6,7 +6,7 @@ using unicfg.Base.Inputs;
 
 namespace unicfg.Base.Analysis;
 
-[ContainerEntry(ServiceLifetime.Scoped, typeof(Diagnostics))]
+[ContainerEntry(ServiceLifetime.Scoped, typeof(IDiagnostics))]
 internal sealed class Diagnostics : IDiagnostics
 {
     private readonly ConcurrentBag<DiagnosticMessage> _bag;

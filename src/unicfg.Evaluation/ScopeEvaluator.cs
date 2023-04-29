@@ -1,16 +1,17 @@
-﻿using unicfg.Evaluation.Walkers;
+﻿using unicfg.Base.Extensions;
+using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
 [ContainerEntry(ServiceLifetime.Scoped, typeof(IScopeEvaluator))]
 internal sealed class ScopeEvaluator : IScopeEvaluator
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IValueEvaluatorFactory _valueEvaluatorFactory;
     private readonly IDiagnostics _diagnostics;
 
-    public ScopeEvaluator(IServiceProvider serviceProvider, IDiagnostics diagnostics)
+    public ScopeEvaluator(IValueEvaluatorFactory valueEvaluatorFactory, IDiagnostics diagnostics)
     {
-        _serviceProvider = serviceProvider;
+        _valueEvaluatorFactory = valueEvaluatorFactory;
         _diagnostics = diagnostics;
     }
 
@@ -19,9 +20,19 @@ internal sealed class ScopeEvaluator : IScopeEvaluator
         EvaluationContext context,
         CancellationToken cancellationToken)
     {
-        return await ActivatorUtilities
-            .CreateInstance<IValueEvaluator>(_serviceProvider, context.Entries, context.Overrides)
-            .BuildScopeAsync(scopeRef, context.Entries, context.Defaults, _diagnostics, cancellationToken)
-            .ConfigureAwait(false);
+        var valueEvaluator = _valueEvaluatorFactory.Create(context.Entries, context.Overrides);
+        var outputBuilder = new EmitScopeBuilder(valueEvaluator, context.Defaults, _diagnostics, cancellationToken);
+
+        foreach (var entry in context.Entries)
+        {
+            var symbol = entry.FindSymbol(scopeRef);
+
+            if (symbol is not null)
+            {
+                await symbol.Accept(outputBuilder).ConfigureAwait(false);
+            }
+        }
+
+        return outputBuilder.Scope;
     }
 }

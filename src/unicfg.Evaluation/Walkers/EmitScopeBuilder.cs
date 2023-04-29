@@ -36,6 +36,7 @@ internal class EmitScopeBuilder : AsyncWalker
     {
         var child = _currentSymbol switch
         {
+            EmitScope { Parent: null } parent when scope.IsRoot => parent,
             EmitScope parent => parent.ResolveScope(scope.Name),
             _ => null
         };

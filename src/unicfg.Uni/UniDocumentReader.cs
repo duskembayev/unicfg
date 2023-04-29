@@ -8,11 +8,13 @@ internal sealed class UniDocumentReader : IUniDocumentReader
 {
     private readonly IDiagnostics _diagnostics;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IParserFactory _parserFactory;
 
-    public UniDocumentReader(IDiagnostics diagnostics, IServiceProvider serviceProvider)
+    public UniDocumentReader(IDiagnostics diagnostics, IServiceProvider serviceProvider, IParserFactory parserFactory)
     {
         _diagnostics = diagnostics;
         _serviceProvider = serviceProvider;
+        _parserFactory = parserFactory;
     }
 
     public async Task<Document> ReadAsync(string path, CancellationToken cancellationToken)
@@ -26,8 +28,6 @@ internal sealed class UniDocumentReader : IUniDocumentReader
             .GetRequiredService<ILexer>()
             .Process(source, diagnostics);
 
-        return ActivatorUtilities
-            .CreateInstance<IParser>(_serviceProvider, diagnostics)
-            .Execute(source, tokens);
+        return _parserFactory.Create(diagnostics).Execute(source, tokens);
     }
 }

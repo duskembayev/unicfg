@@ -14,29 +14,6 @@ internal static class WalkerExtensions
         return outputCollector.GetResult();
     }
 
-    public static async ValueTask<EmitScope> BuildScopeAsync(
-        this IValueEvaluator @this,
-        SymbolRef scopeRef,
-        ImmutableArray<Document> entries,
-        ImmutableDictionary<SymbolRef, StringRef> defaults,
-        IDiagnostics diagnostics,
-        CancellationToken cancellationToken)
-    {
-        var outputBuilder = new EmitScopeBuilder(@this, defaults, diagnostics, cancellationToken);
-
-        foreach (var entry in entries)
-        {
-            var symbol = entry.FindSymbol(scopeRef);
-
-            if (symbol is not null)
-            {
-                await symbol.Accept(outputBuilder).ConfigureAwait(false);
-            }
-        }
-
-        return outputBuilder.Scope;
-    }
-    
     public static async ValueTask<(EmitValue? Value, SymbolRef UnresolvedDependency)> BuildValueAsync(
         this IValue @this,
         IReadOnlyDictionary<SymbolRef, EmitValue> dependencies,

@@ -6,13 +6,12 @@ using unicfg.Evaluation.Walkers;
 
 namespace unicfg.Evaluation;
 
-[ContainerEntry(ServiceLifetime.Transient, typeof(IValueEvaluator))]
 internal sealed class ValueEvaluator : IValueEvaluator
 {
-    private readonly IDiagnostics _diagnostics;
     private readonly ILogger<ValueEvaluator> _logger;
     private readonly ImmutableArray<Document> _entries;
     private readonly Dictionary<SymbolRef, EmitValue> _values;
+    private readonly IDiagnostics _diagnostics;
 
     public ValueEvaluator(
         ImmutableArray<Document> entries,
@@ -21,8 +20,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
         ILogger<ValueEvaluator> logger)
     {
         _entries = entries;
-        _diagnostics = diagnostics;
         _logger = logger;
+
+        _diagnostics = diagnostics;
 
         _values = new Dictionary<SymbolRef, EmitValue>();
 
@@ -71,7 +71,9 @@ internal sealed class ValueEvaluator : IValueEvaluator
                 if (item.Path != SymbolRef.Null)
                 {
                     if (emitValue.State == EvaluationState.Error)
+                    {
                         _diagnostics.Report(ErrorReference, BuildResolvePath(tale, item.Path));
+                    }
 
                     _values[item.Path] = emitValue;
                     _logger.LogDebug("Evaluated value for \"{Path}\": {Value}", item.Path, emitValue.Value);
