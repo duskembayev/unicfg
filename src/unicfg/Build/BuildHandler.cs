@@ -3,6 +3,8 @@ using unicfg.Base.Primitives;
 using unicfg.Cli;
 using unicfg.Evaluation;
 using unicfg.Extensions;
+using unicfg.Formatters.Json;
+using unicfg.Formatters.Yaml;
 
 namespace unicfg.Build;
 
@@ -29,6 +31,9 @@ internal sealed class BuildHandler : CliCommandHandler
         ArgumentNullException.ThrowIfNull(inputs);
         ArgumentNullException.ThrowIfNull(properties);
         ArgumentNullException.ThrowIfNull(outputDir);
+
+        _workspace.Formatters.Add(new YamlFormatter(outputDir));
+        _workspace.Formatters.Add(new JsonFormatter(outputDir));
 
         foreach (var file in inputs)
         {

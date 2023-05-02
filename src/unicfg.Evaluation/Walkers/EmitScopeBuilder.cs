@@ -9,7 +9,7 @@ internal class EmitScopeBuilder : AsyncWalker
     private readonly CancellationToken _cancellationToken;
     private readonly IValueEvaluator _valueEvaluator;
     private readonly IDiagnostics _diagnostics;
-    private EmitSymbol _currentSymbol;
+    private EmitSymbol? _currentSymbol;
 
     public EmitScopeBuilder(
         IValueEvaluator valueEvaluator,
@@ -22,7 +22,7 @@ internal class EmitScopeBuilder : AsyncWalker
         _diagnostics = diagnostics;
         _cancellationToken = cancellationToken;
 
-        _currentSymbol = Scope = new EmitScope();
+        Scope = new EmitScope();
 
         foreach (var (key, value) in defaults)
         {
@@ -36,7 +36,7 @@ internal class EmitScopeBuilder : AsyncWalker
     {
         var child = _currentSymbol switch
         {
-            EmitScope { Parent: null } parent when scope.IsRoot => parent,
+            null => Scope,
             EmitScope parent => parent.ResolveScope(scope.Name),
             _ => null
         };
@@ -87,6 +87,6 @@ internal class EmitScopeBuilder : AsyncWalker
             .EvaluateAsync(attribute, _cancellationToken)
             .ConfigureAwait(false);
 
-        _currentSymbol.SetAttributeValue(attribute.Name, value);
+        _currentSymbol?.SetAttributeValue(attribute.Name, value);
     }
 }

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\unicfg.Evaluation\unicfg.Evaluation.csproj" />
+    <ProjectReference Include="..\unicfg.Formatters\unicfg.Formatters.csproj" />
     <ProjectReference Include="..\unicfg.Uni\unicfg.Uni.csproj" />
   </ItemGroup>
 

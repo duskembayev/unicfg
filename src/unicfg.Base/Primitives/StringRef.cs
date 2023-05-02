@@ -83,6 +83,11 @@ public readonly struct StringRef
 
     public override string ToString()
     {
+        if (_memory.IsEmpty)
+        {
+            return string.Empty;
+        }
+
         var builder = new StringBuilder(Length);
 
         foreach (var memory in _memory.Segments)
