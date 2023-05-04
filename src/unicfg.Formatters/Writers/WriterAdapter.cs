@@ -92,6 +92,10 @@ internal sealed class WriterAdapter : IEmitAsyncVisitor
                 when DateTime.TryParse(value, out var dateTimeValue):
                 _innerWriter.WriteValue(dateTimeValue);
                 break;
+            case "text" or "string" or "str"
+                when value is not null:
+                _innerWriter.WriteValue(value);
+                break;
             case "raw"
                 when value is not null:
                 _innerWriter.WriteRaw(value);
