@@ -14,7 +14,7 @@ TODO
     1. ~~namespaces~~
     2. ~~properties~~
     3. ~~attributes~~
-2. cli
+2. ~~cli~~
 3. dotnet tool
 4. nuget package
 5. msbuild task
@@ -28,10 +28,11 @@ TODO
     7. yaml
     8. xml
 7. export
-    1. unicfg
-    2. json
-    3. yaml
+    1. uni
+    2. ~~json~~
+    3. ~~yaml~~
     4. xml
+    5. ~~uni stdout~~
 8. references
     1. ~~property references in value~~
     2. property references in key
